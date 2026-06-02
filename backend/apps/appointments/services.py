@@ -54,6 +54,10 @@ def book_appointment(patient: User, doctor: Doctor, appt_date: date, start_time)
             end_time=end_time,
             status=AppointmentStatus.PENDING_PAYMENT,
         )
+
+    from apps.notifications.tasks import send_booking_confirmation_sms
+    send_booking_confirmation_sms.delay(appointment.pk)
+
     return appointment
 
 
@@ -70,6 +74,10 @@ def cancel_appointment(appointment: Appointment, user: User) -> Appointment:
 
     appointment.status = AppointmentStatus.CANCELLED
     appointment.save(update_fields=['status', 'updated_at'])
+
+    from apps.notifications.tasks import send_cancellation_sms
+    send_cancellation_sms.delay(appointment.pk)
+
     return appointment
 
 

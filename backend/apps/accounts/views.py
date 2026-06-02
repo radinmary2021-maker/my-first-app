@@ -38,7 +38,8 @@ class SendOTPView(APIView):
         code = generate_otp(phone)
         increment_rate_counters(phone, ip)
 
-        # SMS will be wired here in Sprint 2 (Kavenegar + Celery)
+        from apps.notifications.tasks import send_otp_sms
+        send_otp_sms.delay(phone, code)
 
         response = {'success': True}
         if settings.DEBUG:

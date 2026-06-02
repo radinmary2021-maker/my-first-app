@@ -34,6 +34,7 @@ LOCAL_APPS = [
     'apps.doctors',
     'apps.appointments',
     'apps.payments',
+    'apps.notifications',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -127,3 +128,5 @@ ZARINPAL_CALLBACK_BASE_URL = env('ZARINPAL_CALLBACK_BASE_URL', default='http://l
 CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
 CELERY_TIMEZONE = 'Asia/Tehran'
+
+KAVENEGAR_API_KEY = env('KAVENEGAR_API_KEY', default='')
