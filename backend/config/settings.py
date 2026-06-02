@@ -33,6 +33,7 @@ LOCAL_APPS = [
     'apps.accounts',
     'apps.doctors',
     'apps.appointments',
+    'apps.payments',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -117,3 +118,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 OTP_EXPIRY_SECONDS = 120
 OTP_MAX_ATTEMPTS = 5
+
+PAYMENT_EXPIRY_MINUTES = 15
+ZARINPAL_MERCHANT_ID = env('ZARINPAL_MERCHANT_ID', default='')
+ZARINPAL_SANDBOX = env.bool('ZARINPAL_SANDBOX', default=True)
+ZARINPAL_CALLBACK_BASE_URL = env('ZARINPAL_CALLBACK_BASE_URL', default='http://localhost:8000')
+
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
+CELERY_TIMEZONE = 'Asia/Tehran'
