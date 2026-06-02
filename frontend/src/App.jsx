@@ -9,6 +9,7 @@ import VerifyOtpPage from './pages/auth/VerifyOtpPage'
 import DoctorListPage from './pages/public/DoctorListPage'
 import DoctorDetailPage from './pages/public/DoctorDetailPage'
 import BookAppointmentPage from './pages/patient/BookAppointmentPage'
+import MyAppointmentsPage from './pages/patient/MyAppointmentsPage'
 import PaymentResultPage from './pages/patient/PaymentResultPage'
 import NotFoundPage from './pages/shared/NotFoundPage'
 
@@ -35,6 +36,7 @@ export default function App() {
 
           {/* Protected */}
           <Route path="/book/:id" element={<ProtectedRoute><BookAppointmentPage /></ProtectedRoute>} />
+          <Route path="/my-appointments" element={<ProtectedRoute><MyAppointmentsPage /></ProtectedRoute>} />
 
           {/* Payment result — public, Zarinpal redirects here */}
           <Route path="/payment/result" element={<PaymentResultPage />} />
