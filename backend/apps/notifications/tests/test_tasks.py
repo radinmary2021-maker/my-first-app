@@ -34,9 +34,10 @@ class TestSendOtpSms:
         assert '654321' in log.message
 
     def test_failed_sms_creates_failed_log(self):
+        # Use .apply() so the full retry cycle runs in eager mode
         import requests as req
         with patch('apps.notifications.kavenegar.requests.post', side_effect=req.ConnectionError()):
-            send_otp_sms('09120000001', '999999')
+            send_otp_sms.apply(args=('09120000001', '999999'))
 
         log = SMSLog.objects.get(phone='09120000001')
         assert log.status == SMSStatus.FAILED
@@ -44,7 +45,7 @@ class TestSendOtpSms:
     def test_failed_sms_does_not_raise(self):
         import requests as req
         with patch('apps.notifications.kavenegar.requests.post', side_effect=req.ConnectionError()):
-            send_otp_sms('09120000001', '000000')  # should not raise
+            send_otp_sms.apply(args=('09120000001', '000000'))  # should not raise
 
 
 # ── Booking Confirmation ──────────────────────────────────────────────────────

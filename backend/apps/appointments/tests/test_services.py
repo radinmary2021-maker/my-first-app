@@ -3,7 +3,7 @@ from datetime import date, time
 from unittest.mock import patch
 
 from apps.appointments.models import Appointment, AppointmentStatus
-from apps.appointments.services import BookingError, book_appointment, cancel_appointment, complete_appointment
+from apps.appointments.services import BookingError, book_appointment, cancel_appointment, complete_appointment, mark_as_no_show
 from apps.accounts.models import UserRole
 
 from .conftest import SATURDAY, SLOT_9_00, SLOT_9_20
@@ -96,26 +96,26 @@ class TestCancelAppointment:
         with pytest.raises(BookingError, match='فعال'):
             cancel_appointment(appt, patient)
 
-    def test_cancelling_completed_appointment_raises(self, patient, doctor, schedule):
+    def test_cancelling_completed_appointment_raises(self, patient, doctor, schedule, doctor_user):
         appt = book_appointment(patient, doctor, SATURDAY, SLOT_9_00)
         appt.status = AppointmentStatus.CONFIRMED
         appt.save()
-        complete_appointment(appt)
+        complete_appointment(appt, doctor_user)
         with pytest.raises(BookingError):
             cancel_appointment(appt, patient)
 
 
 @pytest.mark.django_db
 class TestCompleteAppointment:
-    def test_confirmed_appointment_can_be_completed(self, patient, doctor, schedule):
+    def test_confirmed_appointment_can_be_completed(self, patient, doctor, schedule, doctor_user):
         appt = book_appointment(patient, doctor, SATURDAY, SLOT_9_00)
         appt.status = AppointmentStatus.CONFIRMED
         appt.save()
-        result = complete_appointment(appt)
+        result = complete_appointment(appt, doctor_user)
         assert result.status == AppointmentStatus.COMPLETED
 
-    def test_pending_payment_cannot_be_completed(self, patient, doctor, schedule):
+    def test_pending_payment_cannot_be_completed(self, patient, doctor, schedule, doctor_user):
         appt = book_appointment(patient, doctor, SATURDAY, SLOT_9_00)
         assert appt.status == AppointmentStatus.PENDING_PAYMENT
         with pytest.raises(BookingError, match='تأیید شده'):
-            complete_appointment(appt)
+            complete_appointment(appt, doctor_user)
