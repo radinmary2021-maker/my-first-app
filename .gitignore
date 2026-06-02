@@ -1,0 +1,28 @@
+__pycache__/
+*.pyc
+*.pyo
+.coverage
+htmlcov/
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+!.env.example
+
+# Docker
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# Frontend
+node_modules/
+frontend/dist/
+
+# Static/Media
+staticfiles/
+media/
