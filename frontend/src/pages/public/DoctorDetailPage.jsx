@@ -6,7 +6,7 @@ import ErrorMessage from '../../components/ErrorMessage'
 import DatePicker from '../../components/DatePicker'
 import SlotPicker from '../../components/SlotPicker'
 import { useDoctor, useDoctorSlots } from '../../hooks/useDoctors'
-import { formatFee, formatDateFa } from '../../utils/date'
+import { formatFee } from '../../utils/date'
 
 export default function DoctorDetailPage() {
   const { id } = useParams()

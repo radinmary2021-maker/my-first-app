@@ -12,23 +12,24 @@ export default function VerifyOtpPage() {
   const { state } = useLocation()
   const login = useAuthStore((s) => s.login)
 
+  // All hooks must be called unconditionally before any early return
   const [digits, setDigits] = useState(Array(OTP_LENGTH).fill(''))
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [countdown, setCountdown] = useState(RESEND_SECONDS)
   const inputRefs = useRef([])
 
-  // Redirect back if no phone was passed
-  if (!state?.phone) return <Navigate to="/login" replace />
-
-  const phone = state.phone
-  const otp = digits.join('')
-
   useEffect(() => {
     if (countdown <= 0) return
     const id = setInterval(() => setCountdown((c) => c - 1), 1000)
     return () => clearInterval(id)
   }, [countdown])
+
+  // Early return AFTER all hooks
+  if (!state?.phone) return <Navigate to="/login" replace />
+
+  const phone = state.phone
+  const otp = digits.join('')
 
   function handleDigitChange(index, value) {
     if (!/^\d*$/.test(value)) return
