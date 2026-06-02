@@ -46,7 +46,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class OTPCode(models.Model):
-    phone = models.CharField(max_length=11, db_index=True)
+    phone = models.CharField(max_length=11)
     otp_hash = models.CharField(max_length=256)
     expires_at = models.DateTimeField()
     attempts = models.PositiveSmallIntegerField(default=0)
@@ -55,6 +55,13 @@ class OTPCode(models.Model):
 
     class Meta:
         db_table = 'otp_codes'
+        indexes = [
+            models.Index(
+                fields=['phone', 'expires_at'],
+                condition=models.Q(is_used=False),
+                name='otp_active_phone_expires_idx',
+            ),
+        ]
 
     def __str__(self):
         return f'{self.phone} - {"used" if self.is_used else "active"}'
