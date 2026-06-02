@@ -1,19 +1,20 @@
-import { screen, fireEvent } from '@testing-library/react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { screen, fireEvent, act } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { renderWithProviders } from '../utils'
 import MyAppointmentsPage from '../../pages/patient/MyAppointmentsPage'
 import * as useAppointmentsModule from '../../hooks/useAppointments'
+import { ToastContainer } from '../../components/Toast'
 
 const mockMutate = vi.fn()
 
-function mockHooks({ appointments = [], isLoading = false, isError = false } = {}) {
+function mockHooks({ appointments = [], isLoading = false, isError = false, mutate } = {}) {
   vi.spyOn(useAppointmentsModule, 'useMyAppointments').mockReturnValue({
     data: appointments,
     isLoading,
     isError,
   })
   vi.spyOn(useAppointmentsModule, 'useCancelAppointment').mockReturnValue({
-    mutate: mockMutate,
+    mutate: mutate ?? mockMutate,
     isPending: false,
   })
 }
@@ -35,8 +36,21 @@ const cancelledAppt = {
   status: 'cancelled',
 }
 
+function renderWithToast() {
+  return renderWithProviders(
+    <>
+      <MyAppointmentsPage />
+      <ToastContainer />
+    </>
+  )
+}
+
 beforeEach(() => {
   vi.clearAllMocks()
+})
+
+afterEach(() => {
+  vi.restoreAllMocks()
 })
 
 describe('MyAppointmentsPage', () => {
@@ -70,7 +84,6 @@ describe('MyAppointmentsPage', () => {
     mockHooks({ appointments: [confirmedAppt, cancelledAppt] })
     renderWithProviders(<MyAppointmentsPage />)
     const cancelButtons = screen.getAllByText('لغو نوبت')
-    // Only the confirmed appointment should have a cancel button
     expect(cancelButtons).toHaveLength(1)
   })
 
@@ -96,6 +109,49 @@ describe('MyAppointmentsPage', () => {
     fireEvent.click(screen.getByText('لغو نوبت'))
     fireEvent.click(screen.getByText('بله، لغو کن'))
     expect(mockMutate).toHaveBeenCalledWith(1, expect.any(Object))
+  })
+
+  it('shows success toast after cancel succeeds', () => {
+    vi.useFakeTimers()
+    const mutateThatSucceeds = vi.fn((_id, { onSuccess }) => onSuccess())
+    mockHooks({ appointments: [confirmedAppt], mutate: mutateThatSucceeds })
+    renderWithToast()
+    fireEvent.click(screen.getByText('لغو نوبت'))
+    act(() => fireEvent.click(screen.getByText('بله، لغو کن')))
+    expect(screen.getByText('نوبت با موفقیت لغو شد.')).toBeInTheDocument()
+    vi.useRealTimers()
+  })
+
+  it('shows error toast after cancel fails', () => {
+    vi.useFakeTimers()
+    const error = { response: { data: { error: 'نوبت‌های گذشته قابل لغو نیستند.' } } }
+    const mutateThatFails = vi.fn((_id, { onError }) => onError(error))
+    mockHooks({ appointments: [confirmedAppt], mutate: mutateThatFails })
+    renderWithToast()
+    fireEvent.click(screen.getByText('لغو نوبت'))
+    act(() => fireEvent.click(screen.getByText('بله، لغو کن')))
+    expect(screen.getByText('نوبت‌های گذشته قابل لغو نیستند.')).toBeInTheDocument()
+    vi.useRealTimers()
+  })
+
+  it('shows generic error toast when server returns no message', () => {
+    vi.useFakeTimers()
+    const mutateThatFails = vi.fn((_id, { onError }) => onError({}))
+    mockHooks({ appointments: [confirmedAppt], mutate: mutateThatFails })
+    renderWithToast()
+    fireEvent.click(screen.getByText('لغو نوبت'))
+    act(() => fireEvent.click(screen.getByText('بله، لغو کن')))
+    expect(screen.getByText('خطا در لغو نوبت')).toBeInTheDocument()
+    vi.useRealTimers()
+  })
+
+  it('closes dialog after cancel succeeds', () => {
+    const mutateThatSucceeds = vi.fn((_id, { onSuccess }) => onSuccess())
+    mockHooks({ appointments: [confirmedAppt], mutate: mutateThatSucceeds })
+    renderWithProviders(<MyAppointmentsPage />)
+    fireEvent.click(screen.getByText('لغو نوبت'))
+    fireEvent.click(screen.getByText('بله، لغو کن'))
+    expect(screen.queryByRole('dialog')).toBeNull()
   })
 
   it('renders all status badges correctly', () => {
