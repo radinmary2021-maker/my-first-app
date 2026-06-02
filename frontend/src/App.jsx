@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import GuestRoute from './routes/GuestRoute'
 import ProtectedRoute from './routes/ProtectedRoute'
+import { ToastContainer } from './components/Toast'
 
 import LoginPage from './pages/auth/LoginPage'
 import VerifyOtpPage from './pages/auth/VerifyOtpPage'
@@ -43,6 +44,7 @@ export default function App() {
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
+        <ToastContainer />
       </BrowserRouter>
     </QueryClientProvider>
   )

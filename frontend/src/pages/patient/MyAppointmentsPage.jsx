@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import MainLayout from '../../layouts/MainLayout'
 import Spinner from '../../components/Spinner'
 import ErrorMessage from '../../components/ErrorMessage'
+import { notify } from '../../utils/toast'
 import { useMyAppointments, useCancelAppointment } from '../../hooks/useAppointments'
 
 const STATUS_LABEL = {
@@ -29,24 +30,20 @@ export default function MyAppointmentsPage() {
   const { mutate: cancel, isPending: cancelling } = useCancelAppointment()
 
   const [confirmId, setConfirmId] = useState(null)
-  const [cancelError, setCancelError] = useState(null)
-  const [cancelSuccess, setCancelSuccess] = useState(null)
 
   function handleCancelRequest(id) {
     setConfirmId(id)
-    setCancelError(null)
-    setCancelSuccess(null)
   }
 
   function handleCancelConfirm() {
     cancel(confirmId, {
       onSuccess: () => {
         setConfirmId(null)
-        setCancelSuccess('نوبت با موفقیت لغو شد.')
+        notify('نوبت با موفقیت لغو شد.', 'success')
       },
       onError: (err) => {
         setConfirmId(null)
-        setCancelError(err?.response?.data?.error || 'خطا در لغو نوبت')
+        notify(err?.response?.data?.error || 'خطا در لغو نوبت', 'error')
       },
     })
   }
@@ -63,13 +60,6 @@ export default function MyAppointmentsPage() {
             رزرو نوبت جدید
           </button>
         </div>
-
-        {cancelSuccess && (
-          <div className="bg-green-50 border border-green-200 text-green-700 text-sm rounded-xl px-4 py-3">
-            {cancelSuccess}
-          </div>
-        )}
-        {cancelError && <ErrorMessage message={cancelError} />}
 
         {isLoading && <Spinner className="py-20" />}
 
@@ -106,12 +96,14 @@ export default function MyAppointmentsPage() {
 
       {/* Confirmation dialog */}
       {confirmId && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
-          <div
-            className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm space-y-4"
-            dir="rtl"
-          >
-            <h2 className="text-base font-bold text-gray-800">لغو نوبت</h2>
+        <div
+          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="cancel-dialog-title"
+        >
+          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm space-y-4" dir="rtl">
+            <h2 id="cancel-dialog-title" className="text-base font-bold text-gray-800">لغو نوبت</h2>
             <p className="text-sm text-gray-600">
               آیا مطمئن هستید که می‌خواهید این نوبت را لغو کنید؟ این عمل قابل بازگشت نیست.
             </p>
