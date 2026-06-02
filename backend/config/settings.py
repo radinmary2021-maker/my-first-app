@@ -25,6 +25,7 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
+    'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
 ]
@@ -41,6 +42,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -130,3 +132,10 @@ CELERY_RESULT_BACKEND = REDIS_URL
 CELERY_TIMEZONE = 'Asia/Tehran'
 
 KAVENEGAR_API_KEY = env('KAVENEGAR_API_KEY', default='')
+
+CORS_ALLOWED_ORIGINS = env.list(
+    'CORS_ALLOWED_ORIGINS',
+    default=['http://localhost:5173'],
+)
+
+FRONTEND_BASE_URL = env('FRONTEND_BASE_URL', default='http://localhost:5173')

@@ -1,6 +1,9 @@
+from urllib.parse import urlencode
+
 from django.conf import settings
-from rest_framework import status
+from django.shortcuts import redirect
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -38,17 +41,19 @@ class PaymentCallbackView(APIView):
     def get(self, request):
         authority = request.query_params.get('Authority')
         pay_status = request.query_params.get('Status')
+        frontend_result_url = f"{settings.FRONTEND_BASE_URL}/payment/result"
 
         if pay_status != 'OK' or not authority:
-            return Response({'error': 'پرداخت لغو شد.'}, status=status.HTTP_400_BAD_REQUEST)
+            return redirect(f"{frontend_result_url}?{urlencode({'status': 'failed'})}")
 
         try:
             payment = confirm_payment(authority)
-        except PaymentError as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except PaymentError:
+            return redirect(f"{frontend_result_url}?{urlencode({'status': 'failed'})}")
 
-        return Response({
-            'success': True,
-            'ref_id': payment.ref_id,
+        params = urlencode({
+            'status': 'success',
             'tracking_code': payment.appointment.tracking_code,
+            'ref_id': payment.ref_id,
         })
+        return redirect(f"{frontend_result_url}?{params}")

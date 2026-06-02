@@ -5,10 +5,22 @@ from .models import Doctor, ScheduleException, WeeklySchedule
 
 class DoctorSerializer(serializers.ModelSerializer):
     full_name = serializers.CharField(source='user.full_name', read_only=True)
+    available_weekdays = serializers.SerializerMethodField()
 
     class Meta:
         model = Doctor
-        fields = ['id', 'full_name', 'specialty', 'bio', 'visit_duration', 'consultation_fee', 'is_active']
+        fields = [
+            'id', 'full_name', 'specialty', 'bio',
+            'visit_duration', 'consultation_fee', 'is_active',
+            'available_weekdays',
+        ]
+
+    def get_available_weekdays(self, obj) -> list[int]:
+        return list(
+            obj.schedules.filter(is_active=True)
+            .order_by('weekday')
+            .values_list('weekday', flat=True)
+        )
 
 
 class WeeklyScheduleSerializer(serializers.ModelSerializer):

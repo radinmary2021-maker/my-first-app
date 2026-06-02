@@ -54,15 +54,17 @@ class TestInitiatePaymentAPI:
 
 @pytest.mark.django_db
 class TestPaymentCallbackAPI:
-    def test_cancelled_by_user_returns_400(self, client):
+    def test_cancelled_by_user_redirects_to_failed(self, client):
         res = client.get('/api/payments/callback/?Status=NOK&Authority=AUTH1')
-        assert res.status_code == 400
+        assert res.status_code == 302
+        assert 'status=failed' in res['Location']
 
-    def test_missing_authority_returns_400(self, client):
+    def test_missing_authority_redirects_to_failed(self, client):
         res = client.get('/api/payments/callback/?Status=OK')
-        assert res.status_code == 400
+        assert res.status_code == 302
+        assert 'status=failed' in res['Location']
 
-    def test_successful_callback_returns_ref_id(self, client, patient, pending_appointment):
+    def test_successful_callback_redirects_with_ref_id(self, client, patient, pending_appointment):
         with patch('apps.payments.services.request_payment') as mock_req:
             mock_req.return_value = {'authority': 'AUTH-CB', 'gate_url': 'https://zp.test/'}
             client.post(
@@ -74,14 +76,16 @@ class TestPaymentCallbackAPI:
             mock_v.return_value = 'REF-42'
             res = client.get('/api/payments/callback/?Status=OK&Authority=AUTH-CB')
 
-        assert res.status_code == 200
-        data = res.json()
-        assert data['ref_id'] == 'REF-42'
-        assert data['tracking_code'] == pending_appointment.tracking_code
+        assert res.status_code == 302
+        location = res['Location']
+        assert 'status=success' in location
+        assert 'ref_id=REF-42' in location
+        assert pending_appointment.tracking_code in location
 
-    def test_unknown_authority_returns_400(self, client):
+    def test_unknown_authority_redirects_to_failed(self, client):
         with patch('apps.payments.services.verify_payment') as mock_v:
             from apps.payments.zarinpal import ZarinpalError
             mock_v.side_effect = ZarinpalError('not found')
             res = client.get('/api/payments/callback/?Status=OK&Authority=UNKNOWN')
-        assert res.status_code == 400
+        assert res.status_code == 302
+        assert 'status=failed' in res['Location']
