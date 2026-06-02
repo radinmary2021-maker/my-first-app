@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.conf import settings
+from django.db import transaction
 from django.utils import timezone
 
 from apps.appointments.models import Appointment, AppointmentStatus
@@ -70,6 +71,9 @@ def confirm_payment(authority: str) -> Payment:
 
     appointment = payment.appointment
 
+    if payment.status == PaymentStatus.PAID:
+        return payment
+
     if _is_expired(appointment):
         appointment.status = AppointmentStatus.CANCELLED
         appointment.save(update_fields=['status', 'updated_at'])
@@ -86,11 +90,12 @@ def confirm_payment(authority: str) -> Payment:
         payment.save(update_fields=['status'])
         raise PaymentError(str(e))
 
-    payment.ref_id = ref_id
-    payment.status = PaymentStatus.PAID
-    payment.save(update_fields=['ref_id', 'status'])
+    with transaction.atomic():
+        payment.ref_id = ref_id
+        payment.status = PaymentStatus.PAID
+        payment.save(update_fields=['ref_id', 'status'])
 
-    appointment.status = AppointmentStatus.CONFIRMED
-    appointment.save(update_fields=['status', 'updated_at'])
+        appointment.status = AppointmentStatus.CONFIRMED
+        appointment.save(update_fields=['status', 'updated_at'])
 
     return payment
