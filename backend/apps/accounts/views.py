@@ -5,8 +5,21 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenRefreshView
 
+from .rate_limit import increment_rate_counters, is_rate_limited
 from .serializers import SendOTPSerializer, UserSerializer, VerifyOTPSerializer
 from .services import generate_otp, get_or_create_user, issue_jwt_tokens, verify_otp
+
+_RATE_LIMIT_RESPONSE = {
+    'success': False,
+    'message': 'Too many requests. Please try again later.',
+}
+
+
+def _get_client_ip(request) -> str:
+    forwarded = request.META.get('HTTP_X_FORWARDED_FOR')
+    if forwarded:
+        return forwarded.split(',')[0].strip()
+    return request.META.get('REMOTE_ADDR', '0.0.0.0')
 
 
 class SendOTPView(APIView):
@@ -17,7 +30,13 @@ class SendOTPView(APIView):
         serializer.is_valid(raise_exception=True)
 
         phone = serializer.validated_data['phone']
+        ip = _get_client_ip(request)
+
+        if is_rate_limited(phone, ip):
+            return Response(_RATE_LIMIT_RESPONSE, status=status.HTTP_429_TOO_MANY_REQUESTS)
+
         code = generate_otp(phone)
+        increment_rate_counters(phone, ip)
 
         # SMS will be wired here in Sprint 2 (Kavenegar + Celery)
 
