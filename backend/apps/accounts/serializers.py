@@ -34,3 +34,11 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'phone', 'full_name', 'role', 'created_at']
         read_only_fields = fields
+
+
+class UpdateProfileSerializer(serializers.ModelSerializer):
+    full_name = serializers.CharField(max_length=100, min_length=2)
+
+    class Meta:
+        model = User
+        fields = ['full_name']

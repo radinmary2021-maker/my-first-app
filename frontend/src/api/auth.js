@@ -11,3 +11,7 @@ export function verifyOtp(phone, otp) {
 export function getCurrentUser() {
   return client.get('/api/auth/me/')
 }
+
+export function updateProfile({ fullName }) {
+  return client.patch('/api/auth/me/', { full_name: fullName }).then((r) => r.data)
+}

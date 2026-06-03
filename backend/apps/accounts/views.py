@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from .rate_limit import increment_rate_counters, is_rate_limited
-from .serializers import SendOTPSerializer, UserSerializer, VerifyOTPSerializer
+from .serializers import SendOTPSerializer, UpdateProfileSerializer, UserSerializer, VerifyOTPSerializer
 from .services import generate_otp, get_or_create_user, issue_jwt_tokens, verify_otp
 
 _RATE_LIMIT_RESPONSE = {
@@ -77,4 +77,10 @@ class MeView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        return Response(UserSerializer(request.user).data)
+
+    def patch(self, request):
+        serializer = UpdateProfileSerializer(request.user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(UserSerializer(request.user).data)
