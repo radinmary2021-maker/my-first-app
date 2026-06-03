@@ -84,6 +84,36 @@ class TestMeEndpoint:
         assert res.status_code == 200
         assert res.json()['phone'] == '09121234567'
 
+    def _get_token(self, client, settings):
+        settings.DEBUG = True
+        send_res = client.post('/api/auth/send-otp/', {'phone': '09129876543'}, content_type='application/json')
+        code = send_res.json()['dev_code']
+        verify_res = client.post('/api/auth/verify-otp/', {'phone': '09129876543', 'otp': code}, content_type='application/json')
+        return verify_res.json()['access']
+
+    def test_patch_updates_full_name(self, client, settings):
+        token = self._get_token(client, settings)
+        res = client.patch('/api/auth/me/', {'full_name': 'علی رضایی'}, content_type='application/json', HTTP_AUTHORIZATION=f'Bearer {token}')
+        assert res.status_code == 200
+        assert res.json()['full_name'] == 'علی رضایی'
+
+    def test_patch_unauthenticated_returns_401(self, client):
+        res = client.patch('/api/auth/me/', {'full_name': 'test'}, content_type='application/json')
+        assert res.status_code == 401
+
+    def test_patch_rejects_too_short_name(self, client, settings):
+        token = self._get_token(client, settings)
+        res = client.patch('/api/auth/me/', {'full_name': 'ع'}, content_type='application/json', HTTP_AUTHORIZATION=f'Bearer {token}')
+        assert res.status_code == 400
+
+    def test_patch_returns_full_user_object(self, client, settings):
+        token = self._get_token(client, settings)
+        res = client.patch('/api/auth/me/', {'full_name': 'مریم احمدی'}, content_type='application/json', HTTP_AUTHORIZATION=f'Bearer {token}')
+        data = res.json()
+        assert 'phone' in data
+        assert 'role' in data
+        assert data['full_name'] == 'مریم احمدی'
+
 
 @pytest.mark.django_db
 class TestRefreshEndpoint:

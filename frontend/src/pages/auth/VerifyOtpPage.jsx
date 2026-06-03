@@ -64,7 +64,8 @@ export default function VerifyOtpPage() {
     try {
       const { data } = await verifyOtp(phone, otp)
       login({ access: data.access, refresh: data.refresh, user: data.user })
-      navigate('/doctors', { replace: true })
+      const destination = data.user.full_name ? '/doctors' : '/setup-profile'
+      navigate(destination, { replace: true })
     } catch (err) {
       const msg = err.response?.data?.error
       setError(msg || 'کد وارد شده نادرست است.')
