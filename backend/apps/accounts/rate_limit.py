@@ -29,16 +29,14 @@ def is_rate_limited(phone: str, ip: str) -> bool:
 
 
 def increment_rate_counters(phone: str, ip: str) -> None:
-    """Increment counters after a successful OTP send."""
+    """Atomically increment OTP rate-limit counters using Redis SETNX + INCR."""
     phone_key = _phone_key(phone)
     ip_key = _ip_key(ip)
 
-    if cache.get(phone_key) is None:
-        cache.set(phone_key, 1, PHONE_WINDOW)
-    else:
-        cache.incr(phone_key)
+    # cache.add() is atomic (Redis SET NX): sets key=0 only if it does not exist.
+    # cache.incr() is atomic. Together they yield a correct distributed counter.
+    cache.add(phone_key, 0, PHONE_WINDOW)
+    cache.incr(phone_key)
 
-    if cache.get(ip_key) is None:
-        cache.set(ip_key, 1, IP_WINDOW)
-    else:
-        cache.incr(ip_key)
+    cache.add(ip_key, 0, IP_WINDOW)
+    cache.incr(ip_key)

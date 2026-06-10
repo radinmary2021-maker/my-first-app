@@ -93,7 +93,7 @@ class TestGetOrCreateUser:
         user, created = get_or_create_user('09121234567')
         assert created is True
         assert user.phone == '09121234567'
-        assert user.role == 'patient'
+        assert user.role == 'customer'
 
     def test_returns_existing_user(self):
         get_or_create_user('09121234567')

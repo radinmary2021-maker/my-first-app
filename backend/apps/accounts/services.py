@@ -6,7 +6,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.utils import timezone
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import OTPCode, User
+from .models import OTPCode, User, UserRole
 from django.conf import settings
 
 
@@ -64,10 +64,14 @@ def verify_otp(phone: str, code: str) -> bool:
 
 
 def get_or_create_user(phone: str) -> tuple[User, bool]:
-    """Returns (user, created)."""
+    """
+    Returns (user, created).
+    New users always start with role=CUSTOMER; role is elevated to OWNER
+    automatically when they create a business (see BusinessService.create_business).
+    """
     user, created = User.objects.get_or_create(
         phone=phone,
-        defaults={'role': 'patient'},
+        defaults={'role': UserRole.CUSTOMER},
     )
     return user, created
 
@@ -76,6 +80,34 @@ def issue_jwt_tokens(user: User) -> dict:
     """Returns access and refresh token strings."""
     refresh = RefreshToken.for_user(user)
     return {
-        'access': str(refresh.access_token),
+        'access':  str(refresh.access_token),
         'refresh': str(refresh),
     }
+
+
+def get_business_context(user: User) -> dict | None:
+    """
+    Returns lightweight business info for the login response, or None.
+    Called after successful OTP verification so the frontend knows immediately
+    whether to redirect to the dashboard or the onboarding flow.
+    """
+    try:
+        from apps.businesses.models import BusinessMember
+        member = (
+            BusinessMember.objects
+            .select_related('business')
+            .filter(user=user, is_active=True, business__is_deleted=False)
+            .first()
+        )
+        if member is None:
+            return None
+        b = member.business
+        return {
+            'id':       b.pk,
+            'name':     b.name,
+            'slug':     b.slug,
+            'category': b.category,
+            'role':     member.role,
+        }
+    except Exception:
+        return None

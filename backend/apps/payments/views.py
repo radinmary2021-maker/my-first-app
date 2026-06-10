@@ -1,3 +1,4 @@
+import logging
 from urllib.parse import urlencode
 
 from django.conf import settings
@@ -11,14 +12,16 @@ from apps.appointments.models import Appointment
 
 from .services import PaymentError, confirm_payment, initiate_payment
 
+logger = logging.getLogger('apps.payments')
+
 
 class InitiatePaymentView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
         try:
-            appointment = Appointment.objects.select_related('doctor').get(
-                pk=pk, patient=request.user
+            appointment = Appointment.objects.select_related('provider').get(
+                pk=pk, customer=request.user
             )
         except Appointment.DoesNotExist:
             return Response({'error': 'نوبت یافت نشد.'}, status=status.HTTP_404_NOT_FOUND)
@@ -48,7 +51,8 @@ class PaymentCallbackView(APIView):
 
         try:
             payment = confirm_payment(authority)
-        except PaymentError:
+        except PaymentError as e:
+            logger.warning('payment callback failed: authority=%s error=%s', authority, e)
             return redirect(f"{frontend_result_url}?{urlencode({'status': 'failed'})}")
 
         params = urlencode({

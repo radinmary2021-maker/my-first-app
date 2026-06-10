@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 
 from .rate_limit import increment_rate_counters, is_rate_limited
 from .serializers import SendOTPSerializer, UpdateProfileSerializer, UserSerializer, VerifyOTPSerializer
-from .services import generate_otp, get_or_create_user, issue_jwt_tokens, verify_otp
+from .services import generate_otp, get_business_context, get_or_create_user, issue_jwt_tokens, verify_otp
 
 _RATE_LIMIT_RESPONSE = {
     'success': False,
@@ -65,11 +65,13 @@ class VerifyOTPView(APIView):
             )
 
         user, _ = get_or_create_user(phone)
-        tokens = issue_jwt_tokens(user)
+        tokens   = issue_jwt_tokens(user)
+        business = get_business_context(user)
 
         return Response({
             **tokens,
-            'user': UserSerializer(user).data,
+            'user':     UserSerializer(user).data,
+            'business': business,   # None for new/customer users
         }, status=status.HTTP_200_OK)
 
 

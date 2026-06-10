@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react'
 const VARIANTS = {
   success: 'bg-green-600 text-white',
   error: 'bg-red-600 text-white',
-  info: 'bg-blue-600 text-white',
+  info: 'bg-cyan-500 text-white',
 }
 
 // Mutable ref shared with notify() in toast.js — set when ToastContainer mounts

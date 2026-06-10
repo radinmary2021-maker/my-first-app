@@ -6,5 +6,8 @@ django-cors-headers==4.3.1
 psycopg2-binary==2.9.9
 redis==5.0.8
 celery==5.4.0
+django-celery-beat==2.6.0
 gunicorn==22.0.0
 requests==2.32.3
+sentry-sdk[django]==1.45.0
+whitenoise==6.7.0

@@ -17,24 +17,24 @@ class TestInitiatePaymentAPI:
         res = client.post(f'/api/payments/{pending_appointment.pk}/initiate/')
         assert res.status_code == 401
 
-    def test_returns_gate_url(self, client, patient, pending_appointment):
+    def test_returns_gate_url(self, client, customer, pending_appointment):
         with patch('apps.payments.services.request_payment') as mock_req:
             mock_req.return_value = {'authority': 'AUTH1', 'gate_url': 'https://zp.test/pay'}
             res = client.post(
                 f'/api/payments/{pending_appointment.pk}/initiate/',
-                **auth(patient),
+                **auth(customer),
             )
         assert res.status_code == 200
         assert 'gate_url' in res.json()
 
-    def test_wrong_patient_returns_404(self, client, doctor_user, pending_appointment):
+    def test_wrong_customer_returns_404(self, client, provider_user, pending_appointment):
         res = client.post(
             f'/api/payments/{pending_appointment.pk}/initiate/',
-            **auth(doctor_user),
+            **auth(provider_user),
         )
         assert res.status_code == 404
 
-    def test_expired_appointment_returns_400(self, client, patient, pending_appointment):
+    def test_expired_appointment_returns_400(self, client, customer, pending_appointment):
         from datetime import timedelta
         from django.utils import timezone
         pending_appointment.created_at = timezone.now() - timedelta(minutes=16)
@@ -42,13 +42,13 @@ class TestInitiatePaymentAPI:
 
         res = client.post(
             f'/api/payments/{pending_appointment.pk}/initiate/',
-            **auth(patient),
+            **auth(customer),
         )
         assert res.status_code == 400
         assert 'منقضی' in res.json()['error']
 
-    def test_nonexistent_appointment_returns_404(self, client, patient):
-        res = client.post('/api/payments/9999/initiate/', **auth(patient))
+    def test_nonexistent_appointment_returns_404(self, client, customer):
+        res = client.post('/api/payments/9999/initiate/', **auth(customer))
         assert res.status_code == 404
 
 
@@ -64,12 +64,12 @@ class TestPaymentCallbackAPI:
         assert res.status_code == 302
         assert 'status=failed' in res['Location']
 
-    def test_successful_callback_redirects_with_ref_id(self, client, patient, pending_appointment):
+    def test_successful_callback_redirects_with_ref_id(self, client, customer, pending_appointment):
         with patch('apps.payments.services.request_payment') as mock_req:
             mock_req.return_value = {'authority': 'AUTH-CB', 'gate_url': 'https://zp.test/'}
             client.post(
                 f'/api/payments/{pending_appointment.pk}/initiate/',
-                **auth(patient),
+                **auth(customer),
             )
 
         with patch('apps.payments.services.verify_payment') as mock_v:

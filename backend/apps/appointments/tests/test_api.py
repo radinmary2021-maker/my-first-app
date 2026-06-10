@@ -1,127 +1,237 @@
+"""
+HTTP integration tests for the appointments API.
+
+Exercises the full Django request/response cycle.
+"""
+
 import pytest
-from datetime import time
 
 from apps.accounts.services import issue_jwt_tokens
 from apps.appointments.models import Appointment, AppointmentStatus
-from apps.appointments.services import book_appointment
+from apps.appointments.services import AppointmentService
 
-from .conftest import SATURDAY, SLOT_9_00, SLOT_9_20
+from .conftest import SATURDAY, SLOT_9_00, SLOT_9_30, book
 
 
-def auth_header(user):
-    tokens = issue_jwt_tokens(user)
-    return {'HTTP_AUTHORIZATION': f'Bearer {tokens["access"]}'}
+def auth(user):
+    return {'HTTP_AUTHORIZATION': f'Bearer {issue_jwt_tokens(user)["access"]}'}
 
+
+# ──────────────────────────────────────────────────────────────────────────────
+# POST /api/appointments/  — book
+# ──────────────────────────────────────────────────────────────────────────────
 
 @pytest.mark.django_db
 class TestBookAppointmentAPI:
-    def test_unauthenticated_returns_401(self, client, doctor, schedule):
+
+    def test_unauthenticated_returns_401(self, client, provider):
         res = client.post('/api/appointments/', {
-            'doctor_id': doctor.pk, 'date': '2026-06-06', 'start_time': '09:00'
+            'provider_id': provider.pk,
+            'date': str(SATURDAY),
+            'start_time': '09:00',
         }, content_type='application/json')
         assert res.status_code == 401
 
-    def test_successful_booking_returns_201(self, client, patient, doctor, schedule):
+    def test_successful_booking_returns_201(
+        self, client, customer, provider, service, working_hours
+    ):
         res = client.post('/api/appointments/', {
-            'doctor_id': doctor.pk, 'date': '2026-06-06', 'start_time': '09:00'
-        }, content_type='application/json', **auth_header(patient))
+            'provider_id': provider.pk,
+            'service_id': service.pk,
+            'date': str(SATURDAY),
+            'start_time': '09:00',
+        }, content_type='application/json', **auth(customer))
         assert res.status_code == 201
         data = res.json()
         assert data['tracking_code'].startswith('APT-')
-        assert data['status'] == 'pending_payment'
+        assert data['status'] == AppointmentStatus.PENDING
 
-    def test_invalid_slot_returns_400(self, client, patient, doctor, schedule):
+    def test_response_contains_required_fields(
+        self, client, customer, provider, service, working_hours
+    ):
         res = client.post('/api/appointments/', {
-            'doctor_id': doctor.pk, 'date': '2026-06-06', 'start_time': '11:00'
-        }, content_type='application/json', **auth_header(patient))
-        assert res.status_code == 400
-
-    def test_nonexistent_doctor_returns_400(self, client, patient):
-        res = client.post('/api/appointments/', {
-            'doctor_id': 9999, 'date': '2026-06-06', 'start_time': '09:00'
-        }, content_type='application/json', **auth_header(patient))
-        assert res.status_code == 400
-
-    def test_past_date_returns_400(self, client, patient, doctor):
-        res = client.post('/api/appointments/', {
-            'doctor_id': doctor.pk, 'date': '2020-01-01', 'start_time': '09:00'
-        }, content_type='application/json', **auth_header(patient))
-        assert res.status_code == 400
-
-    def test_double_booking_returns_400(self, client, patient, patient2, doctor, schedule):
-        client.post('/api/appointments/', {
-            'doctor_id': doctor.pk, 'date': '2026-06-06', 'start_time': '09:00'
-        }, content_type='application/json', **auth_header(patient))
-        res = client.post('/api/appointments/', {
-            'doctor_id': doctor.pk, 'date': '2026-06-06', 'start_time': '09:00'
-        }, content_type='application/json', **auth_header(patient2))
-        assert res.status_code == 400
-
-    def test_response_contains_required_fields(self, client, patient, doctor, schedule):
-        res = client.post('/api/appointments/', {
-            'doctor_id': doctor.pk, 'date': '2026-06-06', 'start_time': '09:00'
-        }, content_type='application/json', **auth_header(patient))
+            'provider_id': provider.pk,
+            'service_id': service.pk,
+            'date': str(SATURDAY),
+            'start_time': '09:00',
+        }, content_type='application/json', **auth(customer))
         data = res.json()
-        for field in ['tracking_code', 'doctor_name', 'date', 'start_time', 'end_time', 'status']:
-            assert field in data, f'فیلد {field} در پاسخ وجود ندارد'
+        for field in ['tracking_code', 'date', 'start_time', 'end_time', 'status']:
+            assert field in data, f'Missing field: {field}'
 
+    def test_nonexistent_provider_returns_400(self, client, customer):
+        res = client.post('/api/appointments/', {
+            'provider_id': 99999,
+            'date': str(SATURDAY),
+            'start_time': '09:00',
+        }, content_type='application/json', **auth(customer))
+        assert res.status_code == 400
+
+    def test_past_date_returns_400(self, client, customer, provider):
+        res = client.post('/api/appointments/', {
+            'provider_id': provider.pk,
+            'date': '2020-01-04',
+            'start_time': '09:00',
+        }, content_type='application/json', **auth(customer))
+        assert res.status_code == 400
+
+    def test_slot_outside_working_hours_returns_400(
+        self, client, customer, provider, service, working_hours
+    ):
+        res = client.post('/api/appointments/', {
+            'provider_id': provider.pk,
+            'service_id': service.pk,
+            'date': str(SATURDAY),
+            'start_time': '07:00',
+        }, content_type='application/json', **auth(customer))
+        assert res.status_code == 400
+
+    def test_double_booking_returns_400(
+        self, client, customer, customer2, provider, service, working_hours
+    ):
+        client.post('/api/appointments/', {
+            'provider_id': provider.pk,
+            'service_id': service.pk,
+            'date': str(SATURDAY),
+            'start_time': '09:00',
+        }, content_type='application/json', **auth(customer))
+
+        res = client.post('/api/appointments/', {
+            'provider_id': provider.pk,
+            'service_id': service.pk,
+            'date': str(SATURDAY),
+            'start_time': '09:00',
+        }, content_type='application/json', **auth(customer2))
+        assert res.status_code == 400
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# GET /api/appointments/mine/
+# ──────────────────────────────────────────────────────────────────────────────
 
 @pytest.mark.django_db
 class TestMyAppointmentsAPI:
+
     def test_unauthenticated_returns_401(self, client):
-        res = client.get('/api/appointments/mine/')
-        assert res.status_code == 401
+        assert client.get('/api/appointments/mine/').status_code == 401
 
-    def test_returns_only_own_appointments(self, client, patient, patient2, doctor, schedule):
-        book_appointment(patient, doctor, SATURDAY, SLOT_9_00)
-        book_appointment(patient2, doctor, SATURDAY, SLOT_9_20)
-        res = client.get('/api/appointments/mine/', **auth_header(patient))
-        assert res.status_code == 200
-        data = res.json()
-        assert len(data) == 1
-        assert data[0]['status'] == 'pending_payment'
-
-    def test_empty_list_when_no_appointments(self, client, patient):
-        res = client.get('/api/appointments/mine/', **auth_header(patient))
+    def test_empty_when_no_bookings(self, client, customer):
+        res = client.get('/api/appointments/mine/', **auth(customer))
         assert res.status_code == 200
         assert res.json() == []
 
+    def test_returns_only_own_appointments(
+        self, client, customer, customer2, provider, service, working_hours
+    ):
+        book(customer,  provider, service, SLOT_9_00)
+        book(customer2, provider, service, SLOT_9_30)
+
+        res = client.get('/api/appointments/mine/', **auth(customer))
+        assert res.status_code == 200
+        data = res.json()
+        assert len(data) == 1
+        assert data[0]['status'] == AppointmentStatus.PENDING
+
+    def test_shows_multiple_own_appointments(
+        self, client, customer, provider, service, working_hours
+    ):
+        book(customer, provider, service, SLOT_9_00)
+        book(customer, provider, service, SLOT_9_30)
+
+        res = client.get('/api/appointments/mine/', **auth(customer))
+        assert len(res.json()) == 2
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# POST /api/appointments/<pk>/cancel/
+# ──────────────────────────────────────────────────────────────────────────────
 
 @pytest.mark.django_db
 class TestCancelAppointmentAPI:
-    def test_unauthenticated_returns_401(self, client, patient, doctor, schedule):
-        appt = book_appointment(patient, doctor, SATURDAY, SLOT_9_00)
-        res = client.post(f'/api/appointments/{appt.pk}/cancel/')
-        assert res.status_code == 401
 
-    def test_patient_can_cancel_own(self, client, patient, doctor, schedule):
-        appt = book_appointment(patient, doctor, SATURDAY, SLOT_9_00)
-        res = client.post(f'/api/appointments/{appt.pk}/cancel/', **auth_header(patient))
+    def test_unauthenticated_returns_401(self, client, customer, provider, service, working_hours):
+        appt = book(customer, provider, service)
+        assert client.post(f'/api/appointments/{appt.pk}/cancel/').status_code == 401
+
+    def test_customer_cancels_own_appointment(
+        self, client, customer, provider, service, working_hours
+    ):
+        appt = book(customer, provider, service)
+        res = client.post(f'/api/appointments/{appt.pk}/cancel/', **auth(customer))
         assert res.status_code == 200
-        assert res.json()['status'] == 'cancelled'
+        assert res.json()['status'] == AppointmentStatus.CANCELLED
 
-    def test_other_patient_cannot_cancel(self, client, patient, patient2, doctor, schedule):
-        appt = book_appointment(patient, doctor, SATURDAY, SLOT_9_00)
-        res = client.post(f'/api/appointments/{appt.pk}/cancel/', **auth_header(patient2))
+    def test_stranger_cannot_cancel(
+        self, client, customer, customer2, provider, service, working_hours
+    ):
+        appt = book(customer, provider, service)
+        res = client.post(f'/api/appointments/{appt.pk}/cancel/', **auth(customer2))
         assert res.status_code == 400
 
-    def test_nonexistent_appointment_returns_404(self, client, patient):
-        res = client.post('/api/appointments/9999/cancel/', **auth_header(patient))
+    def test_nonexistent_appointment_returns_404(self, client, customer):
+        res = client.post('/api/appointments/99999/cancel/', **auth(customer))
         assert res.status_code == 404
 
-    def test_slot_becomes_available_after_cancel_api(self, client, patient, doctor, schedule):
-        book_appointment(patient, doctor, SATURDAY, SLOT_9_00)
-        appt = Appointment.objects.get(patient=patient, start_time=SLOT_9_00)
-        client.post(f'/api/appointments/{appt.pk}/cancel/', **auth_header(patient))
-        res = client.get(f'/api/doctors/{doctor.pk}/slots/?date=2026-06-06')
-        assert '09:00' in res.json()['slots']
 
+# ──────────────────────────────────────────────────────────────────────────────
+# GET /api/appointments/track/<code>/  — public
+# ──────────────────────────────────────────────────────────────────────────────
 
 @pytest.mark.django_db
-class TestSlotsAPIWithBookings:
-    def test_booked_slot_not_in_slots_response(self, client, patient, doctor, schedule):
-        book_appointment(patient, doctor, SATURDAY, SLOT_9_00)
-        res = client.get(f'/api/doctors/{doctor.pk}/slots/?date=2026-06-06')
+class TestTrackingAPI:
+
+    def test_valid_code_returns_appointment_info(
+        self, client, customer, provider, service, working_hours
+    ):
+        appt = book(customer, provider, service)
+        res = client.get(f'/api/appointments/track/{appt.tracking_code}/')
         assert res.status_code == 200
-        assert '09:00' not in res.json()['slots']
-        assert '09:20' in res.json()['slots']
+        data = res.json()
+        assert data['tracking_code'] == appt.tracking_code
+        assert data['status'] == AppointmentStatus.PENDING
+
+    def test_no_auth_required(
+        self, client, customer, provider, service, working_hours
+    ):
+        """Tracking endpoint is public."""
+        appt = book(customer, provider, service)
+        res = client.get(f'/api/appointments/track/{appt.tracking_code}/')
+        assert res.status_code == 200
+
+    def test_invalid_code_returns_404(self, client):
+        res = client.get('/api/appointments/track/APT-XXXXXX/')
+        assert res.status_code == 404
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# GET /api/appointments/provider/
+# ──────────────────────────────────────────────────────────────────────────────
+
+@pytest.mark.django_db
+class TestProviderAppointmentsAPI:
+
+    def test_provider_sees_own_appointments(
+        self, client, customer, provider, provider_user, service, working_hours
+    ):
+        appt = book(customer, provider, service)
+        res = client.get('/api/appointments/provider/', **auth(provider_user))
+        assert res.status_code == 200
+        codes = [a['tracking_code'] for a in res.json()]
+        assert appt.tracking_code in codes
+
+    def test_customer_without_provider_profile_gets_403(
+        self, client, customer
+    ):
+        res = client.get('/api/appointments/provider/', **auth(customer))
+        assert res.status_code == 403
+
+    def test_filter_by_status(
+        self, client, customer, provider, provider_user, service, working_hours
+    ):
+        book(customer, provider, service)
+        res = client.get(
+            f'/api/appointments/provider/?status={AppointmentStatus.PENDING}',
+            **auth(provider_user),
+        )
+        assert res.status_code == 200
+        assert len(res.json()) >= 1

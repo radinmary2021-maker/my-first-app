@@ -1,15 +1,19 @@
-import client from './client'
-
-export function getDoctors() {
-  return client.get('/api/doctors/').then((r) => r.data)
-}
-
-export function getDoctor(id) {
-  return client.get(`/api/doctors/${id}/`).then((r) => r.data)
-}
-
-export function getDoctorSlots(id, date) {
-  return client
-    .get(`/api/doctors/${id}/slots/`, { params: { date } })
-    .then((r) => r.data)
-}
+/**
+ * api/doctors.js — backward-compat shim.
+ * All functions re-exported from api/providers.js.
+ * @deprecated Import from api/providers.js directly.
+ */
+export {
+  getProviders,
+  getProvider,
+  getProviderSlots,
+  getBusinessCategories,
+  getMyProviderProfile,
+  updateMyProviderProfile,
+  getMyWorkingHours  as getMySchedule,
+  createWorkingHours as createSchedule,
+  deleteWorkingHours as deleteSchedule,
+  getMyTimeOffs      as getMyExceptions,
+  createTimeOff      as createException,
+  deleteTimeOff      as deleteException,
+} from './providers'

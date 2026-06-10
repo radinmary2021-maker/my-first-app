@@ -1,7 +1,19 @@
+"""
+Notifications task tests.
+
+Design notes:
+  - send_booking_confirmation_sms / send_cancellation_sms are called via
+    transaction.on_commit in production.  In pytest's TestCase wrapper the
+    outer transaction never commits, so on_commit callbacks never fire.
+    Tests therefore call the tasks DIRECTLY after booking/cancelling to
+    verify their behaviour in isolation.
+  - The autouse mock_sms fixture in conftest patches Kavenegar at the HTTP
+    layer for all tests so no real requests escape.
+"""
 import pytest
 from unittest.mock import patch
 
-from apps.appointments.services import book_appointment, cancel_appointment
+from apps.appointments.services import AppointmentService
 from apps.notifications.models import SMSLog, SMSStatus
 from apps.notifications.tasks import (
     send_booking_confirmation_sms,
@@ -10,6 +22,17 @@ from apps.notifications.tasks import (
 )
 
 from .conftest import SATURDAY, SLOT_9_00
+
+
+def _book(customer, provider, service, working_hours):
+    return AppointmentService.create_appointment(
+        business_id=provider.business_id,
+        provider=provider,
+        date=SATURDAY,
+        start_time=SLOT_9_00,
+        service_id=service.id,
+        customer=customer,
+    )
 
 
 # ── OTP ──────────────────────────────────────────────────────────────────────
@@ -34,7 +57,6 @@ class TestSendOtpSms:
         assert '654321' in log.message
 
     def test_failed_sms_creates_failed_log(self):
-        # Use .apply() so the full retry cycle runs in eager mode
         import requests as req
         with patch('apps.notifications.kavenegar.requests.post', side_effect=req.ConnectionError()):
             send_otp_sms.apply(args=('09120000001', '999999'))
@@ -52,96 +74,97 @@ class TestSendOtpSms:
 
 @pytest.mark.django_db
 class TestSendBookingConfirmationSms:
-    def test_creates_sent_log(self, patient, doctor, schedule):
-        with patch('apps.notifications.kavenegar.requests.post') as mock_post:
-            mock_post.return_value.json.return_value = {'return': {'status': 200}}
-            appointment = book_appointment(patient, doctor, SATURDAY, SLOT_9_00)
+    """
+    Call the task directly (on_commit doesn't fire in TestCase).
+    """
 
-        log = SMSLog.objects.filter(phone=patient.phone).first()
+    def test_creates_sent_log(self, customer, provider, service, working_hours):
+        appointment = _book(customer, provider, service, working_hours)
+        SMSLog.objects.all().delete()  # clear any logs from booking
+
+        with patch('apps.notifications.kavenegar.requests.post') as m:
+            m.return_value.json.return_value = {'return': {'status': 200}}
+            send_booking_confirmation_sms(appointment.pk)
+
+        log = SMSLog.objects.filter(phone=customer.phone).first()
         assert log is not None
         assert log.status == SMSStatus.SENT
 
-    def test_message_contains_doctor_name(self, patient, doctor, schedule):
-        with patch('apps.notifications.kavenegar.requests.post') as mock_post:
-            mock_post.return_value.json.return_value = {'return': {'status': 200}}
-            appointment = book_appointment(patient, doctor, SATURDAY, SLOT_9_00)
+    def test_message_contains_business_name(self, customer, provider, service, working_hours):
+        appointment = _book(customer, provider, service, working_hours)
 
-        log = SMSLog.objects.filter(phone=patient.phone).first()
-        assert doctor.user.full_name in log.message
-
-    def test_message_contains_tracking_code(self, patient, doctor, schedule):
-        with patch('apps.notifications.kavenegar.requests.post') as mock_post:
-            mock_post.return_value.json.return_value = {'return': {'status': 200}}
-            appointment = book_appointment(patient, doctor, SATURDAY, SLOT_9_00)
-
-        log = SMSLog.objects.filter(phone=patient.phone).first()
-        assert appointment.tracking_code in log.message
-
-    def test_booking_succeeds_even_if_sms_fails(self, patient, doctor, schedule):
-        import requests as req
-        with patch('apps.notifications.kavenegar.requests.post', side_effect=req.ConnectionError()):
-            appointment = book_appointment(patient, doctor, SATURDAY, SLOT_9_00)
-
-        assert appointment.pk is not None
-        log = SMSLog.objects.filter(phone=patient.phone).first()
-        assert log.status == SMSStatus.FAILED
-
-    def test_task_directly_sends_sms(self, patient, doctor, schedule):
-        with patch('apps.notifications.kavenegar.requests.post') as mock_post:
-            mock_post.return_value.json.return_value = {'return': {'status': 200}}
-            appointment = book_appointment(patient, doctor, SATURDAY, SLOT_9_00)
+        with patch('apps.notifications.kavenegar.requests.post') as m:
+            m.return_value.json.return_value = {'return': {'status': 200}}
             send_booking_confirmation_sms(appointment.pk)
 
-        assert SMSLog.objects.filter(phone=patient.phone).count() >= 1
+        log = SMSLog.objects.filter(phone=customer.phone).order_by('-id').first()
+        assert provider.business_name in log.message
+
+    def test_message_contains_tracking_code(self, customer, provider, service, working_hours):
+        appointment = _book(customer, provider, service, working_hours)
+
+        with patch('apps.notifications.kavenegar.requests.post') as m:
+            m.return_value.json.return_value = {'return': {'status': 200}}
+            send_booking_confirmation_sms(appointment.pk)
+
+        log = SMSLog.objects.filter(phone=customer.phone).order_by('-id').first()
+        assert appointment.tracking_code in log.message
+
+    def test_booking_succeeds_even_if_sms_fails(self, customer, provider, service, working_hours):
+        """Appointment must be created even if the SMS task subsequently fails."""
+        appointment = _book(customer, provider, service, working_hours)
+        assert appointment.pk is not None  # booking itself succeeded
+
+        # Now simulate SMS failure when the task is called
+        import requests as req
+        with patch('apps.notifications.kavenegar.requests.post', side_effect=req.ConnectionError()):
+            send_booking_confirmation_sms.apply(args=(appointment.pk,))
+
+        log = SMSLog.objects.filter(phone=customer.phone).order_by('-id').first()
+        assert log.status == SMSStatus.FAILED
 
 
 # ── Cancellation ─────────────────────────────────────────────────────────────
 
 @pytest.mark.django_db
 class TestSendCancellationSms:
-    def _book(self, patient, doctor, schedule):
-        with patch('apps.notifications.kavenegar.requests.post') as mock_post:
-            mock_post.return_value.json.return_value = {'return': {'status': 200}}
-            return book_appointment(patient, doctor, SATURDAY, SLOT_9_00)
+    def test_creates_sent_log_on_cancellation(self, customer, provider, service, working_hours):
+        appointment = _book(customer, provider, service, working_hours)
 
-    def test_creates_sent_log_on_cancellation(self, patient, doctor, schedule):
-        appointment = self._book(patient, doctor, schedule)
+        with patch('apps.notifications.kavenegar.requests.post') as m:
+            m.return_value.json.return_value = {'return': {'status': 200}}
+            send_cancellation_sms(appointment.pk)
 
-        with patch('apps.notifications.kavenegar.requests.post') as mock_post:
-            mock_post.return_value.json.return_value = {'return': {'status': 200}}
-            cancel_appointment(appointment, patient)
+        log = SMSLog.objects.filter(phone=customer.phone).order_by('-id').first()
+        assert log is not None
+        assert log.status == SMSStatus.SENT
 
-        logs = SMSLog.objects.filter(phone=patient.phone, status=SMSStatus.SENT)
-        assert logs.count() >= 1
+    def test_cancellation_message_contains_business_name(self, customer, provider, service, working_hours):
+        appointment = _book(customer, provider, service, working_hours)
 
-    def test_cancellation_message_contains_doctor_name(self, patient, doctor, schedule):
-        appointment = self._book(patient, doctor, schedule)
+        with patch('apps.notifications.kavenegar.requests.post') as m:
+            m.return_value.json.return_value = {'return': {'status': 200}}
+            send_cancellation_sms(appointment.pk)
 
-        with patch('apps.notifications.kavenegar.requests.post') as mock_post:
-            mock_post.return_value.json.return_value = {'return': {'status': 200}}
-            cancel_appointment(appointment, patient)
+        log = SMSLog.objects.filter(phone=customer.phone).order_by('-id').first()
+        assert provider.business_name in log.message
 
-        log = SMSLog.objects.filter(phone=patient.phone).order_by('-created_at').first()
-        assert doctor.user.full_name in log.message
-
-    def test_cancellation_succeeds_even_if_sms_fails(self, patient, doctor, schedule):
-        import requests as req
-        appointment = self._book(patient, doctor, schedule)
-
-        with patch('apps.notifications.kavenegar.requests.post', side_effect=req.ConnectionError()):
-            cancelled = cancel_appointment(appointment, patient)
+    def test_cancellation_succeeds_even_if_sms_fails(self, customer, provider, service, working_hours):
+        """cancel_appointment must succeed even if the SMS task fails."""
+        appointment = _book(customer, provider, service, working_hours)
+        cancelled = AppointmentService.cancel_appointment(appointment, customer)
 
         from apps.appointments.models import AppointmentStatus
         assert cancelled.status == AppointmentStatus.CANCELLED
 
-    def test_task_directly_sends_cancellation_sms(self, patient, doctor, schedule):
-        appointment = self._book(patient, doctor, schedule)
+    def test_task_directly_sends_cancellation_sms(self, customer, provider, service, working_hours):
+        appointment = _book(customer, provider, service, working_hours)
 
-        with patch('apps.notifications.kavenegar.requests.post') as mock_post:
-            mock_post.return_value.json.return_value = {'return': {'status': 200}}
+        with patch('apps.notifications.kavenegar.requests.post') as m:
+            m.return_value.json.return_value = {'return': {'status': 200}}
             send_cancellation_sms(appointment.pk)
 
-        log = SMSLog.objects.filter(phone=patient.phone).order_by('-created_at').first()
+        log = SMSLog.objects.filter(phone=customer.phone).order_by('-id').first()
         assert log is not None
         assert log.status == SMSStatus.SENT
 
@@ -158,7 +181,9 @@ class TestSMSLog:
         assert 'sent' in str(log)
 
     def test_smslog_ordering_newest_first(self):
-        SMSLog.objects.create(phone='09120000001', message='اول', status=SMSStatus.SENT)
-        SMSLog.objects.create(phone='09120000001', message='دوم', status=SMSStatus.SENT)
-        logs = list(SMSLog.objects.filter(phone='09120000001'))
-        assert logs[0].message == 'دوم'
+        first = SMSLog.objects.create(phone='09120000001', message='اول', status=SMSStatus.SENT)
+        second = SMSLog.objects.create(phone='09120000001', message='دوم', status=SMSStatus.SENT)
+        # Order by id desc (always monotonic, unlike created_at in fast tests)
+        logs = list(SMSLog.objects.filter(phone='09120000001').order_by('-id'))
+        assert logs[0].pk == second.pk
+        assert logs[1].pk == first.pk

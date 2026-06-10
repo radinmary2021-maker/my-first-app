@@ -18,7 +18,7 @@ const STATUS_CLASS = {
   pending_payment: 'bg-yellow-100 text-yellow-800',
   confirmed: 'bg-green-100 text-green-800',
   cancelled: 'bg-gray-100 text-gray-500',
-  completed: 'bg-blue-100 text-blue-800',
+  completed: 'bg-cyan-100 text-cyan-800',
   no_show: 'bg-red-100 text-red-700',
 }
 
@@ -26,7 +26,7 @@ const ACTIVE_STATUSES = ['pending_payment', 'confirmed']
 
 export default function MyAppointmentsPage() {
   const navigate = useNavigate()
-  const { data: appointments, isLoading, isError } = useMyAppointments()
+  const { data: appointments, isLoading, isError, refetch } = useMyAppointments()
   const { mutate: cancel, isPending: cancelling } = useCancelAppointment()
 
   const [confirmId, setConfirmId] = useState(null)
@@ -54,8 +54,8 @@ export default function MyAppointmentsPage() {
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-bold text-gray-800">نوبت‌های من</h1>
           <button
-            onClick={() => navigate('/doctors')}
-            className="text-sm text-blue-500 hover:text-blue-700"
+            onClick={() => navigate('/providers')}
+            className="text-sm text-cyan-500 hover:text-cyan-700"
           >
             رزرو نوبت جدید
           </button>
@@ -64,18 +64,35 @@ export default function MyAppointmentsPage() {
         {isLoading && <Spinner className="py-20" />}
 
         {isError && (
-          <ErrorMessage message="خطا در دریافت نوبت‌ها. لطفاً صفحه را بازخوانی کنید." />
+          <div className="space-y-3">
+            <ErrorMessage message="خطا در دریافت نوبت‌ها. لطفاً دوباره تلاش کنید." />
+            <button
+              onClick={() => refetch()}
+              className="text-sm bg-cyan-50 text-cyan-700 border border-cyan-100 px-4 py-2 rounded-lg hover:bg-cyan-100 transition-colors font-medium"
+            >
+              تلاش مجدد
+            </button>
+          </div>
         )}
 
         {!isLoading && !isError && appointments?.length === 0 && (
-          <div className="text-center py-20 text-gray-400 space-y-3">
-            <p className="text-4xl">📅</p>
-            <p className="text-sm">هنوز نوبتی ثبت نکرده‌اید</p>
+          <div className="text-center py-20 space-y-4">
+            <div className="w-16 h-16 bg-cyan-50 rounded-2xl flex items-center justify-center mx-auto">
+              <svg className="w-8 h-8 text-cyan-300" fill="none" viewBox="0 0 24 24"
+                   stroke="currentColor" strokeWidth={1.5}>
+                <rect x="3" y="4" width="18" height="18" rx="3" />
+                <path strokeLinecap="round" d="M3 9h18M8 2v4M16 2v4" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-gray-700 font-medium">هنوز نوبتی ثبت نکرده‌اید</p>
+              <p className="text-sm text-gray-400 mt-1">اولین نوبت خود را رزرو کنید</p>
+            </div>
             <button
-              onClick={() => navigate('/doctors')}
-              className="text-blue-500 text-sm hover:text-blue-700"
+              onClick={() => navigate('/providers')}
+              className="bg-cyan-500 text-white text-sm font-medium px-6 py-2.5 rounded-xl hover:bg-cyan-600 transition-colors shadow-sm shadow-cyan-100/50"
             >
-              رزرو اولین نوبت
+              رزرو نوبت
             </button>
           </div>
         )}
@@ -137,8 +154,8 @@ function AppointmentCard({ appt, onCancel, cancelling }) {
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
       <div className="flex items-start justify-between gap-2">
         <div>
-          <p className="font-bold text-gray-800">{appt.doctor_name}</p>
-          <p className="text-sm text-blue-600">{appt.doctor_specialty}</p>
+          <p className="font-bold text-gray-800">{appt.provider_name || appt.doctor_name}</p>
+          <p className="text-sm text-cyan-600">{appt.provider_category || appt.provider_specialty || appt.doctor_specialty}</p>
         </div>
         <span
           className={`text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap ${STATUS_CLASS[appt.status] ?? 'bg-gray-100 text-gray-500'}`}

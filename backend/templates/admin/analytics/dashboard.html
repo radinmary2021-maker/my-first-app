@@ -1,0 +1,186 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block title %}داشبورد آماری{% endblock %}
+
+{% block extrastyle %}
+<style>
+  .analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .stat-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  }
+  .stat-card .value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #417690;
+    line-height: 1.2;
+  }
+  .stat-card .label {
+    font-size: .85rem;
+    color: #666;
+    margin-top: 6px;
+  }
+  .stat-card.green .value  { color: #28a745; }
+  .stat-card.red .value    { color: #dc3545; }
+  .stat-card.orange .value { color: #fd7e14; }
+  .stat-card.purple .value { color: #6f42c1; }
+
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin: 28px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #417690;
+  }
+
+  /* Bar chart */
+  .chart-container {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 12px 0 28px;
+    overflow-x: auto;
+  }
+  .chart-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 160px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid #e0e0e0;
+    position: relative;
+  }
+  .bar-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    min-width: 18px;
+  }
+  .bar {
+    width: 100%;
+    min-height: 2px;
+    background: linear-gradient(to top, #417690, #79aec8);
+    border-radius: 3px 3px 0 0;
+    transition: opacity .2s;
+  }
+  .bar:hover { opacity: .75; }
+  .bar-label {
+    font-size: .55rem;
+    color: #999;
+    margin-top: 4px;
+    white-space: nowrap;
+    transform: rotate(-45deg);
+    transform-origin: top left;
+    position: absolute;
+    bottom: 0;
+  }
+  .chart-title {
+    font-size: .9rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 12px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="max-width:1100px; padding: 10px 0;">
+
+  <!-- کاربران -->
+  <h2 class="section-title">👥 کاربران</h2>
+  <div class="analytics-grid">
+    <div class="stat-card">
+      <div class="value">{{ total_users }}</div>
+      <div class="label">کل کاربران ثبت‌نام‌شده</div>
+    </div>
+    <div class="stat-card green">
+      <div class="value">{{ total_owners }}</div>
+      <div class="label">مالکان کسب‌وکار فعال</div>
+    </div>
+    <div class="stat-card">
+      <div class="value">{{ total_customers }}</div>
+      <div class="label">مشتریان</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="value">{{ new_users_today }}</div>
+      <div class="label">کاربر جدید امروز</div>
+    </div>
+  </div>
+
+  <!-- نوبت‌ها -->
+  <h2 class="section-title">📅 نوبت‌ها</h2>
+  <div class="analytics-grid">
+    <div class="stat-card green">
+      <div class="value">{{ appointments_today }}</div>
+      <div class="label">نوبت‌های امروز</div>
+    </div>
+    <div class="stat-card">
+      <div class="value">{{ appointments_month }}</div>
+      <div class="label">نوبت‌های این ماه</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="value">{{ appointments_confirmed }}</div>
+      <div class="label">نوبت‌های تأیید شده آینده</div>
+    </div>
+    <div class="stat-card green">
+      <div class="value">{{ appointments_completed }}</div>
+      <div class="label">نوبت‌های انجام‌شده</div>
+    </div>
+    <div class="stat-card red">
+      <div class="value">{{ appointments_cancelled }}</div>
+      <div class="label">نوبت‌های لغو شده</div>
+    </div>
+  </div>
+
+  <!-- درآمد -->
+  <h2 class="section-title">💰 درآمد</h2>
+  <div class="analytics-grid">
+    <div class="stat-card green">
+      <div class="value" style="font-size:1.5rem;">{{ total_revenue }}</div>
+      <div class="label">مجموع درآمد کل (تومان)</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="value" style="font-size:1.5rem;">{{ monthly_revenue }}</div>
+      <div class="label">درآمد این ماه (تومان)</div>
+    </div>
+  </div>
+
+  <!-- نمودار ۳۰ روز اخیر -->
+  <h2 class="section-title">📊 رزروهای ۳۰ روز اخیر</h2>
+  <div class="chart-container">
+    <div class="chart-title">تعداد رزرو به ازای هر روز</div>
+    <div class="chart-bars" id="chartBars">
+      {% for day in daily_data %}
+      <div class="bar-wrap" title="{{ day.date }}: {{ day.count }} رزرو">
+        <div class="bar"
+             style="height: {% if max_count > 0 %}{% widthratio day.count max_count 140 %}px{% else %}2px{% endif %};"
+             data-count="{{ day.count }}"
+             data-date="{{ day.date }}">
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div style="font-size:.75rem; color:#999; margin-top:8px; text-align:center;">
+      (هر ستون = یک روز، از ۲۹ روز پیش تا امروز)
+    </div>
+  </div>
+
+  <p style="color:#888; font-size:.8rem; margin-top:20px;">
+    آخرین بروزرسانی: بارگذاری صفحه —
+    برای بروزرسانی صفحه را refresh کنید.
+  </p>
+</div>
+{% endblock %}

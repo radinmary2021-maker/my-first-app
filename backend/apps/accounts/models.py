@@ -3,14 +3,14 @@ from django.db import models
 
 
 class UserRole(models.TextChoices):
-    PATIENT = 'patient', 'بیمار'
-    DOCTOR = 'doctor', 'پزشک'
-    SECRETARY = 'secretary', 'منشی'
-    ADMIN = 'admin', 'ادمین'
+    CUSTOMER = 'customer', 'مشتری'
+    OWNER    = 'owner',    'صاحب کسب‌وکار'
+    PROVIDER = 'provider', 'ارائه‌دهنده (deprecated → owner)'   # kept for BC
+    ADMIN    = 'admin',    'ادمین سیستم'
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, phone, full_name='', role=UserRole.PATIENT, **extra_fields):
+    def create_user(self, phone, full_name='', role=UserRole.CUSTOMER, **extra_fields):
         if not phone:
             raise ValueError('Phone number is required')
         user = self.model(phone=phone, full_name=full_name, role=role, **extra_fields)
@@ -28,7 +28,7 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(max_length=11, unique=True)
     full_name = models.CharField(max_length=100, blank=True)
-    role = models.CharField(max_length=20, choices=UserRole.choices, default=UserRole.PATIENT)
+    role = models.CharField(max_length=20, choices=UserRole.choices, default=UserRole.CUSTOMER)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

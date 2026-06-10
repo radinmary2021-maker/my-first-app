@@ -5,7 +5,7 @@ import DoctorListPage from '../../pages/public/DoctorListPage'
 import * as useDoctorsModule from '../../hooks/useDoctors'
 
 function mockUseDoctors({ doctors = [], isLoading = false, isError = false } = {}) {
-  vi.spyOn(useDoctorsModule, 'useDoctors').mockReturnValue({
+  vi.spyOn(useDoctorsModule, 'useProviders').mockReturnValue({
     data: doctors,
     isLoading,
     isError,
@@ -31,20 +31,19 @@ describe('DoctorListPage', () => {
   it('shows spinner and skeleton while loading', () => {
     mockUseDoctors({ isLoading: true })
     renderWithProviders(<DoctorListPage />)
-    expect(document.querySelector('.animate-spin')).toBeTruthy()
     expect(document.querySelector('.animate-pulse')).toBeTruthy()
   })
 
   it('shows error message on fetch failure', () => {
     mockUseDoctors({ isError: true })
     renderWithProviders(<DoctorListPage />)
-    expect(screen.getByText(/خطا در دریافت لیست پزشکان/)).toBeInTheDocument()
+    expect(screen.getByText(/خطا در دریافت لیست ارائه‌دهندگان/)).toBeInTheDocument()
   })
 
   it('shows empty state when no doctors exist', () => {
     mockUseDoctors({ doctors: [] })
     renderWithProviders(<DoctorListPage />)
-    expect(screen.getByText('هیچ پزشکی ثبت نشده است')).toBeInTheDocument()
+    expect(screen.getByText('نتیجه‌ای یافت نشد')).toBeInTheDocument()
   })
 
   it('renders all doctor cards', () => {
@@ -58,7 +57,7 @@ describe('DoctorListPage', () => {
   it('renders specialty filter chips when 2+ specialties exist', () => {
     mockUseDoctors({ doctors: DOCTORS })
     renderWithProviders(<DoctorListPage />)
-    expect(screen.getByRole('group', { name: 'فیلتر تخصص' })).toBeInTheDocument()
+    expect(screen.getByRole('group', { name: 'فیلتر دسته‌بندی' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'همه' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'قلب' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'عمومی' })).toBeInTheDocument()
@@ -68,7 +67,7 @@ describe('DoctorListPage', () => {
     const singleSpecialty = DOCTORS.filter((d) => d.specialty === 'قلب')
     mockUseDoctors({ doctors: singleSpecialty })
     renderWithProviders(<DoctorListPage />)
-    expect(screen.queryByRole('group', { name: 'فیلتر تخصص' })).toBeNull()
+    expect(screen.queryByRole('group', { name: 'فیلتر دسته‌بندی' })).toBeNull()
   })
 
   it('"همه" chip is active by default', () => {

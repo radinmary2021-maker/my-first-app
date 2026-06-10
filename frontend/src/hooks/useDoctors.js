@@ -1,28 +1,56 @@
 import { useQuery } from '@tanstack/react-query'
-import { getDoctors, getDoctor, getDoctorSlots } from '../api/doctors'
+import { getProviders, getProvider, getProviderSlots, getProviderServices, getMyServices } from '../api/providers'
 
-export function useDoctors() {
+/** @deprecated use useProviders */
+export function useDoctors() { return useProviders() }
+
+export function useProviders(params = {}) {
   return useQuery({
-    queryKey: ['doctors'],
-    queryFn: getDoctors,
+    queryKey: ['providers', params],
+    queryFn: () => getProviders(params),
     staleTime: 5 * 60_000,
   })
 }
 
-export function useDoctor(id) {
+/** @deprecated use useProvider */
+export function useDoctor(id) { return useProvider(id) }
+
+export function useProvider(id) {
   return useQuery({
-    queryKey: ['doctor', id],
-    queryFn: () => getDoctor(id),
+    queryKey: ['provider', id],
+    queryFn: () => getProvider(id),
     enabled: Boolean(id),
     staleTime: 5 * 60_000,
   })
 }
 
-export function useDoctorSlots(id, date) {
+/** @deprecated use useProviderSlots */
+export function useDoctorSlots(id, date) { return useProviderSlots(id, date) }
+
+export function useProviderSlots(id, date) {
   return useQuery({
-    queryKey: ['doctor-slots', id, date],
-    queryFn: () => getDoctorSlots(id, date),
+    queryKey: ['provider-slots', id, date],
+    queryFn: () => getProviderSlots(id, date),
     enabled: Boolean(id) && Boolean(date),
     staleTime: 60_000,
+  })
+}
+
+/** Fetch active services for a specific provider (public). */
+export function useProviderServices(id) {
+  return useQuery({
+    queryKey: ['provider-services', id],
+    queryFn:  () => getProviderServices(id),
+    enabled:  Boolean(id),
+    staleTime: 5 * 60_000,
+  })
+}
+
+/** Fetch the services offered by a business (uses the authenticated user's business). */
+export function useMyServices() {
+  return useQuery({
+    queryKey: ['my-services'],
+    queryFn:  getMyServices,
+    staleTime: 5 * 60_000,
   })
 }

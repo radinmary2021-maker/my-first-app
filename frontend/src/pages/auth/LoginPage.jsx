@@ -51,7 +51,7 @@ export default function LoginPage() {
               onChange={(e) => setPhone(e.target.value.trim())}
               placeholder="09120000001"
               dir="ltr"
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
               disabled={loading}
               autoFocus
             />
@@ -62,7 +62,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading || !phone}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full bg-cyan-500 text-white py-3 rounded-lg text-sm font-medium hover:bg-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {loading ? 'در حال ارسال...' : 'ارسال کد تأیید'}
           </button>

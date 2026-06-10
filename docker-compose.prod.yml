@@ -1,0 +1,164 @@
+services:
+
+  # ── Database ────────────────────────────────────────────────────────────────
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend
+
+  # ── Redis ───────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    restart: always
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - backend
+
+  # ── Backend ─────────────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    restart: always
+    env_file:
+      - ./backend/.env.prod
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - static_files:/app/staticfiles
+      - media_files:/app/media
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8000/health/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - backend
+      - frontend
+
+  # ── Celery Worker ───────────────────────────────────────────────────────────
+  # entrypoint is overridden to [] so migrations do NOT run here — only the
+  # backend service runs migrations. Workers wait for backend to be healthy
+  # (which confirms migrations are complete) before starting.
+  celery:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    restart: always
+    entrypoint: []
+    command: celery -A config worker -l warning --concurrency=4
+    env_file:
+      - ./backend/.env.prod
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    networks:
+      - backend
+
+  # ── Celery Beat ─────────────────────────────────────────────────────────────
+  celery-beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    restart: always
+    entrypoint: []
+    command: celery -A config beat -l warning -s /app/celerybeat-data/celerybeat-schedule
+    env_file:
+      - ./backend/.env.prod
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    volumes:
+      - celerybeat_data:/app/celerybeat-data
+    networks:
+      - backend
+
+  # ── Nginx ───────────────────────────────────────────────────────────────────
+  # Built from nginx/Dockerfile: multi-stage build that bundles the React SPA
+  # (npm ci + npm run build) into the nginx image. SSL certs are bind-mounted
+  # from the host so they can be renewed without rebuilding the image.
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - static_files:/var/www/static:ro
+      - media_files:/var/www/media:ro
+    depends_on:
+      - backend
+    networks:
+      - frontend
+
+  # ── Backup ──────────────────────────────────────────────────────────────────
+  backup:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      KEEP_DAYS: "7"
+      BACKUP_DIR: "/backups"
+    volumes:
+      - ./backups:/backups
+      - ./scripts/backup.sh:/backup.sh:ro
+    # Run daily at 2 AM Tehran time
+    command: >
+      sh -c "
+        chmod +x /backup.sh &&
+        echo '0 22 * * * /backup.sh >> /backups/backup.log 2>&1' | crontab - &&
+        crond -f -l 8
+      "
+    depends_on:
+      - db
+    networks:
+      - backend
+
+volumes:
+  postgres_data:
+  redis_data:
+  static_files:
+  media_files:
+  celerybeat_data:
+
+networks:
+  backend:
+    internal: true
+  frontend:

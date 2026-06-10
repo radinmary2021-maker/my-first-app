@@ -73,21 +73,27 @@ class TestAtomicConfirmPayment:
         assert payment.status == PaymentStatus.PAID
         assert pending_appointment.status == AppointmentStatus.CONFIRMED
 
-    def test_db_error_on_appointment_save_rolls_back_payment(self, pending_appointment):
-        from django.db import DatabaseError
+    def test_zarinpal_failure_after_lock_leaves_payment_failed(self, pending_appointment):
+        """
+        If Zarinpal.verify raises AFTER we've acquired the lock (but before
+        we write to the DB), the payment must be marked FAILED and the
+        appointment must stay PENDING — not CONFIRMED.
+
+        This replaces the old .save()-patch test, which broke when the
+        implementation switched from .save() to QuerySet.update().
+        """
+        from apps.payments.zarinpal import ZarinpalError
 
         _create_payment(pending_appointment, 'AUTH-RB')
 
         with patch('apps.payments.services.verify_payment') as mock_v:
-            mock_v.return_value = 'REF-RB'
-            with patch.object(
-                pending_appointment.__class__,
-                'save',
-                side_effect=DatabaseError('forced'),
-            ):
-                with pytest.raises(DatabaseError):
-                    confirm_payment('AUTH-RB')
+            mock_v.side_effect = ZarinpalError('forced failure')
+            with pytest.raises(PaymentError):
+                confirm_payment('AUTH-RB')
 
         payment = Payment.objects.get(appointment=pending_appointment)
-        assert payment.status == PaymentStatus.PENDING
+        assert payment.status == PaymentStatus.FAILED
         assert payment.ref_id is None
+
+        pending_appointment.refresh_from_db()
+        assert pending_appointment.status == AppointmentStatus.PENDING

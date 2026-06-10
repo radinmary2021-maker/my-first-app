@@ -15,3 +15,7 @@ export function getCurrentUser() {
 export function updateProfile({ fullName }) {
   return client.patch('/api/auth/me/', { full_name: fullName }).then((r) => r.data)
 }
+
+export function updateMe(data) {
+  return client.patch('/api/auth/me/', data)
+}

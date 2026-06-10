@@ -26,8 +26,8 @@ export default function SlotPicker({ slots, isLoading, selectedSlot, onSelect })
             className={`
               py-2.5 rounded-xl text-sm font-mono font-medium transition-colors border
               ${selectedSlot === slot
-                ? 'bg-blue-600 text-white border-blue-600'
-                : 'bg-white text-gray-700 border-gray-200 hover:border-blue-400 hover:text-blue-600'}
+                ? 'bg-cyan-500 text-white border-cyan-500'
+                : 'bg-white text-gray-700 border-gray-200 hover:border-cyan-400 hover:text-cyan-600'}
             `}
           >
             {slot}

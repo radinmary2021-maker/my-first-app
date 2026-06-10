@@ -26,3 +26,11 @@ frontend/dist/
 # Static/Media
 staticfiles/
 media/
+
+# Playwright test artifacts
+frontend/playwright-report/
+frontend/test-results/
+
+# Claude Code tool state
+.claude/
+frontend/.claude/

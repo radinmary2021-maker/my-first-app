@@ -91,27 +91,36 @@ class TestSendOtpSmsRetry:
 
 @pytest.mark.django_db
 class TestBookingSmRetry:
-    def _book(self, patient, doctor, schedule):
-        from apps.appointments.services import book_appointment
+    def _book(self, customer, provider, service, working_hours):
+        from apps.appointments.services import AppointmentService
         from .conftest import SATURDAY, SLOT_9_00
-        with patch('apps.notifications.kavenegar.requests.post') as m:
-            m.return_value.json.return_value = {'return': {'status': 200}}
-            return book_appointment(patient, doctor, SATURDAY, SLOT_9_00)
+        return AppointmentService.create_appointment(
+            business_id=provider.business_id,
+            provider=provider,
+            date=SATURDAY,
+            start_time=SLOT_9_00,
+            service_id=service.id,
+            customer=customer,
+        )
 
-    def test_all_retries_exhausted_creates_failed_log(self, patient, doctor, schedule):
+    def test_all_retries_exhausted_creates_failed_log(
+        self, customer, provider, service, working_hours
+    ):
         import requests as req
-        appt = self._book(patient, doctor, schedule)
+        appt = self._book(customer, provider, service, working_hours)
         SMSLog.objects.all().delete()
 
         with patch('apps.notifications.kavenegar.requests.post', side_effect=req.ConnectionError()):
             send_booking_confirmation_sms.apply(args=(appt.pk,))
 
-        log = SMSLog.objects.get(phone=patient.phone)
+        log = SMSLog.objects.get(phone=customer.phone)
         assert log.status == SMSStatus.FAILED
 
-    def test_no_log_before_final_retry(self, patient, doctor, schedule):
+    def test_no_log_before_final_retry(
+        self, customer, provider, service, working_hours
+    ):
         import requests as req
-        appt = self._book(patient, doctor, schedule)
+        appt = self._book(customer, provider, service, working_hours)
         SMSLog.objects.all().delete()
 
         send_booking_confirmation_sms.push_request(retries=2)
@@ -122,4 +131,4 @@ class TestBookingSmRetry:
         finally:
             send_booking_confirmation_sms.pop_request()
 
-        assert not SMSLog.objects.filter(phone=patient.phone).exists()
+        assert not SMSLog.objects.filter(phone=customer.phone).exists()

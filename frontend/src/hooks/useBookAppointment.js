@@ -10,7 +10,7 @@ function parseBookingError(err) {
     data.non_field_errors?.[0] ||
     data.start_time?.[0] ||
     data.date?.[0] ||
-    data.doctor_id?.[0]
+    data.provider_id?.[0]
 
   if (fieldMsg) return fieldMsg
 

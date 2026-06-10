@@ -68,12 +68,11 @@ class Migration(migrations.Migration):
                     "role",
                     models.CharField(
                         choices=[
-                            ("patient", "بیمار"),
-                            ("doctor", "پزشک"),
-                            ("secretary", "منشی"),
+                            ("customer", "مشتری"),
+                            ("provider", "ارائه‌دهنده خدمت"),
                             ("admin", "ادمین"),
                         ],
-                        default="patient",
+                        default="customer",
                         max_length=20,
                     ),
                 ),

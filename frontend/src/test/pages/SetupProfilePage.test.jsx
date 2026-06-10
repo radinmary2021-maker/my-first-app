@@ -55,8 +55,8 @@ describe('SetupProfilePage', () => {
     })
   })
 
-  it('calls updateProfile and navigates to /doctors on success', async () => {
-    const updatedUser = { id: 1, phone: '09121234567', full_name: 'علی رضایی', role: 'patient' }
+  it('calls updateProfile with the entered name on success', async () => {
+    const updatedUser = { id: 1, phone: '09121234567', full_name: 'علی رضایی', role: 'customer' }
     vi.spyOn(authApi, 'updateProfile').mockResolvedValue(updatedUser)
 
     renderWithProviders(<SetupProfilePage />, { route: '/setup-profile' })

@@ -15,7 +15,7 @@ export default function DatePicker({ availableWeekdays = [], selectedDate, onSel
           <span
             key={idx}
             className={`w-8 text-center text-xs ${
-              availableWeekdays.includes(idx) ? 'text-blue-600 font-medium' : 'text-gray-300'
+              availableWeekdays.includes(idx) ? 'text-cyan-600 font-medium' : 'text-gray-300'
             }`}
           >
             {name}
@@ -39,9 +39,9 @@ export default function DatePicker({ availableWeekdays = [], selectedDate, onSel
               className={`
                 aspect-square flex items-center justify-center rounded-lg text-xs font-medium transition-colors
                 ${isSelected
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-cyan-500 text-white'
                   : isAvailable
-                  ? 'bg-blue-50 text-blue-700 hover:bg-blue-100'
+                  ? 'bg-cyan-50 text-cyan-700 hover:bg-cyan-100'
                   : 'bg-gray-50 text-gray-300 cursor-not-allowed'}
               `}
               title={isAvailable ? formatDateFa(day) : undefined}
@@ -53,7 +53,7 @@ export default function DatePicker({ availableWeekdays = [], selectedDate, onSel
       </div>
 
       {selectedDate && (
-        <p className="text-xs text-blue-600 mt-1">
+        <p className="text-xs text-cyan-600 mt-1">
           تاریخ انتخاب‌شده: <span dir="ltr">{selectedDate}</span>
         </p>
       )}

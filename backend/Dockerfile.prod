@@ -1,0 +1,53 @@
+FROM python:3.12-slim AS base
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq-dev \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements/ ./requirements/
+RUN pip install --no-cache-dir --timeout 120 -r requirements/base.txt
+
+# ── Production stage ──────────────────────────────────────────────────────────
+FROM base AS production
+
+COPY . .
+
+# Normalize line endings (guards against CRLF on Windows dev machines)
+# and make the entrypoint executable — must happen before USER switch.
+RUN sed -i 's/\r$//' entrypoint.sh && chmod +x entrypoint.sh
+
+# Dummy env vars required only for collectstatic at build time.
+# At runtime these are overridden by the env_file in docker-compose.prod.yml.
+# collectstatic does not connect to the database, so placeholder DB values are safe.
+ENV SECRET_KEY=build-time-placeholder-not-used-at-runtime \
+    DEBUG=False \
+    ALLOWED_HOSTS=localhost \
+    DB_NAME=x \
+    DB_USER=x \
+    DB_PASSWORD=x \
+    DB_HOST=localhost \
+    DB_PORT=5432 \
+    REDIS_URL=redis://localhost:6379/0
+
+RUN python manage.py collectstatic --noinput
+
+# Non-root user for security
+RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
+USER appuser
+
+EXPOSE 8000
+
+ENTRYPOINT ["./entrypoint.sh"]
+CMD ["gunicorn", "config.wsgi:application", \
+     "--bind", "0.0.0.0:8000", \
+     "--workers", "4", \
+     "--worker-class", "sync", \
+     "--worker-connections", "1000", \
+     "--timeout", "30", \
+     "--keepalive", "5", \
+     "--access-logfile", "-", \
+     "--error-logfile", "-", \
+     "--log-level", "warning"]

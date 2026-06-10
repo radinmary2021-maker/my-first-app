@@ -41,15 +41,17 @@ def send_booking_confirmation_sms(self, appointment_id: int) -> None:
     from apps.appointments.models import Appointment
 
     appointment = Appointment.objects.select_related(
-        'doctor__user', 'patient'
+        'provider', 'customer'
     ).get(pk=appointment_id)
 
     message = (
-        f'نوبت شما با دکتر {appointment.doctor.user.full_name} '
+        f'نوبت شما با {appointment.provider.business_name} '
         f'در تاریخ {appointment.date} ساعت {appointment.start_time.strftime("%H:%M")} '
         f'با کد پیگیری {appointment.tracking_code} ثبت شد.'
     )
-    phone = appointment.patient.phone
+    phone = appointment.contact_phone  # handles guest + authenticated customers
+    if not phone:
+        return  # no phone available — skip silently
     try:
         _send(phone, message)
         _log_success(phone, message)
@@ -59,20 +61,49 @@ def send_booking_confirmation_sms(self, appointment_id: int) -> None:
         raise
 
 
+@shared_task(name='notifications.send_appointment_reminders')
+def send_appointment_reminders() -> None:
+    from datetime import date, timedelta
+    from apps.appointments.models import Appointment, AppointmentStatus
+
+    tomorrow = date.today() + timedelta(days=1)
+    appointments = (
+        Appointment.objects
+        .filter(date=tomorrow, status=AppointmentStatus.CONFIRMED)
+        .select_related('provider', 'customer')
+    )
+    for appointment in appointments:
+        phone = appointment.contact_phone
+        if not phone:
+            continue  # no phone on record — skip
+        message = (
+            f'یادآوری: نوبت شما با {appointment.provider.business_name} '
+            f'فردا ساعت {appointment.start_time.strftime("%H:%M")} است. '
+            f'کد پیگیری: {appointment.tracking_code}'
+        )
+        try:
+            _send(phone, message)
+            _log_success(phone, message)
+        except KavenegarError:
+            _log_failure(phone, message)
+
+
 @shared_task(name='notifications.send_cancellation_sms', **_RETRY_KWARGS)
 def send_cancellation_sms(self, appointment_id: int) -> None:
     from apps.appointments.models import Appointment
 
     appointment = Appointment.objects.select_related(
-        'doctor__user', 'patient'
+        'provider', 'customer'
     ).get(pk=appointment_id)
 
     message = (
-        f'نوبت شما با دکتر {appointment.doctor.user.full_name} '
+        f'نوبت شما با {appointment.provider.business_name} '
         f'در تاریخ {appointment.date} ساعت {appointment.start_time.strftime("%H:%M")} '
         f'لغو شد.'
     )
-    phone = appointment.patient.phone
+    phone = appointment.contact_phone
+    if not phone:
+        return  # no phone available — skip silently
     try:
         _send(phone, message)
         _log_success(phone, message)

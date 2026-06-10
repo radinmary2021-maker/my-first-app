@@ -64,7 +64,19 @@ export default function VerifyOtpPage() {
     try {
       const { data } = await verifyOtp(phone, otp)
       login({ access: data.access, refresh: data.refresh, user: data.user })
-      const destination = data.user.full_name ? '/doctors' : '/setup-profile'
+
+      // Role-aware redirect priority:
+      //  1. Returning owner / provider  → straight to dashboard
+      //  2. Brand-new user (no name)    → complete profile first
+      //  3. Named user without business → onboarding business creation
+      let destination
+      if (data.business) {
+        destination = '/dashboard'
+      } else if (!data.user.full_name) {
+        destination = '/setup-profile'
+      } else {
+        destination = '/create-business'
+      }
       navigate(destination, { replace: true })
     } catch (err) {
       const msg = err.response?.data?.error
@@ -93,7 +105,7 @@ export default function VerifyOtpPage() {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 w-full max-w-sm p-8">
         <button
           onClick={() => navigate('/login')}
-          className="text-blue-500 text-sm mb-6 flex items-center gap-1 hover:text-blue-700"
+          className="text-cyan-500 text-sm mb-6 flex items-center gap-1 hover:text-cyan-700"
         >
           ← تغییر شماره
         </button>
@@ -117,7 +129,7 @@ export default function VerifyOtpPage() {
                 value={d}
                 onChange={(e) => handleDigitChange(i, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(i, e)}
-                className="w-11 h-12 text-center text-lg font-mono border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-11 h-12 text-center text-lg font-mono border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 disabled={loading}
                 autoFocus={i === 0}
               />
@@ -129,7 +141,7 @@ export default function VerifyOtpPage() {
           <button
             type="submit"
             disabled={loading || otp.length < OTP_LENGTH}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full bg-cyan-500 text-white py-3 rounded-lg text-sm font-medium hover:bg-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {loading ? 'در حال بررسی...' : 'ورود'}
           </button>
@@ -147,7 +159,7 @@ export default function VerifyOtpPage() {
           ) : (
             <button
               onClick={handleResend}
-              className="text-blue-600 hover:text-blue-800 font-medium"
+              className="text-cyan-600 hover:text-cyan-800 font-medium"
             >
               ارسال مجدد کد
             </button>

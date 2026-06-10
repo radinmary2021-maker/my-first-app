@@ -24,7 +24,7 @@ export default class ErrorBoundary extends Component {
             <p className="text-sm text-gray-500">مشکلی پیش آمد. صفحه را بازخوانی کنید.</p>
             <button
               onClick={() => window.location.reload()}
-              className="w-full bg-blue-600 text-white py-2.5 rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors"
+              className="w-full bg-cyan-500 text-white py-2.5 rounded-xl text-sm font-medium hover:bg-cyan-600 transition-colors"
             >
               بازخوانی صفحه
             </button>
