@@ -289,6 +289,8 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
 KAVENEGAR_API_KEY = env('KAVENEGAR_API_KEY', default='')
+# When True AND DEBUG=True, the OTP is included in the API response (never in prod)
+DEBUG_OTP = env.bool('DEBUG_OTP', default=False)
 
 CORS_ALLOWED_ORIGINS = env.list(
     'CORS_ALLOWED_ORIGINS',

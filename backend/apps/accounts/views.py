@@ -1,9 +1,13 @@
+import logging
+
 from django.conf import settings
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenRefreshView
+
+logger = logging.getLogger(__name__)
 
 from .rate_limit import increment_rate_counters, is_rate_limited
 from .serializers import SendOTPSerializer, UpdateProfileSerializer, UserSerializer, VerifyOTPSerializer
@@ -38,12 +42,18 @@ class SendOTPView(APIView):
         code = generate_otp(phone)
         increment_rate_counters(phone, ip)
 
-        from apps.notifications.tasks import send_otp_sms
-        send_otp_sms.delay(phone, code)
+        if settings.KAVENEGAR_API_KEY:
+            from apps.notifications.tasks import send_otp_sms
+            send_otp_sms.delay(phone, code)
+        else:
+            # No Kavenegar key — skip SMS entirely.
+            # Log OTP only in DEBUG so it never leaks in production.
+            if settings.DEBUG:
+                logger.info(f"Development OTP for {phone}: {code}")
 
-        response = {'success': True}
-        if settings.DEBUG:
-            response['dev_code'] = code
+        response = {'success': True, 'message': 'OTP sent successfully'}
+        if settings.DEBUG and settings.DEBUG_OTP:
+            response['debug_otp'] = code
 
         return Response(response, status=status.HTTP_200_OK)
 

@@ -1,7 +1,12 @@
+import logging
+
 from celery import shared_task
+from django.conf import settings
 
 from .kavenegar import KavenegarClient, KavenegarError
 from .models import SMSLog, SMSStatus
+
+logger = logging.getLogger(__name__)
 
 _RETRY_KWARGS = dict(
     bind=True,
@@ -27,6 +32,11 @@ def _log_success(phone: str, message: str) -> None:
 @shared_task(name='notifications.send_otp_sms', **_RETRY_KWARGS)
 def send_otp_sms(self, phone: str, code: str) -> None:
     message = f'کد تأیید شما: {code}'
+    if not settings.KAVENEGAR_API_KEY:
+        if settings.DEBUG:
+            logger.info(f"Development OTP for {phone}: {code}")
+        _log_success(phone, message)
+        return
     try:
         _send(phone, message)
         _log_success(phone, message)
