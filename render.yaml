@@ -100,10 +100,7 @@ services:
           type: redis
           property: connectionString
       - key: KAVENEGAR_API_KEY
-        fromService:
-          name: nobatic-api
-          type: web
-          envVarKey: KAVENEGAR_API_KEY
+        sync: false       # set manually in Render dashboard
 
   # ── 3. React Frontend ────────────────────────────────────────────────────────
   - type: web
@@ -131,45 +128,6 @@ services:
         value: "20.19.2"
       - key: VITE_API_BASE_URL
         value: https://nobatic-api.onrender.com    # update after adding custom domain
-
-  # ── 4. Celery Beat Scheduler ─────────────────────────────────────────────────
-  # Beat runs the periodic task schedule defined in config/celery.py.
-  # Only ONE Beat process should ever run — running two causes duplicate task fires.
-  - type: worker
-    name: nobatic-beat
-    runtime: python
-    plan: free
-    region: frankfurt
-    rootDir: backend
-    buildCommand: pip install -r requirements/base.txt
-    startCommand: celery -A config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
-    envVars:
-      - key: PYTHON_VERSION
-        value: "3.11"
-      - key: DJANGO_SETTINGS_MODULE
-        value: config.settings
-      - key: DEBUG
-        value: "False"
-      - key: SECRET_KEY
-        fromService:
-          name: nobatic-api
-          type: web
-          envVarKey: SECRET_KEY
-      - key: ALLOWED_HOSTS
-        value: "*"
-      - key: CORS_ALLOWED_ORIGINS
-        value: https://nobatic-frontend.onrender.com
-      - key: CSRF_TRUSTED_ORIGINS
-        value: https://nobatic-frontend.onrender.com,https://nobatic-api.onrender.com
-      - key: DATABASE_URL
-        fromDatabase:
-          name: nobatic-db
-          property: connectionString
-      - key: REDIS_URL
-        fromService:
-          name: nobatic-redis
-          type: redis
-          property: connectionString
 
   # ── 5. Redis ─────────────────────────────────────────────────────────────────
   - type: redis
