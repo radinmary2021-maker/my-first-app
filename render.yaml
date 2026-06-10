@@ -15,6 +15,7 @@ databases:
     databaseName: nobatic
     user: nobatic
     plan: free            # upgrade to starter ($7/mo) before production traffic
+    region: frankfurt
 
 services:
   # ── 1. Django API ────────────────────────────────────────────────────────────
