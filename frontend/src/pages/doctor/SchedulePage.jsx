@@ -577,8 +577,16 @@ export default function SchedulePage() {
   const [searchParams] = useSearchParams()
   const providerId = searchParams.get('provider_id') || null
 
-  const { data: services } = useMyServicesList()
-  const { data: hours    } = useMyWorkingHours(providerId)
+  const { data: services, error: servicesError } = useMyServicesList()
+  const { data: hours,    error: hoursError    } = useMyWorkingHours(providerId)
+
+  // If backend returns 403, the user has no active business — redirect to create-business
+  useEffect(() => {
+    const err = servicesError || hoursError
+    if (err?.response?.status === 403) {
+      navigate('/create-business', { replace: true })
+    }
+  }, [servicesError, hoursError, navigate])
 
   const isLive = (services?.length ?? 0) > 0 && (hours?.length ?? 0) > 0
 
