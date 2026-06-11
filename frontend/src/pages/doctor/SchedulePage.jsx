@@ -259,6 +259,7 @@ function WorkingHoursSection({ providerId }) {
         return
       }
     }
+    const pid = providerId ? parseInt(providerId) : null
     bulkSave(
       {
         hours: week.map((d) => ({
@@ -266,8 +267,9 @@ function WorkingHoursSection({ providerId }) {
           start_time: d.start_time || DEFAULT_START,
           end_time:   d.end_time   || DEFAULT_END,
           is_active:  d.enabled,
+          provider:   pid,
         })),
-        providerId: providerId ? parseInt(providerId) : undefined,
+        providerId: pid ?? undefined,
       },
       {
         onSuccess: () => { notify('ساعات کاری ذخیره شد.', 'success'); setDirty(false) },

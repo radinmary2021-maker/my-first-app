@@ -13,10 +13,12 @@ from .rate_limit import increment_rate_counters, is_rate_limited
 from .serializers import SendOTPSerializer, UpdateProfileSerializer, UserSerializer, VerifyOTPSerializer
 from .services import generate_otp, get_business_context, get_or_create_user, issue_jwt_tokens, verify_otp
 
-_RATE_LIMIT_RESPONSE = {
-    'success': False,
-    'message': 'Too many requests. Please try again later.',
-}
+def _rate_limit_response(retry_after: int) -> dict:
+    return {
+        'success': False,
+        'error': 'تعداد درخواست‌ها بیش از حد مجاز است',
+        'retry_after_seconds': retry_after,
+    }
 
 
 def _get_client_ip(request) -> str:
@@ -36,8 +38,9 @@ class SendOTPView(APIView):
         phone = serializer.validated_data['phone']
         ip = _get_client_ip(request)
 
-        if is_rate_limited(phone, ip):
-            return Response(_RATE_LIMIT_RESPONSE, status=status.HTTP_429_TOO_MANY_REQUESTS)
+        limited, retry_after = is_rate_limited(phone, ip)
+        if limited:
+            return Response(_rate_limit_response(retry_after), status=status.HTTP_429_TOO_MANY_REQUESTS)
 
         code = generate_otp(phone)
         increment_rate_counters(phone, ip)

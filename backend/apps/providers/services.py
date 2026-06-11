@@ -205,7 +205,7 @@ class ProviderService:
 _PYTHON_TO_IRANIAN = {5: 0, 6: 1, 0: 2, 1: 3, 2: 4, 3: 5, 4: 6}
 
 
-def get_schedule_slots(provider: 'Provider', target_date: 'date') -> 'list[time]':
+def get_schedule_slots(provider: 'Provider', target_date: 'date', service_id: int | None = None) -> 'list[time]':
     """
     DEPRECATED — use AvailabilityService.get_slots_for_date() instead.
 
@@ -217,25 +217,33 @@ def get_schedule_slots(provider: 'Provider', target_date: 'date') -> 'list[time]
 
     from apps.scheduling.services import AvailabilityService
     from apps.scheduling.selectors import list_services
+    from apps.scheduling.models import Service
 
-    # Use first active service as the slot size reference
-    first_service = list_services(provider.business_id).first()
-    if not first_service:
-        return []
+    if service_id is not None:
+        try:
+            svc = Service.objects.get(pk=service_id, business_id=provider.business_id, is_active=True)
+        except Service.DoesNotExist:
+            return []
+        resolved_service_id = svc.id
+    else:
+        first_service = list_services(provider.business_id).first()
+        if not first_service:
+            return []
+        resolved_service_id = first_service.id
 
     avail = AvailabilityService.get_slots_for_date(
         business_id=provider.business_id,
         date=target_date,
-        service_id=first_service.id,
+        service_id=resolved_service_id,
         provider_id=provider.id,
     )
     return [slot.start for slot in avail.slots]
 
 
-def get_available_slots(provider: 'Provider', target_date: 'date') -> 'list[time]':
+def get_available_slots(provider: 'Provider', target_date: 'date', service_id: int | None = None) -> 'list[time]':
     """
     DEPRECATED — use AvailabilityService.get_slots_for_date() instead.
 
     Returns available (not yet booked) start times.
     """
-    return get_schedule_slots(provider, target_date)
+    return get_schedule_slots(provider, target_date, service_id=service_id)

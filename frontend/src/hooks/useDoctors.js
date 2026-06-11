@@ -25,13 +25,13 @@ export function useProvider(id) {
 }
 
 /** @deprecated use useProviderSlots */
-export function useDoctorSlots(id, date) { return useProviderSlots(id, date) }
+export function useDoctorSlots(id, date, serviceId) { return useProviderSlots(id, date, serviceId) }
 
-export function useProviderSlots(id, date) {
+export function useProviderSlots(id, date, serviceId) {
   return useQuery({
-    queryKey: ['provider-slots', id, date],
-    queryFn: () => getProviderSlots(id, date),
-    enabled: Boolean(id) && Boolean(date),
+    queryKey: ['provider-slots', id, date, serviceId],
+    queryFn: () => getProviderSlots(id, date, serviceId),
+    enabled: Boolean(id) && Boolean(date) && Boolean(serviceId),
     staleTime: 60_000,
   })
 }

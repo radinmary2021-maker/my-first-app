@@ -19,7 +19,7 @@ export default function DoctorDetailPage() {
 
   const { data: provider,  isLoading: providerLoading,  isError: providerError  } = useProvider(id)
   const { data: services,  isLoading: servicesLoading                            } = useProviderServices(id)
-  const { data: slotsData, isLoading: slotsLoading,     isError: slotsError, refetch: refetchSlots } = useProviderSlots(id, selectedDate)
+  const { data: slotsData, isLoading: slotsLoading,     isError: slotsError, refetch: refetchSlots } = useProviderSlots(id, selectedDate, selectedService?.id)
 
   function handleDateSelect(date) {
     setSelectedDate(date)
@@ -177,7 +177,11 @@ export default function DoctorDetailPage() {
             {hasServices && (
               <h2 className="text-sm font-semibold text-gray-700 mb-4">۳. انتخاب ساعت</h2>
             )}
-            {slotsError ? (
+            {!hasServices ? (
+              <p className="text-sm text-gray-400 text-center py-6">
+                این ارائه‌دهنده هنوز خدمتی تعریف نکرده است.
+              </p>
+            ) : slotsError ? (
               <div className="space-y-3">
                 <ErrorMessage message="خطا در دریافت زمان‌های خالی" />
                 <button

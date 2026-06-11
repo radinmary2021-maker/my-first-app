@@ -67,6 +67,8 @@ class WorkingHoursSerializer(serializers.ModelSerializer):
         return obj.get_weekday_display()
 
     def validate(self, data: dict) -> dict:
+        if not data.get('is_active', True):
+            return data
         start = data.get('start_time')
         end   = data.get('end_time')
         if start and end and start >= end:
