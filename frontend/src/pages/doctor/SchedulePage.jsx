@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import MainLayout from '../../layouts/MainLayout'
 import Spinner from '../../components/Spinner'
@@ -6,8 +6,7 @@ import ErrorMessage from '../../components/ErrorMessage'
 import { notify } from '../../utils/toast'
 import {
   useMyWorkingHours,
-  useCreateWorkingHours,
-  useDeleteWorkingHours,
+  useBulkUpdateWorkingHours,
   useMyTimeOffs,
   useCreateTimeOff,
   useDeleteTimeOff,
@@ -198,43 +197,90 @@ function ServicesSection() {
 
 // ── Working hours section ─────────────────────────────────────────────────────
 
+const DEFAULT_START = '08:00'
+const DEFAULT_END   = '20:00'
+
+function makeWeekState(hours) {
+  return WEEKDAYS.map((_, i) => {
+    const h = hours?.find((x) => x.weekday === i)
+    return {
+      weekday:    i,
+      enabled:    !!h && h.is_active !== false,
+      start_time: h?.start_time?.slice(0, 5) || DEFAULT_START,
+      end_time:   h?.end_time?.slice(0, 5)   || DEFAULT_END,
+    }
+  })
+}
+
 function WorkingHoursSection({ providerId }) {
   const { data: hours, isLoading, isError, refetch } = useMyWorkingHours(providerId)
-  const { mutate: addHours,    isPending: adding   } = useCreateWorkingHours()
-  const { mutate: removeHours, isPending: removing } = useDeleteWorkingHours()
+  const { mutate: bulkSave, isPending: saving } = useBulkUpdateWorkingHours()
 
-  const [form, setForm] = useState({ weekday: '0', start_time: '', end_time: '' })
+  const [week, setWeek] = useState(() => makeWeekState(null))
+  const [masterStart, setMasterStart] = useState(DEFAULT_START)
+  const [masterEnd,   setMasterEnd]   = useState(DEFAULT_END)
+  const [dirty, setDirty] = useState(false)
 
-  const existingWeekdays = new Set(hours?.map((h) => h.weekday) ?? [])
-  const hasHours = (hours?.length ?? 0) > 0
-
-  function handleAdd(e) {
-    e.preventDefault()
-    if (!form.start_time || !form.end_time) {
-      notify('ساعت شروع و پایان الزامی است.', 'error')
-      return
+  useEffect(() => {
+    if (hours !== undefined) {
+      setWeek(makeWeekState(hours))
+      setDirty(false)
     }
-    if (form.start_time >= form.end_time) {
+  }, [hours])
+
+  function updateDay(i, patch) {
+    setWeek((prev) => prev.map((d, idx) => idx === i ? { ...d, ...patch } : d))
+    setDirty(true)
+  }
+
+  function toggleAll(enabled) {
+    setWeek((prev) => prev.map((d) => ({ ...d, enabled })))
+    setDirty(true)
+  }
+
+  function applyMasterTime() {
+    if (!masterStart || !masterEnd) return
+    if (masterStart >= masterEnd) {
       notify('ساعت شروع باید قبل از ساعت پایان باشد.', 'error')
       return
     }
-    const payload = { ...form, weekday: parseInt(form.weekday) }
-    if (providerId) payload.provider = parseInt(providerId)
-    addHours(
-      payload,
+    setWeek((prev) => prev.map((d) => ({ ...d, start_time: masterStart, end_time: masterEnd })))
+    setDirty(true)
+  }
+
+  function handleSave() {
+    for (const d of week) {
+      if (d.enabled && (!d.start_time || !d.end_time)) {
+        notify(`ساعت ${WEEKDAYS[d.weekday]} را کامل کنید.`, 'error')
+        return
+      }
+      if (d.enabled && d.start_time >= d.end_time) {
+        notify(`ساعت شروع ${WEEKDAYS[d.weekday]} باید قبل از ساعت پایان باشد.`, 'error')
+        return
+      }
+    }
+    bulkSave(
       {
-        onSuccess: () => {
-          notify('ساعت کاری اضافه شد.', 'success')
-          setForm({ weekday: '0', start_time: '', end_time: '' })
-        },
-        onError: (err) => notify(extractError(err, 'خطا در ذخیره ساعت کاری. دوباره تلاش کنید.'), 'error'),
+        hours: week.map((d) => ({
+          weekday:    d.weekday,
+          start_time: d.start_time || DEFAULT_START,
+          end_time:   d.end_time   || DEFAULT_END,
+          is_active:  d.enabled,
+        })),
+        providerId: providerId ? parseInt(providerId) : undefined,
+      },
+      {
+        onSuccess: () => { notify('ساعات کاری ذخیره شد.', 'success'); setDirty(false) },
+        onError:   (err) => notify(extractError(err, 'خطا در ذخیره. دوباره تلاش کنید.'), 'error'),
       }
     )
   }
 
+  const hasActive = week.some((d) => d.enabled)
+
   return (
     <section className="space-y-4">
-      <SectionHeader step="۲" isDone={hasHours}>ساعات کاری هفتگی</SectionHeader>
+      <SectionHeader step="۲" isDone={hasActive}>ساعات کاری هفتگی</SectionHeader>
 
       {isLoading && <Spinner />}
       {isError && (
@@ -244,70 +290,123 @@ function WorkingHoursSection({ providerId }) {
         </div>
       )}
 
-      {!isLoading && !isError && !hasHours && (
-        <div className="text-sm text-gray-400 bg-gray-50 rounded-xl px-4 py-3">
-          هنوز ساعت کاری ثبت نشده. روزها و ساعاتی که نوبت می‌پذیرید را اضافه کنید.
+      {!isLoading && !isError && (
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+
+          {/* Master time row */}
+          <div className="bg-gray-50 border-b border-gray-100 px-4 py-3 flex flex-wrap items-center gap-3">
+            <span className="text-xs font-medium text-gray-500 shrink-0">اعمال به همه روزها:</span>
+            <div className="flex items-center gap-2 flex-1 min-w-0 flex-wrap">
+              <input
+                type="time"
+                value={masterStart}
+                onChange={(e) => setMasterStart(e.target.value)}
+                className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-200 bg-white"
+                dir="ltr"
+              />
+              <span className="text-gray-400 text-xs">تا</span>
+              <input
+                type="time"
+                value={masterEnd}
+                onChange={(e) => setMasterEnd(e.target.value)}
+                className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-200 bg-white"
+                dir="ltr"
+              />
+              <button
+                onClick={applyMasterTime}
+                type="button"
+                className="text-xs bg-cyan-100 text-cyan-700 px-3 py-1.5 rounded-lg hover:bg-cyan-200 transition-colors font-medium"
+              >
+                اعمال
+              </button>
+            </div>
+            <div className="flex gap-2 mr-auto shrink-0">
+              <button onClick={() => toggleAll(true)}  type="button" className="text-xs text-green-600 hover:underline">انتخاب همه</button>
+              <span className="text-gray-300">|</span>
+              <button onClick={() => toggleAll(false)} type="button" className="text-xs text-red-400 hover:underline">حذف انتخاب</button>
+            </div>
+          </div>
+
+          {/* Day rows */}
+          {week.map((day, i) => (
+            <div
+              key={i}
+              className={`flex items-center gap-3 px-4 py-3 border-b border-gray-50 last:border-b-0 transition-colors ${
+                day.enabled ? 'bg-white' : 'bg-gray-50/60'
+              }`}
+            >
+              {/* Toggle */}
+              <label className="flex items-center gap-2 cursor-pointer shrink-0 w-24">
+                <input
+                  type="checkbox"
+                  checked={day.enabled}
+                  onChange={(e) => updateDay(i, { enabled: e.target.checked })}
+                  className="w-4 h-4 rounded accent-cyan-500"
+                />
+                <span className={`text-sm font-medium ${day.enabled ? 'text-gray-800' : 'text-gray-400'}`}>
+                  {WEEKDAYS[i]}
+                </span>
+              </label>
+
+              {/* Time inputs */}
+              {day.enabled ? (
+                <div className="flex items-center gap-2 flex-1 flex-wrap">
+                  <input
+                    type="time"
+                    value={day.start_time}
+                    onChange={(e) => updateDay(i, { start_time: e.target.value })}
+                    className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-200 bg-white flex-1 min-w-[100px]"
+                    dir="ltr"
+                  />
+                  <span className="text-gray-400 text-xs shrink-0">تا</span>
+                  <input
+                    type="time"
+                    value={day.end_time}
+                    onChange={(e) => updateDay(i, { end_time: e.target.value })}
+                    className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-200 bg-white flex-1 min-w-[100px]"
+                    dir="ltr"
+                  />
+                  {day.start_time && day.end_time && day.start_time < day.end_time && (
+                    <span className="text-xs text-gray-400 shrink-0">
+                      {calcDuration(day.start_time, day.end_time)}
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <span className="text-xs text-gray-400 flex-1">تعطیل</span>
+              )}
+            </div>
+          ))}
+
+          {/* Save button */}
+          <div className="px-4 py-3 bg-gray-50 border-t border-gray-100">
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              type="button"
+              className={`w-full text-sm py-2.5 rounded-xl font-medium transition-colors ${
+                dirty
+                  ? 'bg-cyan-500 text-white hover:bg-cyan-600'
+                  : 'bg-gray-200 text-gray-500 cursor-default'
+              } disabled:opacity-50`}
+            >
+              {saving ? 'در حال ذخیره...' : dirty ? 'ذخیره تغییرات' : 'تغییری وجود ندارد'}
+            </button>
+          </div>
         </div>
       )}
-
-      {hours?.map((h) => (
-        <Card key={h.id}>
-          <div className="flex items-center gap-4 text-sm">
-            <span className="font-medium text-gray-800 w-16 shrink-0">{WEEKDAYS[h.weekday]}</span>
-            <span className="font-mono text-gray-600" dir="ltr">{h.start_time} – {h.end_time}</span>
-            {!h.is_active && <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">غیرفعال</span>}
-          </div>
-          <DeleteButton
-            label={`حذف ساعت کاری ${WEEKDAYS[h.weekday]}`}
-            onClick={() => removeHours(h.id, {
-              onSuccess: () => notify('ساعت کاری حذف شد.', 'success'),
-              onError: () => notify('خطا در حذف ساعت کاری. دوباره تلاش کنید.', 'error'),
-            })}
-            disabled={removing}
-          />
-        </Card>
-      ))}
-
-      <form onSubmit={handleAdd} className="bg-gray-50 rounded-xl p-4 space-y-3">
-        <p className="text-sm font-medium text-gray-700">افزودن روز جدید</p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div>
-            <label className="text-xs text-gray-500 block mb-1">روز هفته</label>
-            <select
-              value={form.weekday}
-              onChange={(e) => setForm((p) => ({ ...p, weekday: e.target.value }))}
-              className={inputCls}
-            >
-              {WEEKDAYS.map((name, idx) => (
-                <option key={idx} value={idx} disabled={existingWeekdays.has(idx)}>
-                  {name}{existingWeekdays.has(idx) ? ' (ثبت شده)' : ''}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="text-xs text-gray-500 block mb-1">از ساعت <span className="text-red-400">*</span></label>
-            <input type="time" required value={form.start_time}
-              onChange={(e) => setForm((p) => ({ ...p, start_time: e.target.value }))}
-              className={inputCls} />
-          </div>
-          <div>
-            <label className="text-xs text-gray-500 block mb-1">تا ساعت <span className="text-red-400">*</span></label>
-            <input type="time" required value={form.end_time}
-              onChange={(e) => setForm((p) => ({ ...p, end_time: e.target.value }))}
-              className={inputCls} />
-          </div>
-        </div>
-        <button
-          type="submit"
-          disabled={adding}
-          className="w-full bg-cyan-500 text-white text-sm py-2.5 rounded-lg hover:bg-cyan-600 disabled:opacity-50 transition-colors"
-        >
-          {adding ? 'در حال ذخیره...' : 'افزودن'}
-        </button>
-      </form>
     </section>
   )
+}
+
+function calcDuration(start, end) {
+  const [sh, sm] = start.split(':').map(Number)
+  const [eh, em] = end.split(':').map(Number)
+  const mins = (eh * 60 + em) - (sh * 60 + sm)
+  if (mins <= 0) return ''
+  const h = Math.floor(mins / 60)
+  const m = mins % 60
+  return h > 0 ? `${h}ساعت${m > 0 ? ` ${m}دقیقه` : ''}` : `${m}دقیقه`
 }
 
 // ── TimeOff section ───────────────────────────────────────────────────────────
