@@ -127,12 +127,21 @@ class ProviderAvailableSlotsView(APIView):
         if not date_str:
             return Response({'error': 'پارامتر date الزامی است.'}, status=status.HTTP_400_BAD_REQUEST)
 
+        service_id_str = request.query_params.get('service_id')
+        if not service_id_str:
+            return Response({'error': 'پارامتر service_id الزامی است.'}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
             target_date = date.fromisoformat(date_str)
         except ValueError:
             return Response({'error': 'فرمت تاریخ نادرست است.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        slots = get_available_slots(provider, target_date)
+        try:
+            service_id = int(service_id_str)
+        except ValueError:
+            return Response({'error': 'service_id باید عدد باشد.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        slots = get_available_slots(provider, target_date, service_id=service_id)
         return Response(AvailableSlotsSerializer({'date': target_date, 'slots': slots}).data)
 
 

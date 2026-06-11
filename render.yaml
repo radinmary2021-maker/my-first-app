@@ -35,6 +35,8 @@ services:
         value: config.settings
       - key: DEBUG
         value: "False"
+      - key: DEBUG_OTP
+        value: "False"
       - key: SECRET_KEY
         generateValue: true        # Render generates a random value on first deploy
       - key: ALLOWED_HOSTS
