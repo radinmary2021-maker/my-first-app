@@ -17,6 +17,7 @@ const VerifyOtpPage       = lazy(() => import('./pages/auth/VerifyOtpPage'))
 const SetupProfilePage    = lazy(() => import('./pages/auth/SetupProfilePage'))
 const DoctorListPage      = lazy(() => import('./pages/public/DoctorListPage'))
 const DoctorDetailPage    = lazy(() => import('./pages/public/DoctorDetailPage'))
+const SearchPage          = lazy(() => import('./pages/public/SearchPage'))
 const BookAppointmentPage = lazy(() => import('./pages/patient/BookAppointmentPage'))
 const MyAppointmentsPage  = lazy(() => import('./pages/patient/MyAppointmentsPage'))
 const PaymentResultPage   = lazy(() => import('./pages/patient/PaymentResultPage'))
@@ -83,6 +84,9 @@ export default function App() {
 
             {/* Business onboarding */}
             <Route path="/create-business" element={<ProtectedRoute><CreateBusinessPage /></ProtectedRoute>} />
+
+            {/* Search */}
+            <Route path="/search"        element={<SearchPage />} />
 
             {/* Public providers */}
             <Route path="/providers"     element={<DoctorListPage />} />

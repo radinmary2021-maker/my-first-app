@@ -375,7 +375,7 @@ export default function HomePage() {
 
   function go(e) {
     e.preventDefault()
-    navigate(search.trim() ? `/providers?q=${encodeURIComponent(search.trim())}` : '/providers')
+    navigate(search.trim() ? `/search?q=${encodeURIComponent(search.trim())}` : '/providers')
   }
 
   const hov = (enterStyle, leaveStyle) => ({
@@ -531,7 +531,7 @@ export default function HomePage() {
           }}>
             <span style={{ color: '#5BA3B8', fontSize: 12, paddingTop: 2 }}>جستجوی سریع:</span>
             {['آرایشگاه', 'باشگاه', 'مشاوره', 'آموزشگاه', 'عکاسی'].map((s) => (
-              <button key={s} onClick={() => navigate('/providers')}
+              <button key={s} onClick={() => navigate(`/search?q=${encodeURIComponent(s)}`)}
                 style={{
                   background: 'rgba(255,255,255,.6)', border: '1px solid rgba(59,189,212,.35)',
                   borderRadius: 20, padding: '5px 14px', fontSize: 12,
@@ -586,7 +586,7 @@ export default function HomePage() {
               <button
                 key={label}
                 className="nv-sp"
-                onClick={() => navigate('/providers')}
+                onClick={() => navigate(`/search?q=${encodeURIComponent(label)}`)}
                 style={{
                   background: '#fff', border: '1px solid #F1F5F9', borderRadius: 20,
                   padding: '18px 8px 14px', display: 'flex', flexDirection: 'column',

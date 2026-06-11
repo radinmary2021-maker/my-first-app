@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import MainLayout from '../../layouts/MainLayout'
 import ErrorMessage from '../../components/ErrorMessage'
 import DoctorCard from '../../components/DoctorCard'
@@ -8,9 +9,16 @@ import { useProviders } from '../../hooks/useDoctors'
 const ALL = 'همه'
 
 export default function DoctorListPage() {
+  const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
   const { data: providers, isLoading, isError, error } = useProviders()
   const [selectedCategory, setSelectedCategory] = useState(ALL)
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState(searchParams.get('q') || '')
+
+  // Sync search state when URL q param changes
+  useEffect(() => {
+    setSearch(searchParams.get('q') || '')
+  }, [searchParams])
 
   const categories = useMemo(() => {
     if (!providers?.length) return []

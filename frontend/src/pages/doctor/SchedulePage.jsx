@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import MainLayout from '../../layouts/MainLayout'
 import Spinner from '../../components/Spinner'
 import ErrorMessage from '../../components/ErrorMessage'
@@ -198,8 +198,8 @@ function ServicesSection() {
 
 // ── Working hours section ─────────────────────────────────────────────────────
 
-function WorkingHoursSection() {
-  const { data: hours, isLoading, isError, refetch } = useMyWorkingHours()
+function WorkingHoursSection({ providerId }) {
+  const { data: hours, isLoading, isError, refetch } = useMyWorkingHours(providerId)
   const { mutate: addHours,    isPending: adding   } = useCreateWorkingHours()
   const { mutate: removeHours, isPending: removing } = useDeleteWorkingHours()
 
@@ -218,8 +218,10 @@ function WorkingHoursSection() {
       notify('ساعت شروع باید قبل از ساعت پایان باشد.', 'error')
       return
     }
+    const payload = { ...form, weekday: parseInt(form.weekday) }
+    if (providerId) payload.provider = parseInt(providerId)
     addHours(
-      { ...form, weekday: parseInt(form.weekday) },
+      payload,
       {
         onSuccess: () => {
           notify('ساعت کاری اضافه شد.', 'success')
@@ -310,8 +312,9 @@ function WorkingHoursSection() {
 
 // ── TimeOff section ───────────────────────────────────────────────────────────
 
-function TimeOffSection() {
-  const { data: timeoffs, isLoading, isError, refetch } = useMyTimeOffs()
+function TimeOffSection({ providerId }) {
+  const timeOffParams = providerId ? { provider_id: providerId } : {}
+  const { data: timeoffs, isLoading, isError, refetch } = useMyTimeOffs(timeOffParams)
   const { mutate: addTimeOff,    isPending: adding   } = useCreateTimeOff()
   const { mutate: removeTimeOff, isPending: removing } = useDeleteTimeOff()
 
@@ -322,6 +325,7 @@ function TimeOffSection() {
   function handleAdd(e) {
     e.preventDefault()
     const payload = { date: form.date, reason: form.reason.trim() }
+    if (providerId) payload.provider = parseInt(providerId)
     if (!form.is_full_day) {
       payload.start_time = form.start_time
       payload.end_time   = form.end_time
@@ -471,9 +475,11 @@ function GoLiveBanner({ navigate }) {
 
 export default function SchedulePage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const providerId = searchParams.get('provider_id') || null
 
   const { data: services } = useMyServicesList()
-  const { data: hours    } = useMyWorkingHours()
+  const { data: hours    } = useMyWorkingHours(providerId)
 
   const isLive = (services?.length ?? 0) > 0 && (hours?.length ?? 0) > 0
 
@@ -481,7 +487,7 @@ export default function SchedulePage() {
     <MainLayout>
       <div className="max-w-2xl space-y-10">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={() => navigate('/dashboard')}
             className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
@@ -490,18 +496,40 @@ export default function SchedulePage() {
             ← داشبورد
           </button>
           <span className="text-gray-300">/</span>
+          {providerId && (
+            <>
+              <button
+                onClick={() => navigate('/dashboard/providers')}
+                className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                ارائه‌دهندگان
+              </button>
+              <span className="text-gray-300">/</span>
+            </>
+          )}
           <h1 className="text-xl font-bold text-gray-800">مدیریت برنامه</h1>
         </div>
 
-        <p className="text-sm text-gray-500 -mt-6">
-          برنامه کاری و تنظیمات پذیرش نوبت خود را از اینجا مدیریت کنید.
-        </p>
+        {providerId && (
+          <div className="bg-cyan-50 border border-cyan-200 rounded-xl px-4 py-3 -mt-6 text-sm text-cyan-800 flex items-center gap-2">
+            <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
+            در حال ویرایش برنامه برای ارائه‌دهنده #{providerId}
+          </div>
+        )}
+
+        {!providerId && (
+          <p className="text-sm text-gray-500 -mt-6">
+            برنامه کاری و تنظیمات پذیرش نوبت خود را از اینجا مدیریت کنید.
+          </p>
+        )}
 
         {isLive && <GoLiveBanner navigate={navigate} />}
 
         <ServicesSection />
-        <WorkingHoursSection />
-        <TimeOffSection />
+        <WorkingHoursSection providerId={providerId} />
+        <TimeOffSection providerId={providerId} />
       </div>
     </MainLayout>
   )

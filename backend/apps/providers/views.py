@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.db.models import Q
 
 from apps.scheduling.models import Service
 from apps.scheduling.serializers import ServiceSerializer
@@ -32,6 +33,14 @@ class ProviderListView(APIView):
         category = request.query_params.get('category')
         if category:
             qs = qs.filter(category=category)
+        q = request.query_params.get('q', '').strip()
+        if q:
+            qs = qs.filter(
+                Q(user__full_name__icontains=q) |
+                Q(specialty__icontains=q) |
+                Q(business_name__icontains=q) |
+                Q(category__icontains=q)
+            )
         return Response(ProviderSerializer(qs, many=True).data)
 
 
