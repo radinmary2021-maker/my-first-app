@@ -26,10 +26,14 @@ export function getProviderServices(id) {
   return client.get(`/api/providers/${id}/services/`).then((r) => r.data)
 }
 
-/** Returns available slot times for a provider on a given date (legacy endpoint). */
-export function getProviderSlots(id, date) {
+/**
+ * Returns available slot times for a provider on a given date.
+ * serviceId is required — the backend uses it to determine slot duration.
+ */
+export function getProviderSlots(id, date, serviceId) {
+  if (!serviceId) throw new Error('serviceId is required to fetch slots')
   return client
-    .get(`/api/providers/${id}/slots/`, { params: { date } })
+    .get(`/api/providers/${id}/slots/`, { params: { date, service_id: serviceId } })
     .then((r) => r.data)
 }
 
