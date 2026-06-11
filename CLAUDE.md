@@ -62,5 +62,12 @@ These env vars must be set manually in Render dashboard for nobatic-api:
 - Owner: owner@test.com / Password123!
 - Customer: customer@test.com / Customer123!
 
+## Persian Text Notes
+- PostgreSQL ILIKE compares bytes exactly — visually identical Persian chars can differ at the byte level
+- Users may type Alef with Madda (U+0622 — آ) but stored data may use plain Alef (U+0627 — ا)
+- Fix: `_normalize_persian()` in `backend/apps/providers/views.py` normalizes query before DB filter
+- Characters normalized: آ/أ/إ → ا, ي → ی, ك → ک, ة → ه
+- TODO: also normalize on write (model `save()`) so stored data is consistent for future records
+
 ## Current Open Tasks
 - [ ] Investigate and fix the 502 error on /api/providers/ in dev (Vite proxy → localhost:8000 not running; needs local Django setup or .env pointing to Render)
