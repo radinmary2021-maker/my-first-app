@@ -34,3 +34,6 @@ frontend/test-results/
 # Claude Code tool state
 .claude/
 frontend/.claude/
+
+# Seed / seeding helpers (may contain OTPs and JWT tokens)
+seed/
