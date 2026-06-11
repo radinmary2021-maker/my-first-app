@@ -25,6 +25,30 @@ from .serializers import (
 from .services import ProviderService, get_available_slots
 
 
+def _normalize_persian(text: str) -> str:
+    """
+    Normalize Persian/Arabic character variants so that user queries match
+    stored text regardless of which Unicode codepoint was used.
+
+    Common mismatches:
+      آ (U+0622, Alef+Madda) ↔ ا (U+0627, plain Alef)
+      أ (U+0623, Alef+Hamza above) ↔ ا
+      إ (U+0625, Alef+Hamza below) ↔ ا
+      ي (U+064A, Arabic Yeh)  ↔ ی (U+06CC, Farsi Yeh)
+      ك (U+0643, Arabic Kaf)  ↔ ک (U+06A9, Persian Kaf)
+      ة (U+0629, Teh Marbuta) → ه (U+0647, He)
+    """
+    return (
+        text
+        .replace('آ', 'ا')  # آ → ا
+        .replace('أ', 'ا')  # أ → ا
+        .replace('إ', 'ا')  # إ → ا
+        .replace('ي', 'ی')  # ي → ی
+        .replace('ك', 'ک')  # ك → ک
+        .replace('ة', 'ه')  # ة → ه
+    )
+
+
 class ProviderListView(APIView):
     permission_classes = [AllowAny]
 
@@ -33,7 +57,7 @@ class ProviderListView(APIView):
         category = request.query_params.get('category')
         if category:
             qs = qs.filter(category=category)
-        q = request.query_params.get('q', '').strip()
+        q = _normalize_persian(request.query_params.get('q', '').strip())
         if q:
             qs = qs.filter(
                 Q(user__full_name__icontains=q) |
