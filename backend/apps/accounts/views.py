@@ -49,13 +49,14 @@ class SendOTPView(APIView):
             from apps.notifications.tasks import send_otp_sms
             send_otp_sms.delay(phone, code)
         else:
-            # No Kavenegar key — skip SMS entirely.
-            # Log OTP only in DEBUG so it never leaks in production.
-            if settings.DEBUG:
-                logger.info(f"Development OTP for {phone}: {code}")
+            # No Kavenegar key — log OTP so it can be found in dev/staging logs.
+            logger.info(f"[OTP] {phone}: {code}")
 
         response = {'success': True, 'message': 'OTP sent successfully'}
-        if settings.DEBUG and settings.DEBUG_OTP:
+        # DEBUG_OTP alone is sufficient — no need for DEBUG=True as well.
+        # This lets staging/production use DEBUG_OTP=True without exposing the
+        # debug toolbar or detailed error pages (which DEBUG=True would enable).
+        if settings.DEBUG_OTP:
             response['debug_otp'] = code
 
         return Response(response, status=status.HTTP_200_OK)
