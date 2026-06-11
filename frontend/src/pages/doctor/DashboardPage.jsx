@@ -12,6 +12,7 @@ import {
   useCompleteAppointment,
   useNoShowAppointment,
   useProviderCancelAppointment,
+  useConfirmAppointment,
 } from '../../hooks/useAppointments'
 
 const STATUS_LABEL = {
@@ -40,6 +41,7 @@ const STATUS_FILTERS = [
 ]
 
 const DIALOG_COPY = {
+  confirm:  { question: 'آیا این نوبت را تأیید می‌کنید؟',       toast: 'نوبت تأیید شد.' },
   complete: { question: 'آیا این نوبت به پایان رسیده؟',         toast: 'نوبت تکمیل شد.' },
   no_show:  { question: 'آیا مشتری غیبت کرده؟',               toast: 'غیبت ثبت شد.' },
   cancel:   { question: 'آیا می‌خواهید این نوبت را لغو کنید؟', toast: 'نوبت لغو شد.' },
@@ -69,10 +71,11 @@ export default function DashboardPage() {
   const providerResult = useProviderAppointments(params,  { enabled: !isOwner })
   const { data: appointments, isLoading, isError, refetch } = isOwner ? businessResult : providerResult
 
-  const { mutate: complete,  isPending: completing  } = useCompleteAppointment()
-  const { mutate: noShow,    isPending: markingNoShow } = useNoShowAppointment()
-  const { mutate: cancel,    isPending: cancelling   } = useProviderCancelAppointment()
-  const actionPending = completing || markingNoShow || cancelling
+  const { mutate: confirm,   isPending: confirming    } = useConfirmAppointment()
+  const { mutate: complete,  isPending: completing    } = useCompleteAppointment()
+  const { mutate: noShow,    isPending: markingNoShow  } = useNoShowAppointment()
+  const { mutate: cancel,    isPending: cancelling     } = useProviderCancelAppointment()
+  const actionPending = confirming || completing || markingNoShow || cancelling
 
   // ── Metrics ────────────────────────────────────────────────────────────────
   const todayActive    = isOwner ? countToday(appointments, ['confirmed', 'pending']) : 0
@@ -95,7 +98,8 @@ export default function DashboardPage() {
       onSuccess: () => { setConfirmAction(null); notify(copy.toast, 'success') },
       onError:   (err) => { setConfirmAction(null); notify(err?.response?.data?.error || 'خطایی رخ داد.', 'error') },
     }
-    if (action === 'complete') complete(id, handlers)
+    if (action === 'confirm')  confirm(id, handlers)
+    else if (action === 'complete') complete(id, handlers)
     else if (action === 'no_show') noShow(id, handlers)
     else if (action === 'cancel')  cancel(id, handlers)
   }
@@ -283,6 +287,7 @@ function EmptyState({ isOwner, hasFilter }) {
 
 function AppointmentRow({ appt, showProvider, onAction, disabled }) {
   const isConfirmed = appt.status === 'confirmed'
+  const isPending   = appt.status === 'pending'
   const isToday     = appt.date === todayStr()
 
   return (
@@ -329,6 +334,25 @@ function AppointmentRow({ appt, showProvider, onAction, disabled }) {
           <span className="font-mono text-gray-800 truncate block">{appt.service_name || appt.tracking_code}</span>
         </div>
       </div>
+
+      {isPending && (
+        <div className="flex gap-2">
+          <button
+            onClick={() => onAction('confirm')}
+            disabled={disabled}
+            className="flex-1 bg-cyan-500 text-white text-xs py-2.5 rounded-xl hover:bg-cyan-600 disabled:opacity-50 transition-colors min-h-[40px]"
+          >
+            تأیید نوبت
+          </button>
+          <button
+            onClick={() => onAction('cancel')}
+            disabled={disabled}
+            className="flex-1 bg-red-50 text-red-600 text-xs py-2.5 rounded-xl hover:bg-red-100 disabled:opacity-50 transition-colors min-h-[40px]"
+          >
+            لغو
+          </button>
+        </div>
+      )}
 
       {isConfirmed && (
         <div className="flex gap-2">

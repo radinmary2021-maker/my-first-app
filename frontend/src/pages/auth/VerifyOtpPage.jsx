@@ -66,16 +66,19 @@ export default function VerifyOtpPage() {
       login({ access: data.access, refresh: data.refresh, user: data.user })
 
       // Role-aware redirect priority:
-      //  1. Returning owner / provider  → straight to dashboard
-      //  2. Brand-new user (no name)    → complete profile first
-      //  3. Named user without business → onboarding business creation
+      //  1. Has business               → dashboard
+      //  2. Brand-new user (no name)   → complete profile + role selection
+      //  3. Returning owner, no biz    → create business
+      //  4. Returning customer         → providers list
       let destination
       if (data.business) {
         destination = '/dashboard'
       } else if (!data.user.full_name) {
         destination = '/setup-profile'
-      } else {
+      } else if (data.user.role === 'owner') {
         destination = '/create-business'
+      } else {
+        destination = '/providers'
       }
       navigate(destination, { replace: true })
     } catch (err) {

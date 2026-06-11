@@ -37,6 +37,11 @@ export default function MainLayout({ children }) {
           نوبت‌های من
         </NavLink>
       )}
+      {user && !isBiz && (
+        <NavLink to="/create-business" className={navLinkCls} onClick={() => setMobileOpen(false)}>
+          ثبت کسب‌وکار
+        </NavLink>
+      )}
       {isBiz && (
         <NavLink to="/dashboard" end className={navLinkCls} onClick={() => setMobileOpen(false)}>
           داشبورد
@@ -50,6 +55,11 @@ export default function MainLayout({ children }) {
       {isBiz && (
         <NavLink to="/dashboard/schedule" className={navLinkCls} onClick={() => setMobileOpen(false)}>
           برنامه کاری
+        </NavLink>
+      )}
+      {isBiz && (
+        <NavLink to="/dashboard/settings" className={navLinkCls} onClick={() => setMobileOpen(false)}>
+          تنظیمات
         </NavLink>
       )}
     </>

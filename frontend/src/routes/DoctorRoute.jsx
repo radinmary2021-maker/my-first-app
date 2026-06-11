@@ -27,7 +27,7 @@ export default function DoctorRoute({ children }) {
 
   if (!user) return <Navigate to="/login" replace />
 
-  if (!isBusinessUser(user.role)) return <Navigate to="/providers" replace />
+  if (!isBusinessUser(user.role)) return <Navigate to="/create-business" replace />
 
   return children
 }

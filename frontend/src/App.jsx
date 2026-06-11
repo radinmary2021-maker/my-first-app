@@ -26,6 +26,7 @@ const DashboardPage       = lazy(() => import('./pages/doctor/DashboardPage'))
 const SchedulePage        = lazy(() => import('./pages/doctor/SchedulePage'))
 const CreateBusinessPage  = lazy(() => import('./pages/owner/CreateBusinessPage'))
 const ProvidersPage       = lazy(() => import('./pages/owner/ProvidersPage'))
+const SettingsPage        = lazy(() => import('./pages/owner/SettingsPage'))
 
 // ── Query client ───────────────────────────────────────────────────────────
 const queryClient = new QueryClient({
@@ -101,9 +102,10 @@ export default function App() {
             <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
 
             {/* Doctor / Owner dashboard */}
-            <Route path="/dashboard"           element={<DoctorRoute><DashboardPage /></DoctorRoute>} />
+            <Route path="/dashboard"            element={<DoctorRoute><DashboardPage /></DoctorRoute>} />
             <Route path="/dashboard/schedule"  element={<DoctorRoute><SchedulePage /></DoctorRoute>} />
             <Route path="/dashboard/providers" element={<DoctorRoute><ProvidersPage /></DoctorRoute>} />
+            <Route path="/dashboard/settings"  element={<DoctorRoute><SettingsPage /></DoctorRoute>} />
 
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

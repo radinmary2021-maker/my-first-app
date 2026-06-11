@@ -1,22 +1,3 @@
-/**
- * pages/owner/CreateBusinessPage.jsx
- *
- * Self-service business creation for new owners.
- *
- * Role-staleness fix:
- *   After POST /api/v1/businesses/, the backend elevates the user's DB role
- *   from 'customer' → 'owner', but the JWT in the auth store is stale.
- *   We call getCurrentUser() immediately after creation and update the store
- *   with setUser() so DoctorRoute sees the correct role without a page refresh.
- *
- * Flow:
- *   1. Render form (name + category)
- *   2. POST /api/v1/businesses/
- *   3. GET  /api/auth/me/  → fresh user object with role='owner'
- *   4. setUser(freshUser)  → auth store updated
- *   5. navigate('/dashboard')  → DoctorRoute now passes
- */
-
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
@@ -32,12 +13,14 @@ export default function CreateBusinessPage() {
 
   const [name,              setName]              = useState('')
   const [category,          setCategory]          = useState('')
+  const [description,       setDescription]       = useState('')
+  const [phone,             setPhone]             = useState('')
+  const [address,           setAddress]           = useState('')
   const [categories,        setCategories]        = useState([])
   const [loadingCategories, setLoadingCategories] = useState(true)
   const [loading,           setLoading]           = useState(false)
   const [error,             setError]             = useState('')
 
-  // Load the category list once on mount
   useEffect(() => {
     getBusinessCategories()
       .then((data) => {
@@ -65,19 +48,21 @@ export default function CreateBusinessPage() {
     setLoading(true)
 
     try {
-      // 1. Create the business
-      await createMyBusiness({ name: trimmedName, category })
+      await createMyBusiness({
+        name:        trimmedName,
+        category,
+        description: description.trim(),
+        phone:       phone.trim(),
+        address:     address.trim(),
+      })
 
-      // 2. Refresh the user object — backend has elevated role to 'owner'
-      //    This is the key step that fixes role staleness.
-      const response   = await getCurrentUser()
+      const response = await getCurrentUser()
       setUser(response.data)
 
-      // 3. Navigate to dashboard — DoctorRoute now sees role='owner'
       navigate('/dashboard', { replace: true })
     } catch (err) {
       const data  = err?.response?.data
-      const field = data?.name?.[0] || data?.category?.[0]
+      const field = data?.name?.[0] || data?.category?.[0] || data?.phone?.[0]
       const msg   = field || data?.error || 'خطا در ایجاد کسب‌وکار. دوباره تلاش کنید.'
       setError(msg)
     } finally {
@@ -94,7 +79,7 @@ export default function CreateBusinessPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4" dir="rtl">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-8" dir="rtl">
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 w-full max-w-sm p-8 space-y-6">
 
         {/* Step indicator */}
@@ -159,6 +144,58 @@ export default function CreateBusinessPage() {
             </select>
           </div>
 
+          <div>
+            <label htmlFor="business-description" className="block text-sm font-medium text-gray-700 mb-1">
+              توضیحات
+            </label>
+            <textarea
+              id="business-description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="معرفی کوتاه کسب‌وکار شما..."
+              rows={3}
+              disabled={loading}
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm resize-none
+                         focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent
+                         disabled:bg-gray-50"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="business-phone" className="block text-sm font-medium text-gray-700 mb-1">
+              شماره تماس
+            </label>
+            <input
+              id="business-phone"
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="مثال: 02112345678"
+              dir="ltr"
+              disabled={loading}
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm
+                         focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent
+                         disabled:bg-gray-50"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="business-address" className="block text-sm font-medium text-gray-700 mb-1">
+              آدرس
+            </label>
+            <input
+              id="business-address"
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="آدرس کسب‌وکار"
+              disabled={loading}
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm
+                         focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent
+                         disabled:bg-gray-50"
+            />
+          </div>
+
           <ErrorMessage message={error} />
 
           <button
@@ -172,15 +209,14 @@ export default function CreateBusinessPage() {
           </button>
         </form>
 
-        {/* Escape hatch for customers who ended up here by accident */}
         <p className="text-center text-sm text-gray-400">
           می‌خواهید نوبت بگیرید؟{' '}
           <button
             type="button"
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/providers')}
             className="text-cyan-600 hover:text-cyan-800 font-medium underline-offset-2 hover:underline"
           >
-            بازگشت به صفحه اصلی
+            مشاهده ارائه‌دهندگان
           </button>
         </p>
 

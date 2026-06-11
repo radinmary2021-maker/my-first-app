@@ -6,6 +6,7 @@ import {
   getBusinessAppointments,
   completeAppointment,
   noShowAppointment,
+  confirmAppointment,
 } from '../api/appointments'
 
 export const BUSINESS_APPOINTMENTS_KEY = ['business-appointments']
@@ -85,3 +86,14 @@ export function useProviderCancelAppointment() {
 }
 /** @deprecated */
 export const useDoctorCancelAppointment = useProviderCancelAppointment
+
+export function useConfirmAppointment() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id) => confirmAppointment(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: PROVIDER_APPOINTMENTS_KEY })
+      queryClient.invalidateQueries({ queryKey: BUSINESS_APPOINTMENTS_KEY })
+    },
+  })
+}

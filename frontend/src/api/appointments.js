@@ -44,3 +44,7 @@ export function completeAppointment(id) {
 export function noShowAppointment(id) {
   return client.post(`/api/appointments/${id}/no-show/`).then((r) => r.data)
 }
+
+export function confirmAppointment(id) {
+  return client.post(`/api/appointments/${id}/confirm/`).then((r) => r.data)
+}

@@ -10,6 +10,7 @@ export default function SetupProfilePage() {
   const user = useAuthStore((s) => s.user)
 
   const [fullName, setFullName] = useState('')
+  const [accountType, setAccountType] = useState('customer')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -25,9 +26,11 @@ export default function SetupProfilePage() {
     try {
       const updatedUser = await updateProfile({ fullName: trimmed })
       setUser(updatedUser)
-      // Profile is now complete — move to business onboarding.
-      // Customers who do not want to create a business can navigate away from there.
-      navigate('/create-business', { replace: true })
+      if (accountType === 'owner') {
+        navigate('/create-business', { replace: true })
+      } else {
+        navigate('/providers', { replace: true })
+      }
     } catch (err) {
       const msg = err?.response?.data?.full_name?.[0] || err?.response?.data?.error
       setError(msg || 'خطا در ذخیره اطلاعات. دوباره تلاش کنید.')
@@ -42,17 +45,17 @@ export default function SetupProfilePage() {
         <div>
           <h1 className="text-2xl font-bold text-gray-800">تکمیل پروفایل</h1>
           <p className="text-sm text-gray-500 mt-1">
-            لطفاً نام خود را وارد کنید تا بتوانید از سیستم استفاده کنید.
+            لطفاً اطلاعات خود را وارد کنید.
           </p>
           {user?.phone && (
             <p className="text-xs text-gray-400 mt-1 font-mono" dir="ltr">{user.phone}</p>
           )}
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label htmlFor="full-name" className="block text-sm font-medium text-gray-700 mb-1">
-              نام و نام خانوادگی
+              نام و نام خانوادگی <span className="text-red-400">*</span>
             </label>
             <input
               id="full-name"
@@ -63,8 +66,40 @@ export default function SetupProfilePage() {
               autoFocus
               autoComplete="name"
               disabled={loading}
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent disabled:bg-gray-50"
             />
+          </div>
+
+          <div>
+            <p className="block text-sm font-medium text-gray-700 mb-2">نوع حساب</p>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setAccountType('customer')}
+                className={`border rounded-xl px-4 py-3 text-sm font-medium transition-all ${
+                  accountType === 'customer'
+                    ? 'border-cyan-500 bg-cyan-50 text-cyan-700'
+                    : 'border-gray-200 text-gray-600 hover:border-cyan-300'
+                }`}
+              >
+                <span className="block text-xl mb-1">🙋</span>
+                مشتری
+                <span className="block text-xs font-normal text-gray-400 mt-0.5">رزرو نوبت</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setAccountType('owner')}
+                className={`border rounded-xl px-4 py-3 text-sm font-medium transition-all ${
+                  accountType === 'owner'
+                    ? 'border-cyan-500 bg-cyan-50 text-cyan-700'
+                    : 'border-gray-200 text-gray-600 hover:border-cyan-300'
+                }`}
+              >
+                <span className="block text-xl mb-1">🏢</span>
+                صاحب کسب‌وکار
+                <span className="block text-xs font-normal text-gray-400 mt-0.5">مدیریت نوبت</span>
+              </button>
+            </div>
           </div>
 
           <ErrorMessage message={error} />
