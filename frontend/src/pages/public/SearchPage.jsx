@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useSearchParams, useNavigate, Link } from 'react-router-dom'
 import MainLayout from '../../layouts/MainLayout'
 import Spinner from '../../components/Spinner'
+import { SearchIcon, BuildingIcon, UserIcon, AlertCircleIcon } from '../../components/Icon'
 import { getProviders } from '../../api/providers'
 
 export default function SearchPage() {
@@ -45,16 +46,15 @@ export default function SearchPage() {
         {/* Search bar */}
         <form onSubmit={handleSearch} className="flex gap-2">
           <div className="relative flex-1">
-            <svg className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
-                 fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+            <SearchIcon
+              size={16}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400"
+            />
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="نام کسب‌وکار، تخصص یا ارائه‌دهنده..."
+              placeholder="نام کسب‌وکار، تخصص یا دسته‌بندی..."
               autoFocus
               className="w-full pr-10 pl-4 py-3 border border-gray-300 rounded-xl text-sm
                          focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
@@ -62,7 +62,8 @@ export default function SearchPage() {
           </div>
           <button
             type="submit"
-            className="bg-cyan-500 text-white px-5 py-3 rounded-xl text-sm font-medium hover:bg-cyan-600 transition-colors"
+            className="text-white px-5 py-3 rounded-xl text-sm font-medium hover:opacity-90 transition-opacity"
+            style={{ backgroundColor: 'var(--color-brand)' }}
           >
             جستجو
           </button>
@@ -72,12 +73,21 @@ export default function SearchPage() {
         {loading && <div className="flex justify-center py-12"><Spinner /></div>}
 
         {/* Error */}
-        {error && <p className="text-sm text-red-600 text-center py-8">{error}</p>}
+        {error && (
+          <div className="flex items-center gap-2 py-8 justify-center text-sm"
+               style={{ color: 'var(--color-danger)' }}>
+            <AlertCircleIcon size={16} />
+            {error}
+          </div>
+        )}
 
         {/* No query yet */}
         {!q && !loading && (
-          <div className="text-center py-16 text-gray-400">
-            <p className="text-4xl mb-3">🔍</p>
+          <div className="text-center py-16" style={{ color: 'var(--color-text-tertiary)' }}>
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-3"
+                 style={{ backgroundColor: 'var(--color-surface)' }}>
+              <SearchIcon size={32} />
+            </div>
             <p className="text-sm">عبارت جستجو وارد کنید</p>
           </div>
         )}
@@ -85,14 +95,18 @@ export default function SearchPage() {
         {/* No results */}
         {q && !loading && !error && results?.length === 0 && (
           <div className="text-center py-16 space-y-3">
-            <p className="text-4xl">😕</p>
-            <p className="text-gray-600 font-medium">نتیجه‌ای یافت نشد</p>
-            <p className="text-sm text-gray-400">
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto"
+                 style={{ backgroundColor: 'var(--color-surface)' }}>
+              <SearchIcon size={32} style={{ color: 'var(--color-text-tertiary)' }} />
+            </div>
+            <p className="font-medium" style={{ color: 'var(--color-text-primary)' }}>نتیجه‌ای یافت نشد</p>
+            <p className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
               جستجوی «{q}» نتیجه‌ای نداشت. کلمه دیگری امتحان کنید.
             </p>
             <button
               onClick={() => navigate('/providers')}
-              className="text-sm text-cyan-600 hover:underline font-medium"
+              className="text-sm font-medium hover:underline"
+              style={{ color: 'var(--color-brand)' }}
             >
               مشاهده همه ارائه‌دهندگان
             </button>
@@ -102,17 +116,22 @@ export default function SearchPage() {
         {/* Results */}
         {!loading && !error && results && results.length > 0 && (
           <div className="space-y-8">
-            <p className="text-sm text-gray-500">
-              <span className="font-medium text-gray-800">{results.length}</span> نتیجه برای «{q}»
+            <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
+              <span className="font-medium" style={{ color: 'var(--color-text-primary)' }}>
+                {results.length}
+              </span>{' '}
+              نتیجه برای «{q}»
             </p>
 
             {/* Businesses section */}
             {businesses.length > 0 && (
               <section className="space-y-3">
-                <h2 className="text-base font-bold text-gray-700 flex items-center gap-2">
-                  <span className="text-lg">🏢</span>
+                <h2 className="text-base font-bold flex items-center gap-2"
+                    style={{ color: 'var(--color-text-primary)' }}>
+                  <BuildingIcon size={18} style={{ color: 'var(--color-brand)' }} />
                   کسب‌وکارها
-                  <span className="text-xs font-normal text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                  <span className="text-xs font-normal px-2 py-0.5 rounded-full"
+                        style={{ color: 'var(--color-text-tertiary)', backgroundColor: 'var(--color-surface)' }}>
                     {businesses.length}
                   </span>
                 </h2>
@@ -122,9 +141,12 @@ export default function SearchPage() {
                       key={biz.name}
                       className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm"
                     >
-                      <p className="font-semibold text-gray-800 truncate">{biz.name}</p>
+                      <p className="font-semibold truncate" style={{ color: 'var(--color-text-primary)' }}>
+                        {biz.name}
+                      </p>
                       {biz.category && (
-                        <p className="text-xs text-cyan-600 mt-1 bg-cyan-50 inline-block px-2 py-0.5 rounded-full">
+                        <p className="text-xs mt-1 inline-block px-2 py-0.5 rounded-full"
+                           style={{ color: 'var(--color-brand)', backgroundColor: 'var(--color-brand-light)' }}>
                           {biz.category}
                         </p>
                       )}
@@ -136,10 +158,12 @@ export default function SearchPage() {
 
             {/* Providers section */}
             <section className="space-y-3">
-              <h2 className="text-base font-bold text-gray-700 flex items-center gap-2">
-                <span className="text-lg">👤</span>
+              <h2 className="text-base font-bold flex items-center gap-2"
+                  style={{ color: 'var(--color-text-primary)' }}>
+                <UserIcon size={18} style={{ color: 'var(--color-brand)' }} />
                 ارائه‌دهندگان
-                <span className="text-xs font-normal text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                <span className="text-xs font-normal px-2 py-0.5 rounded-full"
+                      style={{ color: 'var(--color-text-tertiary)', backgroundColor: 'var(--color-surface)' }}>
                   {results.length}
                 </span>
               </h2>
@@ -151,17 +175,25 @@ export default function SearchPage() {
                     className="flex items-center justify-between bg-white border border-gray-100 rounded-xl p-4 shadow-sm hover:border-cyan-200 hover:shadow-md transition-all"
                   >
                     <div className="min-w-0">
-                      <p className="font-semibold text-gray-800 truncate">{p.full_name}</p>
+                      <p className="font-semibold truncate" style={{ color: 'var(--color-text-primary)' }}>
+                        {p.business_name || p.full_name}
+                      </p>
                       <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                        {p.specialty && (
-                          <span className="text-xs text-gray-500">{p.specialty}</span>
+                        {(p.category_display || p.specialty) && (
+                          <span className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
+                            {p.category_display || p.specialty}
+                          </span>
                         )}
-                        {p.business_name && (
-                          <span className="text-xs text-cyan-600">{p.business_name}</span>
+                        {p.business_name && p.full_name && (
+                          <span className="text-xs" style={{ color: 'var(--color-brand)' }}>
+                            {p.full_name}
+                          </span>
                         )}
                       </div>
                     </div>
-                    <span className="text-cyan-500 text-sm shrink-0 mr-2">رزرو ←</span>
+                    <span className="text-sm shrink-0 mr-2" style={{ color: 'var(--color-brand)' }}>
+                      رزرو ←
+                    </span>
                   </Link>
                 ))}
               </div>
