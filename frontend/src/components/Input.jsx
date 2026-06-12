@@ -1,25 +1,33 @@
+import { forwardRef } from 'react'
+
 /**
  * Input primitive
  *
- * label:    renders a <label> above the input
- * error:    turns border red and shows error text below
- * hint:     shows helper text below (hidden when error is present)
- * iconStart: icon rendered on the right side (RTL start)
- * iconEnd:   icon rendered on the left side (RTL end)
- * forceLtr:  sets dir="ltr" + text-left — use for phone number fields
- *            inside RTL forms (digits must not be visually reversed)
+ * label:     renders a <label> above the input
+ * error:     turns border red and shows error text below
+ * hint:      shows helper text below (hidden when error is present)
+ * iconStart: icon rendered on the right side (RTL inline-start)
+ * iconEnd:   icon rendered on the left side (RTL inline-end)
+ * forceLtr:  sets dir="ltr" + text-left — required for phone/OTP fields
+ *            inside RTL forms so digits don't get visually reversed
+ *
+ * forwardRef allows parent to call inputRef.current?.focus() for
+ * focus management (e.g. auto-focus after OTP error).
  */
-export default function Input({
-  label,
-  error,
-  hint,
-  iconStart,
-  iconEnd,
-  forceLtr  = false,
-  className = '',
-  id,
-  ...props
-}) {
+const Input = forwardRef(function Input(
+  {
+    label,
+    error,
+    hint,
+    iconStart,
+    iconEnd,
+    forceLtr  = false,
+    className = '',
+    id,
+    ...props
+  },
+  ref
+) {
   const inputId = id ?? (typeof label === 'string' ? label.replace(/\s+/g, '-').toLowerCase() : undefined)
 
   return (
@@ -46,14 +54,15 @@ export default function Input({
         )}
 
         <input
+          ref={ref}
           id={inputId}
           dir={forceLtr ? 'ltr' : undefined}
           className={[
             'input',
-            iconStart   ? 'pr-10'      : '',
-            iconEnd     ? 'pl-10'      : '',
-            error       ? 'input-error': '',
-            forceLtr    ? 'text-left tracking-widest' : '',
+            iconStart ? 'pr-10'       : '',
+            iconEnd   ? 'pl-10'       : '',
+            error     ? 'input-error' : '',
+            forceLtr  ? 'text-left tracking-widest' : '',
             className,
           ].filter(Boolean).join(' ')}
           {...props}
@@ -82,4 +91,6 @@ export default function Input({
       )}
     </div>
   )
-}
+})
+
+export default Input
