@@ -2,93 +2,76 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation, Navigate } from 'react-router-dom'
 import { verifyOtp, sendOtp } from '../../api/auth'
 import { useAuthStore } from '../../store/authStore'
+import Button from '../../components/Button'
+import Input from '../../components/Input'
 import ErrorMessage from '../../components/ErrorMessage'
+import { ChevronRightIcon } from '../../components/Icon'
 
-const OTP_LENGTH = 6
+const OTP_LENGTH     = 6
 const RESEND_SECONDS = 120
 
 export default function VerifyOtpPage() {
-  const navigate = useNavigate()
-  const { state } = useLocation()
-  const login = useAuthStore((s) => s.login)
+  const navigate   = useNavigate()
+  const { state }  = useLocation()
+  const login      = useAuthStore((s) => s.login)
 
-  // All hooks must be called unconditionally before any early return
-  const [digits, setDigits] = useState(Array(OTP_LENGTH).fill(''))
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  // All hooks before any conditional return
+  const [otp, setOtp]           = useState('')
+  const [loading, setLoading]   = useState(false)
+  const [error, setError]       = useState('')
   const [countdown, setCountdown] = useState(RESEND_SECONDS)
-  const inputRefs = useRef([])
+  const inputRef = useRef(null)
 
   useEffect(() => {
     if (countdown <= 0) return
-    const id = setInterval(() => setCountdown((c) => c - 1), 1000)
+    const id = setInterval(() => setCountdown((c) => (c <= 1 ? 0 : c - 1)), 1000)
     return () => clearInterval(id)
   }, [countdown])
 
-  // Early return AFTER all hooks
+  // Guard: must arrive here via navigate('/verify-otp', { state: { phone } })
   if (!state?.phone) return <Navigate to="/login" replace />
 
-  const phone = state.phone
-  const otp = digits.join('')
+  const phone      = state.phone
+  const isComplete = otp.length === OTP_LENGTH
 
-  function handleDigitChange(index, value) {
-    if (!/^\d*$/.test(value)) return
-    const next = [...digits]
-    next[index] = value.slice(-1)
-    setDigits(next)
-    if (value && index < OTP_LENGTH - 1) {
-      inputRefs.current[index + 1]?.focus()
-    }
-  }
-
-  function handleKeyDown(index, e) {
-    if (e.key === 'Backspace' && !digits[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus()
-    }
-  }
-
-  function handlePaste(e) {
-    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, OTP_LENGTH)
-    if (pasted.length === OTP_LENGTH) {
-      setDigits(pasted.split(''))
-      inputRefs.current[OTP_LENGTH - 1]?.focus()
-    }
-  }
-
-  async function handleSubmit(e) {
-    e.preventDefault()
-    if (otp.length < OTP_LENGTH) return
+  // ── Core submit logic (accepts code directly to avoid stale-state reads) ──
+  async function submitOtp(code) {
+    if (loading) return
     setError('')
     setLoading(true)
-
     try {
-      const { data } = await verifyOtp(phone, otp)
+      const { data } = await verifyOtp(phone, code)
       login({ access: data.access, refresh: data.refresh, user: data.user })
 
-      // Role-aware redirect priority:
-      //  1. Has business               → dashboard
-      //  2. Brand-new user (no name)   → complete profile + role selection
-      //  3. Returning owner, no biz    → create business
-      //  4. Returning customer         → providers list
+      // Role-aware redirect — same logic as before, authStore untouched
       let destination
-      if (data.business) {
-        destination = '/dashboard'
-      } else if (!data.user.full_name) {
-        destination = '/setup-profile'
-      } else if (data.user.role === 'owner') {
-        destination = '/create-business'
-      } else {
-        destination = '/providers'
-      }
+      if      (data.business)            destination = '/dashboard'
+      else if (!data.user.full_name)     destination = '/setup-profile'
+      else if (data.user.role === 'owner') destination = '/create-business'
+      else                               destination = '/providers'
+
       navigate(destination, { replace: true })
     } catch (err) {
       const msg = err.response?.data?.error
       setError(msg || 'کد وارد شده نادرست است.')
-      setDigits(Array(OTP_LENGTH).fill(''))
-      inputRefs.current[0]?.focus()
+      setOtp('')                       // clear input
+      inputRef.current?.focus()        // return focus for immediate retry
     } finally {
       setLoading(false)
     }
+  }
+
+  // ── Input handler — auto-submits when all digits entered ──────────────────
+  function handleChange(e) {
+    const val = e.target.value.replace(/\D/g, '').slice(0, OTP_LENGTH)
+    setOtp(val)
+    if (val.length === OTP_LENGTH) submitOtp(val)
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    if (!isComplete) return
+    submitOtp(otp)
   }
 
   async function handleResend() {
@@ -96,78 +79,104 @@ export default function VerifyOtpPage() {
     try {
       await sendOtp(phone)
       setCountdown(RESEND_SECONDS)
-      setDigits(Array(OTP_LENGTH).fill(''))
-      inputRefs.current[0]?.focus()
-    } catch {
-      setError('ارسال مجدد ناموفق بود.')
+      setOtp('')
+      inputRef.current?.focus()
+    } catch (err) {
+      if (err.response?.status === 429) {
+        const s = err.response?.data?.retry_after_seconds ?? 60
+        setCountdown(s)
+      }
+      setError('ارسال مجدد ناموفق بود. کمی صبر کنید.')
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4" dir="rtl">
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 w-full max-w-sm p-8">
-        <button
-          onClick={() => navigate('/login')}
-          className="text-cyan-500 text-sm mb-6 flex items-center gap-1 hover:text-cyan-700"
-        >
-          ← تغییر شماره
-        </button>
+    <div
+      className="min-h-screen flex items-center justify-center px-4"
+      style={{ backgroundColor: 'var(--color-surface)' }}
+      dir="rtl"
+    >
+      <div className="card w-full max-w-sm p-8">
 
-        <h1 className="text-2xl font-bold text-gray-800 mb-1">کد تأیید</h1>
-        <p className="text-sm text-gray-500 mb-8">
-          کد ۶ رقمی ارسال شده به{' '}
-          <span className="font-mono text-gray-700" dir="ltr">{phone}</span>{' '}
+        {/* Back to login */}
+        <Button
+          variant="ghost"
+          size="sm"
+          type="button"
+          className="mb-6 -mr-2"
+          onClick={() => navigate('/login')}
+        >
+          <ChevronRightIcon size={16} />
+          تغییر شماره
+        </Button>
+
+        <h1 className="text-xl font-bold mb-1" style={{ color: 'var(--color-text-primary)' }}>
+          کد تأیید
+        </h1>
+        <p className="text-sm mb-7" style={{ color: 'var(--color-text-secondary)' }}>
+          کد {OTP_LENGTH} رقمی ارسال شده به{' '}
+          <span className="font-mono font-medium" style={{ color: 'var(--color-text-primary)' }} dir="ltr">
+            {phone}
+          </span>{' '}
           را وارد کنید
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="flex gap-2 justify-center" dir="ltr" onPaste={handlePaste}>
-            {digits.map((d, i) => (
-              <input
-                key={i}
-                ref={(el) => (inputRefs.current[i] = el)}
-                type="text"
-                inputMode="numeric"
-                maxLength={1}
-                value={d}
-                onChange={(e) => handleDigitChange(i, e.target.value)}
-                onKeyDown={(e) => handleKeyDown(i, e)}
-                className="w-11 h-12 text-center text-lg font-mono border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                disabled={loading}
-                autoFocus={i === 0}
-              />
-            ))}
-          </div>
+        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+          {/* Single input — forceLtr so digits stay LTR; tracking-widest for visual spacing */}
+          <Input
+            ref={inputRef}
+            type="text"
+            inputMode="numeric"
+            value={otp}
+            onChange={handleChange}
+            placeholder="——————"
+            forceLtr
+            maxLength={OTP_LENGTH}
+            disabled={loading}
+            autoFocus
+            autoComplete="one-time-code"
+            className="text-center text-2xl py-4"
+          />
 
-          <ErrorMessage message={error} />
+          {error && <ErrorMessage message={error} />}
 
-          <button
+          <Button
             type="submit"
-            disabled={loading || otp.length < OTP_LENGTH}
-            className="w-full bg-cyan-500 text-white py-3 rounded-lg text-sm font-medium hover:bg-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            fullWidth
+            size="lg"
+            loading={loading}
+            disabled={!isComplete}
           >
-            {loading ? 'در حال بررسی...' : 'ورود'}
-          </button>
+            تأیید و ورود
+          </Button>
         </form>
 
-        <div className="mt-4 text-center text-sm text-gray-500">
+        {/* Resend section */}
+        <div className="mt-5 text-center text-sm" style={{ color: 'var(--color-text-secondary)' }}>
           {countdown > 0 ? (
-            <span>
-              ارسال مجدد تا{' '}
-              <span className="font-mono text-gray-700" dir="ltr">
+            <span className="flex items-center justify-center gap-1.5">
+              <span>ارسال مجدد تا</span>
+              <span
+                className="font-mono font-bold tabular-nums"
+                style={{ color: 'var(--color-text-primary)' }}
+                dir="ltr"
+              >
                 {String(Math.floor(countdown / 60)).padStart(2, '0')}:
                 {String(countdown % 60).padStart(2, '0')}
               </span>
             </span>
           ) : (
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
+              type="button"
               onClick={handleResend}
-              className="text-cyan-600 hover:text-cyan-800 font-medium"
             >
               ارسال مجدد کد
-            </button>
+            </Button>
           )}
         </div>
+
       </div>
     </div>
   )
