@@ -36,11 +36,11 @@ export default function ProfilePage() {
 
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
           <div>
-            <p className="text-xs text-gray-400 mb-1">شماره موبایل</p>
+            <p className="text-xs text-gray-500 mb-1">شماره موبایل</p>
             <p className="font-mono text-gray-700">{user?.phone}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-400 mb-1">نقش</p>
+            <p className="text-xs text-gray-500 mb-1">نقش</p>
             <p className="text-gray-700">
               {user?.role === 'customer'  && 'مشتری'}
               {user?.role === 'owner'     && 'صاحب کسب‌وکار'}
@@ -60,7 +60,7 @@ export default function ProfilePage() {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder="نام خود را وارد کنید"
-              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-200"
+              className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
             />
           </div>
           <button

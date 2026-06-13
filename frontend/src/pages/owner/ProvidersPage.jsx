@@ -29,6 +29,7 @@ import Spinner from '../../components/Spinner'
 import ErrorMessage from '../../components/ErrorMessage'
 import { notify } from '../../utils/toast'
 import { useAuthStore } from '../../store/authStore'
+import Badge from '../../components/Badge'
 import {
   useBusinessProviders,
   useCreateBusinessProvider,
@@ -296,15 +297,9 @@ function ProviderCard({ provider, isOwner, onEdit, onDeactivate, onReactivate, o
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <p className="font-bold text-gray-800">{provider.full_name || '—'}</p>
-            <span
-              className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${
-                provider.is_active
-                  ? 'bg-green-100 text-green-700'
-                  : 'bg-gray-100 text-gray-500'
-              }`}
-            >
+            <Badge variant={provider.is_active ? 'success' : 'neutral'}>
               {provider.is_active ? 'فعال' : 'غیرفعال'}
-            </span>
+            </Badge>
           </div>
           <p className="text-xs text-gray-400 mt-0.5 font-mono">{provider.phone}</p>
           {provider.specialty && (
