@@ -6,6 +6,7 @@ import ErrorMessage from '../../components/ErrorMessage'
 import DatePicker from '../../components/DatePicker'
 import SlotPicker from '../../components/SlotPicker'
 import DoctorAvatar from '../../components/DoctorAvatar'
+import { CATEGORY_ICON, BriefcaseIcon, ClockIcon, AlertCircleIcon, ChevronRightIcon } from '../../components/Icon'
 import { useProvider, useProviderSlots, useProviderServices } from '../../hooks/useDoctors'
 import { formatFee } from '../../utils/date'
 
@@ -29,11 +30,11 @@ export default function DoctorDetailPage() {
   function handleProceed() {
     navigate(`/book/${id}`, {
       state: {
-        providerId:  Number(id),
-        date:        selectedDate,
-        slot:        selectedSlot,
-        serviceId:   selectedService?.id   ?? null,
-        serviceName: selectedService?.name ?? null,
+        providerId:   Number(id),
+        date:         selectedDate,
+        slot:         selectedSlot,
+        serviceId:    selectedService?.id    ?? null,
+        serviceName:  selectedService?.name  ?? null,
         servicePrice: selectedService?.price ?? null,
       },
     })
@@ -47,8 +48,13 @@ export default function DoctorDetailPage() {
     return (
       <MainLayout>
         <div className="space-y-4">
-          <button onClick={() => navigate('/providers')} className="text-cyan-500 text-sm hover:text-cyan-700">
-            ← بازگشت به لیست ارائه‌دهندگان
+          <button
+            onClick={() => navigate('/providers')}
+            className="flex items-center gap-1 text-sm"
+            style={{ color: 'var(--color-brand)' }}
+          >
+            <ChevronRightIcon size={14} />
+            بازگشت به لیست ارائه‌دهندگان
           </button>
           <ErrorMessage message="ارائه‌دهنده مورد نظر یافت نشد" />
         </div>
@@ -56,6 +62,7 @@ export default function DoctorDetailPage() {
     )
   }
 
+  const CategoryIcon    = CATEGORY_ICON[provider.category] ?? BriefcaseIcon
   const hasServices     = services && services.length > 0
   const serviceRequired = hasServices
   const canPickDate     = !serviceRequired || selectedService !== null
@@ -65,8 +72,13 @@ export default function DoctorDetailPage() {
       <div className="space-y-8 max-w-2xl">
 
         {/* Back */}
-        <button onClick={() => navigate('/providers')} className="text-cyan-500 text-sm hover:text-cyan-700">
-          ← بازگشت به لیست
+        <button
+          onClick={() => navigate('/providers')}
+          className="flex items-center gap-1 text-sm"
+          style={{ color: 'var(--color-brand)' }}
+        >
+          <ChevronRightIcon size={14} />
+          بازگشت به لیست
         </button>
 
         {/* Provider info card */}
@@ -74,8 +86,16 @@ export default function DoctorDetailPage() {
           <div className="flex items-center gap-4">
             <DoctorAvatar name={provider.business_name || provider.full_name} size={72} />
             <div>
-              <h1 className="text-xl font-bold text-gray-800">{provider.business_name || provider.full_name}</h1>
-              <p className="text-sm text-cyan-600 mt-0.5">{provider.category_display || provider.specialty}</p>
+              <h1 className="text-xl font-bold" style={{ color: 'var(--color-text-primary)' }}>
+                {provider.business_name || provider.full_name}
+              </h1>
+              <div className="flex items-center gap-1.5 mt-0.5"
+                   style={{ color: 'var(--color-brand)' }}>
+                <CategoryIcon size={14} />
+                <p className="text-sm font-medium">
+                  {provider.category_display || provider.specialty}
+                </p>
+              </div>
               <span className="inline-block mt-1.5 text-xs bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-full px-2.5 py-0.5">
                 فعال
               </span>
@@ -83,13 +103,22 @@ export default function DoctorDetailPage() {
           </div>
 
           {provider.bio && (
-            <p className="text-sm text-gray-600 leading-relaxed">{provider.bio}</p>
+            <p className="text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
+              {provider.bio}
+            </p>
           )}
 
           {!hasServices && (
-            <div className="flex flex-wrap gap-4 text-sm text-gray-600 pt-2 border-t border-gray-50">
-              <span>⏱ مدت نوبت: {provider.slot_duration} دقیقه</span>
-              <span>💰 هزینه خدمت: {formatFee(provider.service_fee)}</span>
+            <div className="flex flex-wrap gap-4 text-sm border-t pt-3"
+                 style={{ color: 'var(--color-text-secondary)', borderColor: 'var(--color-border)' }}>
+              <span className="flex items-center gap-1.5">
+                <ClockIcon size={14} style={{ color: 'var(--color-brand)' }} />
+                مدت نوبت: {provider.slot_duration} دقیقه
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span style={{ color: 'var(--color-brand)' }}>💰</span>
+                هزینه خدمت: {formatFee(provider.service_fee)}
+              </span>
             </div>
           )}
         </div>
@@ -99,7 +128,9 @@ export default function DoctorDetailPage() {
 
         {hasServices && (
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
-            <h2 className="text-sm font-semibold text-gray-700">۱. انتخاب خدمت</h2>
+            <h2 className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+              ۱. انتخاب خدمت
+            </h2>
             <div className="grid gap-3">
               {services.map((svc) => {
                 const active = selectedService?.id === svc.id
@@ -119,22 +150,31 @@ export default function DoctorDetailPage() {
                   >
                     <div className="flex items-center justify-between">
                       <div className="space-y-0.5">
-                        <p className="text-sm font-medium text-gray-800">{svc.name}</p>
+                        <p className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>
+                          {svc.name}
+                        </p>
                         {svc.description && (
-                          <p className="text-xs text-gray-500 line-clamp-1">{svc.description}</p>
+                          <p className="text-xs line-clamp-1" style={{ color: 'var(--color-text-tertiary)' }}>
+                            {svc.description}
+                          </p>
                         )}
                       </div>
                       <div className="text-left shrink-0 space-y-0.5">
-                        <p className="text-xs text-gray-500 font-mono">{svc.duration_minutes} دقیقه</p>
+                        <p className="text-xs font-mono" style={{ color: 'var(--color-text-secondary)' }}>
+                          {svc.duration_minutes} دقیقه
+                        </p>
                         {Number(svc.price) > 0 && (
-                          <p className="text-xs text-emerald-700 font-medium">
+                          <p className="text-xs font-medium text-emerald-700">
                             {Number(svc.price).toLocaleString('fa-IR')} تومان
                           </p>
                         )}
                       </div>
                     </div>
                     {active && (
-                      <span className="inline-block mt-2 text-xs text-cyan-600 font-medium">✓ انتخاب شد</span>
+                      <span className="inline-block mt-2 text-xs font-medium"
+                            style={{ color: 'var(--color-brand)' }}>
+                        ✓ انتخاب شد
+                      </span>
                     )}
                   </button>
                 )
@@ -143,15 +183,12 @@ export default function DoctorDetailPage() {
           </div>
         )}
 
-        {/* Step 2 — guidance when service is required but not yet selected */}
+        {/* Guidance: service required but not selected */}
         {serviceRequired && !canPickDate && (
-          <div className="bg-amber-50 border border-amber-100 rounded-2xl p-4 flex items-center gap-3">
-            <svg className="w-5 h-5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24"
-                 stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round"
-                    d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20A10 10 0 0012 2z" />
-            </svg>
-            <p className="text-sm text-amber-700">
+          <div className="rounded-2xl p-4 flex items-center gap-3"
+               style={{ backgroundColor: 'var(--color-warning-bg)', border: '1px solid rgba(245,158,11,.2)' }}>
+            <AlertCircleIcon size={20} style={{ color: 'var(--color-warning)', flexShrink: 0 }} />
+            <p className="text-sm" style={{ color: '#92400E' }}>
               برای ادامه، ابتدا خدمت مورد نظر را از لیست بالا انتخاب کنید.
             </p>
           </div>
@@ -161,7 +198,9 @@ export default function DoctorDetailPage() {
         {canPickDate && (
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
             {hasServices && (
-              <h2 className="text-sm font-semibold text-gray-700 mb-4">۲. انتخاب تاریخ</h2>
+              <h2 className="text-sm font-semibold mb-4" style={{ color: 'var(--color-text-primary)' }}>
+                ۲. انتخاب تاریخ
+              </h2>
             )}
             <DatePicker
               availableWeekdays={provider.available_weekdays ?? []}
@@ -175,10 +214,12 @@ export default function DoctorDetailPage() {
         {selectedDate && (
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
             {hasServices && (
-              <h2 className="text-sm font-semibold text-gray-700 mb-4">۳. انتخاب ساعت</h2>
+              <h2 className="text-sm font-semibold mb-4" style={{ color: 'var(--color-text-primary)' }}>
+                ۳. انتخاب ساعت
+              </h2>
             )}
             {!hasServices ? (
-              <p className="text-sm text-gray-400 text-center py-6">
+              <p className="text-sm text-center py-6" style={{ color: 'var(--color-text-tertiary)' }}>
                 این ارائه‌دهنده هنوز خدمتی تعریف نکرده است.
               </p>
             ) : slotsError ? (
@@ -202,32 +243,34 @@ export default function DoctorDetailPage() {
           </div>
         )}
 
-        {/* Proceed */}
+        {/* Proceed to booking */}
         {selectedSlot && (
-          <div className="bg-cyan-50 rounded-2xl border border-cyan-100 p-4 space-y-3">
-            <div className="text-sm text-gray-700 space-y-1">
+          <div className="rounded-2xl border p-4 space-y-3"
+               style={{ backgroundColor: 'var(--color-brand-light)', borderColor: 'rgba(6,182,212,.2)' }}>
+            <div className="text-sm space-y-1" style={{ color: 'var(--color-text-primary)' }}>
               <p>
-                <span className="text-gray-500">ارائه‌دهنده: </span>
+                <span style={{ color: 'var(--color-text-secondary)' }}>ارائه‌دهنده: </span>
                 <span className="font-medium">{provider.business_name || provider.full_name}</span>
               </p>
               {selectedService && (
                 <p>
-                  <span className="text-gray-500">خدمت: </span>
+                  <span style={{ color: 'var(--color-text-secondary)' }}>خدمت: </span>
                   <span className="font-medium">{selectedService.name}</span>
                 </p>
               )}
               <p>
-                <span className="text-gray-500">تاریخ: </span>
+                <span style={{ color: 'var(--color-text-secondary)' }}>تاریخ: </span>
                 <span className="font-medium" dir="ltr">{selectedDate}</span>
               </p>
               <p>
-                <span className="text-gray-500">ساعت: </span>
+                <span style={{ color: 'var(--color-text-secondary)' }}>ساعت: </span>
                 <span className="font-medium font-mono">{selectedSlot}</span>
               </p>
             </div>
             <button
               onClick={handleProceed}
-              className="w-full bg-cyan-500 text-white py-3 rounded-xl text-sm font-medium hover:bg-cyan-600 transition-colors"
+              className="w-full text-white py-3 rounded-xl text-sm font-medium hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: 'var(--color-brand)' }}
             >
               ادامه و رزرو نوبت
             </button>

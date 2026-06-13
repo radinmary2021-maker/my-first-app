@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { getProviders, getProvider, getProviderSlots, getProviderServices, getMyServices } from '../api/providers'
+import { getProviders, getProvider, getProviderSlots, getProviderServices, getMyServices, getBusinessCategories } from '../api/providers'
 
 /** @deprecated use useProviders */
 export function useDoctors() { return useProviders() }
@@ -52,5 +52,19 @@ export function useMyServices() {
     queryKey: ['my-services'],
     queryFn:  getMyServices,
     staleTime: 5 * 60_000,
+  })
+}
+
+/**
+ * Fetch all available business categories from the API.
+ * Returns the full list regardless of whether any providers exist in a category.
+ * Each item shape: { value: string, label: string } — falls back gracefully
+ * if the API returns a plain string array.
+ */
+export function useBusinessCategories() {
+  return useQuery({
+    queryKey: ['business-categories'],
+    queryFn:  getBusinessCategories,
+    staleTime: 30 * 60_000,
   })
 }

@@ -291,14 +291,14 @@ function BusinessPattern() {
    Static data
 ════════════════════════════════════════════════════ */
 const CATEGORIES = [
-  { label: 'آرایش و زیبایی',     Ill: ScissorsIll },
-  { label: 'ورزش و تناسب اندام', Ill: DumbbellIll },
-  { label: 'آموزش و تدریس',      Ill: BookIll     },
-  { label: 'عکاسی و فیلم',       Ill: CameraIll   },
-  { label: 'مشاوره تخصصی',       Ill: ConsultIll  },
-  { label: 'حیوانات خانگی',      Ill: PawIll      },
-  { label: 'آشپزی و شیرینی',     Ill: ChefIll     },
-  { label: 'خدمات تخصصی',        Ill: WrenchIll   },
+  { label: 'آرایش و زیبایی',     slug: 'beauty',        Ill: ScissorsIll },
+  { label: 'ورزش و تناسب اندام', slug: 'fitness',       Ill: DumbbellIll },
+  { label: 'آموزش و تدریس',      slug: 'education',     Ill: BookIll     },
+  { label: 'عکاسی و فیلم',       q:    'عکاسی',         Ill: CameraIll   },
+  { label: 'مشاوره تخصصی',       slug: 'psychological', Ill: ConsultIll  },
+  { label: 'حیوانات خانگی',      slug: 'veterinary',    Ill: PawIll      },
+  { label: 'آشپزی و شیرینی',     q:    'آشپزی',         Ill: ChefIll     },
+  { label: 'خدمات تخصصی',        slug: 'automotive',    Ill: WrenchIll   },
 ]
 
 const TRUST = [
@@ -582,11 +582,15 @@ export default function HomePage() {
             onAction={() => navigate('/providers')}
           />
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(120px,1fr))', gap: 14 }}>
-            {CATEGORIES.map(({ label, Ill }) => (
+            {CATEGORIES.map(({ label, slug, q, Ill }) => (
               <button
                 key={label}
                 className="nv-sp"
-                onClick={() => navigate(`/search?q=${encodeURIComponent(label)}`)}
+                onClick={() => {
+                  if (slug) navigate(`/providers?category=${slug}`)
+                  else if (q) navigate(`/search?q=${encodeURIComponent(q)}`)
+                  else navigate('/providers')
+                }}
                 style={{
                   background: '#fff', border: '1px solid #F1F5F9', borderRadius: 20,
                   padding: '18px 8px 14px', display: 'flex', flexDirection: 'column',

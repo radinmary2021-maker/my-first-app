@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { formatFee } from '../utils/date'
 import DoctorAvatar from './DoctorAvatar'
+import { CATEGORY_ICON, BriefcaseIcon } from './Icon'
 
 const WEEKDAY_NAMES = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج']
 
@@ -37,6 +38,8 @@ export default function DoctorCard({ doctor, provider }) {
   const navigate = useNavigate()
   const rating = parseFloat(getRating(p.id))
 
+  const CategoryIcon = CATEGORY_ICON[p.category] ?? BriefcaseIcon
+
   return (
     <div
       onClick={() => navigate(`/providers/${p.id}`)}
@@ -64,9 +67,14 @@ export default function DoctorCard({ doctor, provider }) {
                 فعال
               </span>
             </div>
-            <p className="text-xs font-semibold text-cyan-600 mb-1.5">
-              {p.category_display || p.specialty}
-            </p>
+
+            {/* Category with icon */}
+            <div className="flex items-center gap-1 text-xs font-semibold mb-1.5"
+                 style={{ color: 'var(--color-brand)' }}>
+              <CategoryIcon size={12} />
+              <span>{p.category_display || p.specialty}</span>
+            </div>
+
             <StarRating value={rating} />
           </div>
         </div>
