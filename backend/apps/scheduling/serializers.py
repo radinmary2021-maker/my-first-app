@@ -60,7 +60,7 @@ class WorkingHoursSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'weekday_display', 'created_at', 'updated_at']
         extra_kwargs = {
-            'provider': {'required': False, 'allow_null': True},
+            'provider': {'required': False, 'allow_null': True, 'default': None},
         }
 
     def get_weekday_display(self, obj: WorkingHours) -> str:

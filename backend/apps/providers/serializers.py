@@ -20,13 +20,14 @@ class ProviderSerializer(serializers.ModelSerializer):
         ]
 
     def get_available_weekdays(self, obj) -> list[int]:
-        """Returns weekdays the provider has active WorkingHours entries."""
+        """Returns weekdays with active WorkingHours — provider-specific first, business-wide fallback."""
         from apps.scheduling.models import WorkingHours
-        return list(
-            WorkingHours.objects.filter(provider=obj, is_active=True)
-            .order_by('weekday')
-            .values_list('weekday', flat=True)
-        )
+        qs = WorkingHours.objects.filter(provider=obj, is_active=True)
+        if not qs.exists():
+            qs = WorkingHours.objects.filter(
+                business=obj.business, provider__isnull=True, is_active=True
+            )
+        return list(qs.order_by('weekday').values_list('weekday', flat=True))
 
 
 class UpdateProviderProfileSerializer(serializers.ModelSerializer):
