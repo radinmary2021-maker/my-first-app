@@ -2,11 +2,12 @@
  * Nobatic – Homepage
  * Universal business booking SaaS — not healthcare-specific
  */
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { useProviders } from '../../hooks/useDoctors'
 import DoctorCard from '../../components/DoctorCard'
+import Logo from '../../components/Logo'
 
 /* ════════════════════════════════════════════════════
    Tiny SVG helpers
@@ -35,151 +36,30 @@ const ArrowLeft = () => (
     <polyline points="12 19 5 12 12 5"/>
   </Svg>
 )
-
-/* ════════════════════════════════════════════════════
-   Business category illustrations — clean, minimal SVGs
-════════════════════════════════════════════════════ */
-function IllBg({ fill, children }) {
+function StarIcon({ filled }) {
   return (
-    <svg viewBox="0 0 80 80" width="84" height="84" fill="none" aria-hidden="true">
-      <circle cx="40" cy="40" r="38" fill={fill}/>
-      {children}
+    <svg width="14" height="14" viewBox="0 0 24 24"
+         fill={filled ? '#F59E0B' : 'none'} stroke="#F59E0B"
+         strokeWidth="1.8" aria-hidden="true">
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/>
     </svg>
   )
 }
 
-/* آرایش و زیبایی — Scissors */
-function ScissorsIll() {
-  return (
-    <IllBg fill="#FDF2F8">
-      <circle cx="27" cy="28" r="9" stroke="#EC4899" strokeWidth="3"/>
-      <circle cx="53" cy="28" r="9" stroke="#EC4899" strokeWidth="3"/>
-      <line x1="33" y1="34" x2="60" y2="66" stroke="#EC4899" strokeWidth="3" strokeLinecap="round"/>
-      <line x1="47" y1="34" x2="20" y2="66" stroke="#EC4899" strokeWidth="3" strokeLinecap="round"/>
-      <line x1="27" y1="19" x2="40" y2="44" stroke="#F9A8D4" strokeWidth="2" strokeLinecap="round"/>
-      <line x1="53" y1="19" x2="40" y2="44" stroke="#F9A8D4" strokeWidth="2" strokeLinecap="round"/>
-    </IllBg>
-  )
-}
-
-/* ورزش و تناسب اندام — Dumbbell */
-function DumbbellIll() {
-  return (
-    <IllBg fill="#ECFDF5">
-      <rect x="13" y="33" width="11" height="14" rx="4" fill="#10B981"/>
-      <rect x="56" y="33" width="11" height="14" rx="4" fill="#10B981"/>
-      <rect x="19" y="29" width="7" height="22" rx="3" fill="#059669"/>
-      <rect x="54" y="29" width="7" height="22" rx="3" fill="#059669"/>
-      <rect x="26" y="36" width="28" height="8" rx="4" fill="#34D399"/>
-      <rect x="15" y="36" width="4" height="4" rx="1" fill="rgba(255,255,255,0.45)"/>
-      <rect x="61" y="36" width="4" height="4" rx="1" fill="rgba(255,255,255,0.45)"/>
-    </IllBg>
-  )
-}
-
-/* آموزش و تدریس — Open Book */
-function BookIll() {
-  return (
-    <IllBg fill="#EEF2FF">
-      <path d="M17 22 L40 30 L40 64 L17 55 Z" fill="#6366F1" opacity=".9"/>
-      <path d="M63 22 L40 30 L40 64 L63 55 Z" fill="#818CF8" opacity=".8"/>
-      <line x1="40" y1="30" x2="40" y2="64" stroke="rgba(255,255,255,0.5)" strokeWidth="2"/>
-      <line x1="22" y1="37" x2="37" y2="40" stroke="rgba(255,255,255,0.55)" strokeWidth="1.5" strokeLinecap="round"/>
-      <line x1="22" y1="43" x2="37" y2="46" stroke="rgba(255,255,255,0.55)" strokeWidth="1.5" strokeLinecap="round"/>
-      <line x1="22" y1="49" x2="34" y2="52" stroke="rgba(255,255,255,0.55)" strokeWidth="1.5" strokeLinecap="round"/>
-      <line x1="43" y1="37" x2="58" y2="34" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round"/>
-      <line x1="43" y1="43" x2="58" y2="40" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round"/>
-      <line x1="43" y1="49" x2="55" y2="46" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round"/>
-    </IllBg>
-  )
-}
-
-/* عکاسی و فیلم — Camera */
-function CameraIll() {
-  return (
-    <IllBg fill="#FFFBEB">
-      <rect x="11" y="27" width="58" height="38" rx="7" fill="#F59E0B" opacity=".9"/>
-      <path d="M27 27 L33 18 L47 18 L53 27Z" fill="#D97706"/>
-      <circle cx="40" cy="46" r="13" stroke="#FDE68A" strokeWidth="2" fill="rgba(255,255,255,0.18)"/>
-      <circle cx="40" cy="46" r="8" fill="#1E293B" opacity=".65"/>
-      <circle cx="40" cy="46" r="4.5" fill="#0F172A" opacity=".75"/>
-      <circle cx="36" cy="43" r="2.5" fill="white" opacity=".55"/>
-      <rect x="52" y="30" width="10" height="7" rx="2" fill="#FDE68A"/>
-    </IllBg>
-  )
-}
-
-/* مشاوره تخصصی — Chat bubbles */
-function ConsultIll() {
-  return (
-    <IllBg fill="#F5F3FF">
-      <rect x="11" y="17" width="38" height="26" rx="10" fill="#7C3AED" opacity=".85"/>
-      <path d="M24 43 L17 52" stroke="#7C3AED" strokeWidth="3.5" strokeLinecap="round" opacity=".85"/>
-      <rect x="31" y="35" width="38" height="26" rx="10" fill="#A78BFA" opacity=".7"/>
-      <path d="M55 61 L62 69" stroke="#A78BFA" strokeWidth="3.5" strokeLinecap="round" opacity=".7"/>
-      <circle cx="22" cy="30" r="2.5" fill="white" opacity=".8"/>
-      <circle cx="30" cy="30" r="2.5" fill="white" opacity=".8"/>
-      <circle cx="38" cy="30" r="2.5" fill="white" opacity=".8"/>
-      <circle cx="41" cy="48" r="2.5" fill="white" opacity=".7"/>
-      <circle cx="49" cy="48" r="2.5" fill="white" opacity=".7"/>
-      <circle cx="57" cy="48" r="2.5" fill="white" opacity=".7"/>
-    </IllBg>
-  )
-}
-
-/* حیوانات خانگی — Paw print */
-function PawIll() {
-  return (
-    <IllBg fill="#FFF7ED">
-      <ellipse cx="40" cy="54" rx="16" ry="12" fill="#FB923C" opacity=".9"/>
-      <ellipse cx="23" cy="37" rx="7" ry="8" fill="#FB923C" opacity=".8" transform="rotate(-20,23,37)"/>
-      <ellipse cx="34" cy="30" rx="6" ry="8" fill="#FB923C" opacity=".85"/>
-      <ellipse cx="46" cy="30" rx="6" ry="8" fill="#FB923C" opacity=".85"/>
-      <ellipse cx="57" cy="37" rx="7" ry="8" fill="#FB923C" opacity=".8" transform="rotate(20,57,37)"/>
-      <ellipse cx="38" cy="52" rx="5" ry="4" fill="rgba(255,255,255,0.3)"/>
-    </IllBg>
-  )
-}
-
-/* آشپزی و شیرینی — Chef hat */
-function ChefIll() {
-  return (
-    <IllBg fill="#FFF1F2">
-      <rect x="25" y="55" width="30" height="9" rx="3" fill="#E11D48" opacity=".75"/>
-      <rect x="28" y="47" width="24" height="11" rx="2" fill="#FB7185" opacity=".65"/>
-      <ellipse cx="40" cy="36" rx="17" ry="18" fill="white" stroke="#FDA4AF" strokeWidth="2"/>
-      <ellipse cx="29" cy="37" rx="8" ry="10" fill="white" stroke="#FDA4AF" strokeWidth="1.5"/>
-      <ellipse cx="51" cy="37" rx="8" ry="10" fill="white" stroke="#FDA4AF" strokeWidth="1.5"/>
-      <path d="M35 64 Q33 69 35 74" stroke="#FDA4AF" strokeWidth="2" strokeLinecap="round"/>
-      <path d="M40 64 Q38 69 40 74" stroke="#FDA4AF" strokeWidth="2" strokeLinecap="round"/>
-      <path d="M45 64 Q43 69 45 74" stroke="#FDA4AF" strokeWidth="2" strokeLinecap="round"/>
-    </IllBg>
-  )
-}
-
-/* خدمات تخصصی — Wrench */
-function WrenchIll() {
-  return (
-    <IllBg fill="#F1F5F9">
-      <path d="M36 63 L56 23 Q64 13 69 19 Q75 25 65 31 L45 71 Q39 77 33 71 Q27 65 36 63Z"
-            fill="#475569" opacity=".75"/>
-      <path d="M36 63 L56 23 Q64 13 69 19"
-            fill="none" stroke="#94A3B8" strokeWidth="3" strokeLinecap="round"/>
-      <circle cx="65" cy="22" r="9" fill="none" stroke="#64748B" strokeWidth="4"/>
-      <circle cx="65" cy="22" r="4" fill="#64748B"/>
-      <path d="M39 56 L54 28" stroke="rgba(255,255,255,.3)" strokeWidth="3" strokeLinecap="round"/>
-    </IllBg>
-  )
-}
+/* ════════════════════════════════════════════════════
+   Unsplash URL builder
+   Source: images.unsplash.com — free to embed, attribution
+   required per Unsplash guidelines (hotlinking is permitted).
+════════════════════════════════════════════════════ */
+const UNSPLASH = (id, w = 400, h = 300) =>
+  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&h=${h}&q=80`
 
 /* ════════════════════════════════════════════════════
    Business-themed background pattern
-   Abstract geometric: calendars, clocks, stars, checkmarks
 ════════════════════════════════════════════════════ */
 function BusinessPattern() {
   const S  = '#3BBDD4'
   const sw = 2
-
   return (
     <svg
       aria-hidden="true"
@@ -191,7 +71,6 @@ function BusinessPattern() {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      {/* ── Calendar large — top-right ── */}
       <g transform="translate(1010,14) rotate(8) scale(2.0)" opacity=".24" strokeWidth={sw}>
         <rect x="0" y="8" width="50" height="44" rx="5"/>
         <line x1="0" y1="19" x2="50" y2="19"/>
@@ -199,8 +78,6 @@ function BusinessPattern() {
         <line x1="0" y1="29" x2="50" y2="29"/><line x1="0" y1="39" x2="50" y2="39"/>
         <line x1="17" y1="19" x2="17" y2="52"/><line x1="33" y1="19" x2="33" y2="52"/>
       </g>
-
-      {/* ── Calendar small — bottom-left ── */}
       <g transform="translate(55,305) rotate(-5) scale(1.4)" opacity=".2" strokeWidth={sw}>
         <rect x="0" y="8" width="50" height="44" rx="5"/>
         <line x1="0" y1="19" x2="50" y2="19"/>
@@ -208,75 +85,53 @@ function BusinessPattern() {
         <line x1="0" y1="29" x2="50" y2="29"/>
         <line x1="17" y1="19" x2="17" y2="52"/>
       </g>
-
-      {/* ── Clock — right side ── */}
       <g transform="translate(1120,195) scale(1.8)" opacity=".2" strokeWidth={sw}>
         <circle cx="20" cy="20" r="18"/>
         <line x1="20" y1="20" x2="20" y2="7" strokeWidth={sw + .5}/>
         <line x1="20" y1="20" x2="30" y2="26"/>
         <circle cx="20" cy="20" r="2.5" fill={S}/>
       </g>
-
-      {/* ── Clock small — top-left ── */}
       <g transform="translate(28,45) scale(1.25)" opacity=".18" strokeWidth={sw}>
         <circle cx="20" cy="20" r="18"/>
         <line x1="20" y1="20" x2="20" y2="7"/>
         <line x1="20" y1="20" x2="29" y2="26"/>
         <circle cx="20" cy="20" r="2" fill={S}/>
       </g>
-
-      {/* ── Star — top-right area ── */}
       <g transform="translate(756,32) scale(1.4)" opacity=".19" strokeWidth={sw}>
         <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
       </g>
-
-      {/* ── Star small — left center ── */}
       <g transform="translate(72,190) scale(1.05)" opacity=".17" strokeWidth={sw}>
         <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
       </g>
-
-      {/* ── Checkmark circle — bottom-right ── */}
       <g transform="translate(882,368) scale(1.8)" opacity=".2" strokeWidth={sw}>
         <circle cx="12" cy="12" r="10"/>
         <polyline points="7,12 10,15 17,8"/>
       </g>
-
-      {/* ── Checkmark circle — top center ── */}
       <g transform="translate(518,16) scale(1.3)" opacity=".17" strokeWidth={sw}>
         <circle cx="12" cy="12" r="10"/>
         <polyline points="7,12 10,15 17,8"/>
       </g>
-
-      {/* ── Sparkle / asterisk ── */}
       <g transform="translate(305,355) scale(1.5)" opacity=".17" strokeWidth={sw - .3}>
         <line x1="12" y1="2"  x2="12" y2="22"/>
         <line x1="2"  y1="12" x2="22" y2="12"/>
         <line x1="5"  y1="5"  x2="19" y2="19" opacity=".55"/>
         <line x1="19" y1="5"  x2="5"  y2="19" opacity=".55"/>
       </g>
-
-      {/* ── Notification bell — top area ── */}
       <g transform="translate(895,20) rotate(10) scale(1.6)" opacity=".2" strokeWidth={sw}>
         <path d="M6 10 C6 6 9 3 12 3 C15 3 18 6 18 10 L18 17 L4 17 Z"/>
         <line x1="10" y1="17" x2="14" y2="17"/>
         <line x1="12" y1="19" x2="12" y2="22"/>
       </g>
-
-      {/* ── Chat bubble — bottom area ── */}
       <g transform="translate(190,385) scale(1.4)" opacity=".17" strokeWidth={sw}>
         <rect x="2" y="2" width="20" height="16" rx="3"/>
         <path d="M6 22 L2 18 L8 18"/>
         <line x1="6" y1="8"  x2="18" y2="8"/>
         <line x1="6" y1="12" x2="14" y2="12"/>
       </g>
-
-      {/* ── User/person — center-left ── */}
       <g transform="translate(460,390) scale(1.2)" opacity=".17" strokeWidth={sw}>
         <circle cx="12" cy="8" r="5"/>
         <path d="M3 21 C3 16 7 13 12 13 C17 13 21 16 21 21"/>
       </g>
-
-      {/* ── Small dots scattered ── */}
       {[
         [160,400],[700,350],[450,80],[1150,350],[250,130],[1000,420],
         [580,390],[820,60],[100,280],[350,160],
@@ -290,21 +145,118 @@ function BusinessPattern() {
 /* ════════════════════════════════════════════════════
    Static data
 ════════════════════════════════════════════════════ */
+
+/**
+ * Category cards — Unsplash photo IDs (hotlink permitted, free to use).
+ * Photo selection: one well-known Unsplash photo per category.
+ * URL format: https://images.unsplash.com/{id}?auto=format&fit=crop&w=400&h=300&q=80
+ */
 const CATEGORIES = [
-  { label: 'آرایش و زیبایی',     slug: 'beauty',        Ill: ScissorsIll },
-  { label: 'ورزش و تناسب اندام', slug: 'fitness',       Ill: DumbbellIll },
-  { label: 'آموزش و تدریس',      slug: 'education',     Ill: BookIll     },
-  { label: 'عکاسی و فیلم',       q:    'عکاسی',         Ill: CameraIll   },
-  { label: 'مشاوره تخصصی',       slug: 'psychological', Ill: ConsultIll  },
-  { label: 'حیوانات خانگی',      slug: 'veterinary',    Ill: PawIll      },
-  { label: 'آشپزی و شیرینی',     q:    'آشپزی',         Ill: ChefIll     },
-  { label: 'خدمات تخصصی',        slug: 'automotive',    Ill: WrenchIll   },
+  {
+    label: 'آرایش و زیبایی',
+    slug:  'beauty',
+    photo: 'photo-1560066984-138dadb4c035', // hair salon interior
+  },
+  {
+    label: 'ورزش و تناسب اندام',
+    slug:  'fitness',
+    photo: 'photo-1534438327276-14e5300c3a48', // gym weights
+  },
+  {
+    label: 'آموزش و تدریس',
+    slug:  'education',
+    photo: 'photo-1503676260728-1c00da094a0b', // classroom / books
+  },
+  {
+    label: 'عکاسی و فیلم',
+    q:     'عکاسی',
+    photo: 'photo-1516035069371-29a1b244cc32', // professional camera
+  },
+  {
+    label: 'مشاوره تخصصی',
+    slug:  'psychological',
+    photo: 'photo-1573496359142-b8d87734a5a2', // professional consultation
+  },
+  {
+    label: 'حیوانات خانگی',
+    slug:  'veterinary',
+    photo: 'photo-1548767797-d8c844163c4a', // pets / veterinary
+  },
+  {
+    label: 'آشپزی و شیرینی',
+    q:     'آشپزی',
+    photo: 'photo-1556910103-1c02745aae4d', // cooking / kitchen
+  },
+  {
+    label: 'خدمات تخصصی',
+    slug:  'automotive',
+    photo: 'photo-1492144534655-ae79c964c9d7', // automotive / mechanic
+  },
+]
+
+/**
+ * Hero carousel slides — 5 real business photo examples.
+ * Shows the diversity of bookable businesses on the platform.
+ */
+const CAROUSEL_SLIDES = [
+  {
+    photo: 'photo-1560066984-138dadb4c035',
+    label: 'آرایش و زیبایی',
+    sub:   'رزرو آنلاین نوبت آرایش',
+  },
+  {
+    photo: 'photo-1571019613454-1cb2f99b2d8b',
+    label: 'باشگاه ورزشی',
+    sub:   'سانس تمرین را رزرو کنید',
+  },
+  {
+    photo: 'photo-1579684385127-1ef15d508118',
+    label: 'خدمات پزشکی',
+    sub:   'با بهترین متخصصان ملاقات کنید',
+  },
+  {
+    photo: 'photo-1503376780353-7e6692767b70',
+    label: 'تعمیرگاه خودرو',
+    sub:   'نوبت سرویس بدون انتظار',
+  },
+  {
+    photo: 'photo-1516035069371-29a1b244cc32',
+    label: 'استودیو عکاسی',
+    sub:   'رزرو سانس عکاسی حرفه‌ای',
+  },
+]
+
+/**
+ * Testimonials — fictional placeholder reviews.
+ * These are sample content for demo purposes, not real user data.
+ */
+const TESTIMONIALS = [
+  {
+    initial: 'ن', color: '#06B6D4', bg: '#ECFEFF',
+    name: 'نوید. ک', role: 'مشتری آرایشگاه', stars: 5,
+    text: 'خیلی ساده و راحت نوبت گرفتم. دیگه نیازی نیست زنگ بزنم و منتظر بمونم. هر موقع خواستم از گوشیم رزرو می‌کنم.',
+  },
+  {
+    initial: 'س', color: '#10B981', bg: '#ECFDF5',
+    name: 'سارا. م', role: 'صاحب آرایشگاه', stars: 5,
+    text: 'از وقتی Nobatic استفاده می‌کنم نوبت‌هام ۴۰٪ بیشتر شده. مشتری‌ها راحت‌تر رزرو می‌کنند و غیبت کمتری داریم.',
+  },
+  {
+    initial: 'ر', color: '#F59E0B', bg: '#FFFBEB',
+    name: 'رضا. ش', role: 'مربی باشگاه ورزشی', stars: 5,
+    text: 'مدیریت سانس‌های تمرین خیلی آسون‌تر شده. شاگردهام خودشون ساعت رو انتخاب می‌کنن و وقتم بهینه‌تر مدیریت می‌شه.',
+  },
+  {
+    initial: 'آ', color: '#8B5CF6', bg: '#F5F3FF',
+    name: 'آرزو. ت', role: 'مشتری کلینیک مشاوره', stars: 4,
+    text: 'پلتفرم خیلی کاربردی و ساده‌ست. سیستم پرداخت آنلاین هم خیالم رو راحت کرد. حتماً به دوستام معرفی می‌کنم.',
+  },
 ]
 
 const TRUST = [
-  { value: '+۱٬۰۰۰', label: 'کسب‌وکار فعال',   sub: 'در دسته‌بندی‌های مختلف' },
-  { value: '+۵۰٬۰۰۰', label: 'نوبت موفق',        sub: 'ثبت‌شده در سامانه'       },
-  { value: '۹۸٪',     label: 'رضایت مشتریان',   sub: 'بر اساس نظرسنجی'         },
+  { value: '+۱٬۰۰۰', label: 'کسب‌وکار فعال',  sub: 'در دسته‌بندی‌های مختلف' },
+  { value: '+۵۰٬۰۰۰', label: 'نوبت موفق',       sub: 'ثبت‌شده در سامانه'      },
+  { value: '۹۸٪',     label: 'رضایت مشتریان', sub: 'بر اساس نظرسنجی'        },
 ]
 
 const STEPS = [
@@ -333,7 +285,7 @@ const OWNER_FEATURES = [
 ]
 
 /* ════════════════════════════════════════════════════
-   Animations
+   Animations & utility CSS
 ════════════════════════════════════════════════════ */
 const CSS = `
 @keyframes nvUp {
@@ -350,18 +302,172 @@ const CSS = `
   background:#fff !important;
   box-shadow:0 0 0 3px rgba(8,145,178,.14);
 }
-.nv-sp:hover { transform:translateY(-4px); box-shadow:0 8px 24px rgba(0,0,0,.10) }
-.nv-sp { transition:transform .2s,box-shadow .2s }
-.nv-feat:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.08) }
-.nv-feat { transition:transform .2s,box-shadow .2s }
 
-@media(max-width:640px){
+/* Category photo cards */
+.nv-cat-card { transition:transform .2s, box-shadow .2s }
+.nv-cat-card:hover { transform:translateY(-4px); box-shadow:0 12px 32px rgba(0,0,0,.18) }
+.nv-cat-card:hover .nv-cat-img { transform:scale(1.07) }
+.nv-cat-img { transition:transform .4s ease }
+
+/* Feature cards */
+.nv-feat { transition:transform .2s, box-shadow .2s }
+.nv-feat:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.08) }
+
+/* Testimonial cards */
+.nv-testimonial { transition:transform .2s, box-shadow .2s }
+.nv-testimonial:hover { transform:translateY(-3px); box-shadow:0 10px 28px rgba(0,0,0,.10) }
+
+/* Carousel fade-in */
+@keyframes carouselFade {
+  from { opacity:0 }
+  to   { opacity:1 }
+}
+.nv-carousel-active { animation: carouselFade .5s ease }
+
+/* Carousel arrow hover */
+.nv-carousel-arrow:hover { background:rgba(255,255,255,.35) !important }
+
+/* Responsive */
+@media(max-width:900px) {
+  .nv-hero-grid { grid-template-columns:1fr !important }
+  .nv-hero-carousel { max-height:260px }
+}
+@media(max-width:640px) {
   .nv-trust { grid-template-columns:1fr !important }
   .nv-cta-btns { flex-direction:column !important }
   .nv-cta-btns button { width:100% !important }
   .nv-owner-grid { grid-template-columns:1fr 1fr !important }
+  .nv-testimonials-grid { grid-template-columns:1fr !important }
 }
 `
+
+/* ════════════════════════════════════════════════════
+   HeroCarousel — pure React/CSS, no external library
+════════════════════════════════════════════════════ */
+function HeroCarousel({ slides }) {
+  const [active, setActive] = useState(0)
+  const n = slides.length
+
+  // Auto-rotate every 4.5 s; functional update avoids stale closure
+  useEffect(() => {
+    const t = setInterval(() => setActive(a => (a + 1) % n), 4500)
+    return () => clearInterval(t)
+  }, [n])
+
+  const goTo = (i) => setActive((i + n) % n)
+
+  return (
+    <div
+      className="nv-hero-carousel"
+      style={{
+        position: 'relative',
+        borderRadius: 20,
+        overflow: 'hidden',
+        boxShadow: '0 24px 60px rgba(0,0,0,.25)',
+        // Aspect ratio 16:10 — reliable across all modern browsers
+        paddingBottom: '62.5%',
+        height: 0,
+      }}
+    >
+      {/* All images, only active one is visible */}
+      {slides.map((s, i) => (
+        <img
+          key={s.photo}
+          src={UNSPLASH(s.photo, 900, 562)}
+          alt={s.label}
+          loading={i === 0 ? 'eager' : 'lazy'}
+          className={i === active ? 'nv-carousel-active' : ''}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            display: 'block',
+            opacity: i === active ? 1 : 0,
+            transition: 'opacity .55s ease',
+          }}
+        />
+      ))}
+
+      {/* Bottom gradient overlay */}
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: 'linear-gradient(to top, rgba(0,0,0,.68) 0%, rgba(0,0,0,.12) 45%, transparent 100%)',
+        pointerEvents: 'none',
+      }} />
+
+      {/* Caption */}
+      <div style={{
+        position: 'absolute', bottom: 44, right: 18, left: 18,
+        color: '#fff', textAlign: 'right',
+      }}>
+        <p style={{ fontSize: 11, fontWeight: 600, opacity: .72, margin: '0 0 4px', letterSpacing: '0.4px' }}>
+          {slides[active].sub}
+        </p>
+        <h3 style={{ fontSize: 18, fontWeight: 800, margin: 0, textShadow: '0 2px 8px rgba(0,0,0,.4)' }}>
+          {slides[active].label}
+        </h3>
+      </div>
+
+      {/* Dots */}
+      <div style={{
+        position: 'absolute', bottom: 14, right: 0, left: 0,
+        display: 'flex', justifyContent: 'center', gap: 5,
+      }}>
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => goTo(i)}
+            aria-label={`اسلاید ${i + 1}`}
+            style={{
+              width: i === active ? 22 : 7, height: 7, borderRadius: 4,
+              background: i === active ? '#fff' : 'rgba(255,255,255,.42)',
+              border: 'none', cursor: 'pointer', padding: 0,
+              transition: 'all .3s ease',
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Prev arrow (right side in RTL = backward) */}
+      <button
+        onClick={() => goTo(active - 1)}
+        aria-label="قبلی"
+        className="nv-carousel-arrow"
+        style={{
+          position: 'absolute', top: '50%', right: 12, transform: 'translateY(-50%)',
+          background: 'rgba(255,255,255,.2)', backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(255,255,255,.28)', color: '#fff',
+          width: 36, height: 36, borderRadius: '50%', cursor: 'pointer',
+          fontSize: 16, fontWeight: 700, display: 'flex',
+          alignItems: 'center', justifyContent: 'center',
+          transition: 'background .2s',
+        }}
+      >
+        ›
+      </button>
+
+      {/* Next arrow (left side in RTL = forward) */}
+      <button
+        onClick={() => goTo(active + 1)}
+        aria-label="بعدی"
+        className="nv-carousel-arrow"
+        style={{
+          position: 'absolute', top: '50%', left: 12, transform: 'translateY(-50%)',
+          background: 'rgba(255,255,255,.2)', backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(255,255,255,.28)', color: '#fff',
+          width: 36, height: 36, borderRadius: '50%', cursor: 'pointer',
+          fontSize: 16, fontWeight: 700, display: 'flex',
+          alignItems: 'center', justifyContent: 'center',
+          transition: 'background .2s',
+        }}
+      >
+        ‹
+      </button>
+    </div>
+  )
+}
 
 /* ════════════════════════════════════════════════════
    Component
@@ -394,24 +500,7 @@ export default function HomePage() {
         height: 64, display: 'flex', alignItems: 'center',
         justifyContent: 'space-between', padding: '0 24px',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
-            background: '#06B6D4', borderRadius: 10, width: 36, height: 36,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: '0 2px 8px rgba(8,145,178,.3)',
-          }}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"
-                 strokeLinecap="round" strokeLinejoin="round" width="18" height="18" aria-hidden="true">
-              <rect x="3" y="4" width="18" height="18" rx="2"/>
-              <line x1="16" y1="2" x2="16" y2="6"/>
-              <line x1="8" y1="2" x2="8" y2="6"/>
-              <line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
-          </div>
-          <span style={{ color: '#06B6D4', fontSize: 18, fontWeight: 800, letterSpacing: '-0.3px' }}>
-            Nobatic
-          </span>
-        </div>
+        <Logo size={36} textSize={18} />
 
         <nav style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <button
@@ -442,113 +531,119 @@ export default function HomePage() {
         </nav>
       </header>
 
-      {/* ══ HERO ════════════════════════════════════════ */}
+      {/* ══ HERO — two-column: text (right) + carousel (left) ═══ */}
       <section style={{
         position: 'relative', overflow: 'hidden',
         background: '#DFF6FA',
         borderBottom: '1px solid #B2E8F0',
-        padding: '72px 24px 80px',
+        padding: '56px 24px 64px',
       }}>
         <BusinessPattern />
 
-        <div style={{ maxWidth: 680, margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 }}>
-
-          {/* Eyebrow pill */}
-          <div className="nv0" style={{
-            display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 24,
-            background: 'rgba(255,255,255,.75)', backdropFilter: 'blur(6px)',
-            border: '1px solid rgba(59,189,212,.4)', borderRadius: 100,
-            padding: '7px 18px', fontSize: 12, fontWeight: 700, color: '#1178A0',
-          }}>
-            <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#1EA8C4', flexShrink: 0 }}/>
-            رزرو آنلاین نوبت برای هر کسب‌وکاری
-          </div>
-
-          {/* Headline */}
-          <h1 className="nv1" style={{
-            fontSize: 'clamp(1.9rem,4vw,2.8rem)', fontWeight: 900,
-            lineHeight: 1.35, color: '#0C2D3A', marginBottom: 18,
-          }}>
-            ارائه‌دهنده مناسب رو پیدا کن،
-            <br/>
-            <span style={{ color: '#1178A0' }}>آنلاین نوبت بگیر</span>
-          </h1>
-
-          {/* Subtitle */}
-          <p className="nv2" style={{
-            color: '#2D6A80', fontSize: 15, lineHeight: 1.9,
-            marginBottom: 40, maxWidth: 520, marginLeft: 'auto', marginRight: 'auto',
-          }}>
-            از آرایشگاه و باشگاه تا مشاوره و آموزش — هر خدمتی که نیاز داری،
-            سریع و بدون انتظار تلفنی رزرو کن.
-          </p>
-
-          {/* Search bar */}
-          <form onSubmit={go} className="nv2" style={{ marginBottom: 22 }}>
-            <div style={{ display: 'flex', gap: 10, maxWidth: 520, margin: '0 auto' }}>
-              <div style={{ position: 'relative', flex: 1 }}>
-                <span style={{
-                  position: 'absolute', right: 14, top: '50%',
-                  transform: 'translateY(-50%)', display: 'flex', color: '#94A3B8',
-                }}>
-                  <SearchIcon/>
-                </span>
-                <input
-                  type="text"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="نام کسب‌وکار یا خدمت مورد نظر..."
-                  className="nv-input"
-                  style={{
-                    width: '100%', boxSizing: 'border-box',
-                    background: 'rgba(255,255,255,.85)', backdropFilter: 'blur(8px)',
-                    border: '1.5px solid rgba(59,189,212,.35)', borderRadius: 14,
-                    padding: '14px 46px 14px 14px', fontSize: 14, color: '#1E293B',
-                    outline: 'none', fontFamily: 'inherit',
-                    transition: 'border-color .15s,box-shadow .15s,background .15s',
-                  }}
-                />
-              </div>
-              <button
-                type="submit"
-                style={{
-                  background: '#1178A0', color: '#fff', border: 'none',
-                  borderRadius: 14, padding: '0 24px', fontSize: 14,
-                  fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap',
-                  fontFamily: 'inherit', transition: 'background .15s',
-                }}
-                {...hov({ background: '#0891B2' }, { background: '#1178A0' })}
-              >
-                جستجو
-              </button>
+        <div
+          className="nv-hero-grid"
+          style={{
+            maxWidth: 1100, margin: '0 auto', position: 'relative', zIndex: 1,
+            display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'center',
+          }}
+        >
+          {/* ── Text column ── */}
+          <div>
+            <div className="nv0" style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 22,
+              background: 'rgba(255,255,255,.75)', backdropFilter: 'blur(6px)',
+              border: '1px solid rgba(59,189,212,.4)', borderRadius: 100,
+              padding: '7px 18px', fontSize: 12, fontWeight: 700, color: '#1178A0',
+            }}>
+              <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#1EA8C4', flexShrink: 0 }}/>
+              رزرو آنلاین نوبت برای هر کسب‌وکاری
             </div>
-          </form>
 
-          {/* Quick category links */}
-          <div className="nv3" style={{
-            display: 'flex', flexWrap: 'wrap', gap: 8,
-            justifyContent: 'center', alignItems: 'center',
-          }}>
-            <span style={{ color: '#5BA3B8', fontSize: 12, paddingTop: 2 }}>جستجوی سریع:</span>
-            {['آرایشگاه', 'باشگاه', 'مشاوره', 'آموزشگاه', 'عکاسی'].map((s) => (
-              <button key={s} onClick={() => navigate(`/search?q=${encodeURIComponent(s)}`)}
-                style={{
-                  background: 'rgba(255,255,255,.6)', border: '1px solid rgba(59,189,212,.35)',
-                  borderRadius: 20, padding: '5px 14px', fontSize: 12,
-                  fontWeight: 500, color: '#1178A0', cursor: 'pointer', fontFamily: 'inherit',
-                  transition: 'background .15s,border-color .15s',
-                  backdropFilter: 'blur(4px)',
-                }}
-                {...hov(
-                  { background: 'rgba(255,255,255,.9)', borderColor: 'rgba(59,189,212,.7)' },
-                  { background: 'rgba(255,255,255,.6)', borderColor: 'rgba(59,189,212,.35)' }
-                )}
-              >
-                {s}
-              </button>
-            ))}
+            <h1 className="nv1" style={{
+              fontSize: 'clamp(1.7rem,3.5vw,2.6rem)', fontWeight: 900,
+              lineHeight: 1.35, color: '#0C2D3A', marginBottom: 16,
+            }}>
+              ارائه‌دهنده مناسب رو پیدا کن،
+              <br/>
+              <span style={{ color: '#1178A0' }}>آنلاین نوبت بگیر</span>
+            </h1>
+
+            <p className="nv2" style={{
+              color: '#2D6A80', fontSize: 14, lineHeight: 1.9,
+              marginBottom: 32, maxWidth: 480,
+            }}>
+              از آرایشگاه و باشگاه تا مشاوره و آموزش — هر خدمتی که نیاز داری،
+              سریع و بدون انتظار تلفنی رزرو کن.
+            </p>
+
+            <form onSubmit={go} className="nv2" style={{ marginBottom: 18 }}>
+              <div style={{ display: 'flex', gap: 10 }}>
+                <div style={{ position: 'relative', flex: 1 }}>
+                  <span style={{
+                    position: 'absolute', right: 14, top: '50%',
+                    transform: 'translateY(-50%)', display: 'flex', color: '#94A3B8',
+                  }}>
+                    <SearchIcon/>
+                  </span>
+                  <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="نام کسب‌وکار یا خدمت مورد نظر..."
+                    className="nv-input"
+                    style={{
+                      width: '100%', boxSizing: 'border-box',
+                      background: 'rgba(255,255,255,.85)', backdropFilter: 'blur(8px)',
+                      border: '1.5px solid rgba(59,189,212,.35)', borderRadius: 14,
+                      padding: '13px 46px 13px 14px', fontSize: 14, color: '#1E293B',
+                      outline: 'none', fontFamily: 'inherit',
+                      transition: 'border-color .15s,box-shadow .15s,background .15s',
+                    }}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  style={{
+                    background: '#1178A0', color: '#fff', border: 'none',
+                    borderRadius: 14, padding: '0 22px', fontSize: 14,
+                    fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap',
+                    fontFamily: 'inherit', transition: 'background .15s',
+                  }}
+                  {...hov({ background: '#0891B2' }, { background: '#1178A0' })}
+                >
+                  جستجو
+                </button>
+              </div>
+            </form>
+
+            <div className="nv3" style={{
+              display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center',
+            }}>
+              <span style={{ color: '#5BA3B8', fontSize: 12, paddingTop: 2 }}>جستجوی سریع:</span>
+              {['آرایشگاه', 'باشگاه', 'مشاوره', 'آموزشگاه', 'عکاسی'].map((s) => (
+                <button key={s} onClick={() => navigate(`/search?q=${encodeURIComponent(s)}`)}
+                  style={{
+                    background: 'rgba(255,255,255,.6)', border: '1px solid rgba(59,189,212,.35)',
+                    borderRadius: 20, padding: '5px 14px', fontSize: 12,
+                    fontWeight: 500, color: '#1178A0', cursor: 'pointer', fontFamily: 'inherit',
+                    transition: 'background .15s,border-color .15s',
+                    backdropFilter: 'blur(4px)',
+                  }}
+                  {...hov(
+                    { background: 'rgba(255,255,255,.9)', borderColor: 'rgba(59,189,212,.7)' },
+                    { background: 'rgba(255,255,255,.6)', borderColor: 'rgba(59,189,212,.35)' }
+                  )}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
           </div>
 
+          {/* ── Carousel column ── */}
+          <div className="nv1">
+            <HeroCarousel slides={CAROUSEL_SLIDES} />
+          </div>
         </div>
       </section>
 
@@ -572,7 +667,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ══ CATEGORIES ══════════════════════════════════ */}
+      {/* ══ CATEGORIES — photo cards ════════════════════ */}
       <section style={{ padding: '64px 0' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px' }}>
           <SectionHeader
@@ -581,25 +676,60 @@ export default function HomePage() {
             actionLabel="مشاهده همه کسب‌وکارها"
             onAction={() => navigate('/providers')}
           />
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(120px,1fr))', gap: 14 }}>
-            {CATEGORIES.map(({ label, slug, q, Ill }) => (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill,minmax(160px,1fr))',
+            gap: 14,
+          }}>
+            {CATEGORIES.map(({ label, slug, q, photo }) => (
               <button
                 key={label}
-                className="nv-sp"
+                className="nv-cat-card"
                 onClick={() => {
                   if (slug) navigate(`/providers?category=${slug}`)
                   else if (q) navigate(`/search?q=${encodeURIComponent(q)}`)
                   else navigate('/providers')
                 }}
                 style={{
-                  background: '#fff', border: '1px solid #F1F5F9', borderRadius: 20,
-                  padding: '18px 8px 14px', display: 'flex', flexDirection: 'column',
-                  alignItems: 'center', gap: 10, cursor: 'pointer', fontFamily: 'inherit',
-                  textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,.05)',
+                  position: 'relative',
+                  display: 'block',
+                  width: '100%',
+                  aspectRatio: '4 / 3',
+                  borderRadius: 16,
+                  overflow: 'hidden',
+                  border: 'none',
+                  padding: 0,
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                  background: '#E2E8F0',
+                  boxShadow: '0 2px 8px rgba(0,0,0,.07)',
                 }}
               >
-                <Ill/>
-                <span style={{ fontSize: 11, fontWeight: 700, color: '#1E293B', lineHeight: 1.4 }}>{label}</span>
+                {/* Photo */}
+                <img
+                  src={UNSPLASH(photo, 400, 300)}
+                  alt={label}
+                  loading="lazy"
+                  className="nv-cat-img"
+                  style={{
+                    position: 'absolute', inset: 0,
+                    width: '100%', height: '100%', objectFit: 'cover', display: 'block',
+                  }}
+                />
+                {/* Dark gradient overlay for text legibility */}
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  background: 'linear-gradient(to top, rgba(0,0,0,.72) 0%, rgba(0,0,0,.18) 55%, transparent 100%)',
+                }} />
+                {/* Label */}
+                <span style={{
+                  position: 'absolute', bottom: 0, right: 0, left: 0,
+                  padding: '10px 8px 12px',
+                  color: '#fff', fontSize: 11, fontWeight: 700,
+                  textAlign: 'center', lineHeight: 1.35,
+                }}>
+                  {label}
+                </span>
               </button>
             ))}
           </div>
@@ -660,8 +790,6 @@ export default function HomePage() {
       <section style={{ padding: '64px 0', background: '#fff', borderTop: '1px solid #F1F5F9' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'center' }}>
-
-            {/* Left: text */}
             <div>
               <span style={{
                 display: 'inline-block', background: '#ECFEFF', color: '#0891B2',
@@ -695,8 +823,6 @@ export default function HomePage() {
                 <ArrowLeft/>
               </button>
             </div>
-
-            {/* Right: feature cards */}
             <div className="nv-owner-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
               {OWNER_FEATURES.map((f) => (
                 <div key={f.title} className="nv-feat" style={{
@@ -709,6 +835,57 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══ TESTIMONIALS ════════════════════════════════ */}
+      <section style={{ padding: '64px 0', background: '#F8FAFC', borderTop: '1px solid #F1F5F9' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px' }}>
+          <SectionHeader
+            title="نظرات کاربران ما"
+            sub="تجربه واقعی مشتریان و کسب‌وکارهای Nobatic — نمونه محتوا"
+          />
+          <div
+            className="nv-testimonials-grid"
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(240px,1fr))', gap: 16 }}
+          >
+            {TESTIMONIALS.map((t) => (
+              <div key={t.name} className="nv-testimonial" style={{
+                background: '#fff', borderRadius: 20, padding: '24px 20px',
+                border: '1px solid #F1F5F9', boxShadow: '0 1px 4px rgba(0,0,0,.05)',
+              }}>
+                {/* Stars */}
+                <div style={{ display: 'flex', gap: 2, marginBottom: 14 }}>
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <StarIcon key={i} filled={i < t.stars} />
+                  ))}
+                </div>
+                {/* Review text */}
+                <p style={{
+                  fontSize: 13, color: '#475569', lineHeight: 1.85,
+                  margin: '0 0 18px', fontStyle: 'italic',
+                }}>
+                  «{t.text}»
+                </p>
+                {/* Author */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div style={{
+                    width: 38, height: 38, borderRadius: '50%',
+                    background: t.bg, color: t.color, flexShrink: 0,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 15, fontWeight: 800,
+                    border: `2px solid ${t.color}30`,
+                  }}>
+                    {t.initial}
+                  </div>
+                  <div>
+                    <p style={{ fontSize: 13, fontWeight: 700, color: '#1E293B', margin: 0 }}>{t.name}</p>
+                    <p style={{ fontSize: 11, color: '#94A3B8', margin: '2px 0 0' }}>{t.role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -772,20 +949,8 @@ export default function HomePage() {
         borderTop: '1px solid #F1F5F9', background: '#fff',
         padding: '28px 24px', textAlign: 'center',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 8 }}>
-          <div style={{
-            background: '#06B6D4', borderRadius: 8, width: 28, height: 28,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"
-                 strokeLinecap="round" strokeLinejoin="round" width="14" height="14" aria-hidden="true">
-              <rect x="3" y="4" width="18" height="18" rx="2"/>
-              <line x1="16" y1="2" x2="16" y2="6"/>
-              <line x1="8" y1="2" x2="8" y2="6"/>
-              <line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
-          </div>
-          <span style={{ fontWeight: 700, color: '#06B6D4', fontSize: 15 }}>Nobatic</span>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
+          <Logo size={28} textSize={15} />
         </div>
         <p style={{ fontSize: 12, color: '#94A3B8', margin: 0 }}>
           © ۱۴۰۴ Nobatic — تمامی حقوق محفوظ است
