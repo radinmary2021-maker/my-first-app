@@ -46,7 +46,7 @@ export default function DoctorCard({ doctor, provider }) {
       onClick={() => navigate(`/providers/${p.id}`)}
       className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden
                  hover:shadow-xl hover:-translate-y-0.5 hover:border-cyan-100
-                 transition-all duration-300 cursor-pointer group flex flex-col"
+                 transition-all duration-200 cursor-pointer group flex flex-col"
     >
       {/* Gradient accent bar */}
       <div className="h-1 bg-gradient-to-r from-cyan-500 to-cyan-400 shrink-0" />
