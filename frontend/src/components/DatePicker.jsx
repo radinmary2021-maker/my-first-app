@@ -5,6 +5,19 @@ const WEEKDAY_NAMES = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج']
 export default function DatePicker({ availableWeekdays = [], selectedDate, onSelect }) {
   const days = upcomingDays(30)
 
+  if (availableWeekdays.length === 0) {
+    return (
+      <div className="py-6 text-center">
+        <p className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
+          این ارائه‌دهنده هنوز ساعات کاری خود را تنظیم نکرده است.
+        </p>
+        <p className="text-xs mt-1" style={{ color: 'var(--color-text-tertiary)' }}>
+          لطفاً بعداً دوباره مراجعه کنید یا ارائه‌دهنده دیگری انتخاب کنید.
+        </p>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-3">
       <p className="text-sm font-medium text-gray-700">انتخاب تاریخ</p>

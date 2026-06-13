@@ -16,10 +16,22 @@ export default function DoctorListPage() {
   const { data: categoriesData } = useBusinessCategories()
   const [selectedCategory, setSelectedCategory] = useState(ALL)
   const [search, setSearch] = useState(searchParams.get('q') || '')
+  const categoryParam = searchParams.get('category') // e.g. 'beauty', 'fitness'
 
   useEffect(() => {
     setSearch(searchParams.get('q') || '')
   }, [searchParams])
+
+  // When categories load, auto-select the chip matching ?category= URL param
+  useEffect(() => {
+    if (!categoryParam || !categoriesData?.length || selectedCategory !== ALL) return
+    const match = categoriesData.find((c) =>
+      typeof c === 'object' ? c.value === categoryParam : c === categoryParam
+    )
+    if (!match) return
+    const label = typeof match === 'string' ? match : (match.label ?? match.value)
+    if (label) setSelectedCategory(label)
+  }, [categoryParam, categoriesData])
 
   // Build category filter list from API first, fall back to provider-derived list
   const categories = useMemo(() => {
@@ -53,16 +65,16 @@ export default function DoctorListPage() {
       const catValue   = p.category || ''
       const name       = p.business_name || p.full_name || ''
       const matchCategory =
-        selectedCategory === ALL ||
-        catDisplay === selectedCategory ||
-        catValue   === categoryValueMap[selectedCategory]
+        selectedCategory !== ALL
+          ? catDisplay === selectedCategory || catValue === categoryValueMap[selectedCategory]
+          : !categoryParam || catValue === categoryParam
       const matchSearch =
         !search.trim() ||
         name.includes(search.trim()) ||
         catDisplay.includes(search.trim())
       return matchCategory && matchSearch
     })
-  }, [providers, selectedCategory, search, categoryValueMap])
+  }, [providers, selectedCategory, search, categoryValueMap, categoryParam])
 
   const effectiveCategory =
     selectedCategory === ALL || categories.includes(selectedCategory)
