@@ -1,43 +1,28 @@
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import MainLayout from '../../layouts/MainLayout'
-
-function CheckIcon() {
-  return (
-    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-      <svg className="w-10 h-10 text-green-600" fill="none" viewBox="0 0 24 24"
-           stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-        <path d="M5 13l4 4L19 7" />
-      </svg>
-    </div>
-  )
-}
-
-function XIcon() {
-  return (
-    <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto">
-      <svg className="w-10 h-10 text-red-500" fill="none" viewBox="0 0 24 24"
-           stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-        <path d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </div>
-  )
-}
+import Button from '../../components/Button'
+import { CheckCircleIcon, XCircleIcon, ClockIcon } from '../../components/Icon'
 
 export default function PaymentResultPage() {
   const [params] = useSearchParams()
-  const navigate = useNavigate()
+  const navigate  = useNavigate()
 
   const status       = params.get('status')
   const trackingCode = params.get('tracking_code')
   const refId        = params.get('ref_id')
-  const isSuccess    = status === 'success'
+
+  const isSuccess = status === 'success'
+  const isFailure = status === 'failure' || status === 'failed'
+  const isUnknown = !isSuccess && !isFailure
 
   return (
     <MainLayout>
       <div className="max-w-sm mx-auto space-y-6 text-center">
-        {isSuccess ? (
+        {isSuccess && (
           <>
-            <CheckIcon />
+            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto text-green-600">
+              <CheckCircleIcon size={40} />
+            </div>
             <div className="space-y-1">
               <h1 className="text-xl font-bold text-gray-800">پرداخت موفق</h1>
               <p className="text-sm text-gray-500">نوبت شما با موفقیت ثبت شد</p>
@@ -63,23 +48,21 @@ export default function PaymentResultPage() {
             </p>
 
             <div className="flex flex-col gap-3">
-              <button
-                onClick={() => navigate('/my-appointments')}
-                className="w-full bg-cyan-500 text-white py-3 rounded-xl text-sm font-medium hover:bg-cyan-600 transition-colors"
-              >
+              <Button variant="primary" fullWidth onClick={() => navigate('/my-appointments')}>
                 مشاهده نوبت‌های من
-              </button>
-              <button
-                onClick={() => navigate('/providers')}
-                className="w-full border border-gray-200 text-gray-600 py-3 rounded-xl text-sm hover:bg-gray-50 transition-colors"
-              >
+              </Button>
+              <Button variant="ghost" fullWidth onClick={() => navigate('/providers')}>
                 رزرو نوبت جدید
-              </button>
+              </Button>
             </div>
           </>
-        ) : (
+        )}
+
+        {isFailure && (
           <>
-            <XIcon />
+            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto text-red-500">
+              <XCircleIcon size={40} />
+            </div>
             <div className="space-y-1">
               <h1 className="text-xl font-bold text-gray-800">پرداخت ناموفق</h1>
               <p className="text-sm text-gray-500">پرداخت انجام نشد یا لغو شد</p>
@@ -90,18 +73,37 @@ export default function PaymentResultPage() {
             </div>
 
             <div className="flex flex-col gap-3">
-              <button
-                onClick={() => navigate('/providers')}
-                className="w-full bg-cyan-500 text-white py-3 rounded-xl text-sm font-medium hover:bg-cyan-600 transition-colors"
-              >
+              <Button variant="primary" fullWidth onClick={() => navigate('/providers')}>
                 رزرو نوبت جدید
-              </button>
-              <button
-                onClick={() => navigate(-1)}
-                className="w-full border border-gray-200 text-gray-600 py-3 rounded-xl text-sm hover:bg-gray-50 transition-colors"
-              >
+              </Button>
+              <Button variant="ghost" fullWidth onClick={() => navigate(-1)}>
                 تلاش مجدد
-              </button>
+              </Button>
+            </div>
+          </>
+        )}
+
+        {isUnknown && (
+          <>
+            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto text-gray-400">
+              <ClockIcon size={40} />
+            </div>
+            <div className="space-y-1">
+              <h1 className="text-xl font-bold text-gray-800">نتیجه نامشخص</h1>
+              <p className="text-sm text-gray-500">وضعیت پرداخت شما مشخص نیست</p>
+            </div>
+
+            <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 text-sm text-blue-700 text-right">
+              لطفاً نوبت‌های خود را بررسی کنید. در صورت کسر وجه، مبلغ طی ۷۲ ساعت کاری بازگشت داده می‌شود.
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <Button variant="primary" fullWidth onClick={() => navigate('/my-appointments')}>
+                مشاهده نوبت‌های من
+              </Button>
+              <Button variant="ghost" fullWidth onClick={() => navigate('/providers')}>
+                رزرو نوبت جدید
+              </Button>
             </div>
           </>
         )}

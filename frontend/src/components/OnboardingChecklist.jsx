@@ -20,6 +20,7 @@ import { useBusinessProviders } from '../hooks/useBusinessProviders'
 import { useMyServicesList, useMyWorkingHours } from '../hooks/useDoctorSchedule'
 import { useBusinessAppointments } from '../hooks/useAppointments'
 import { notify } from '../utils/toast'
+import { CheckIcon } from './Icon'
 
 const STEPS = [
   {
@@ -77,7 +78,7 @@ function CopyLinkButton({ providerId }) {
       className="text-xs font-medium text-white bg-cyan-500 hover:bg-cyan-600 px-3 py-1.5 rounded-lg transition-colors shrink-0"
       aria-label="کپی لینک صفحه کسب‌وکار"
     >
-      {copied ? '✓ کپی شد' : 'کپی لینک'}
+      {copied ? <><CheckIcon size={12} /> کپی شد</> : 'کپی لینک'}
     </button>
   )
 }
