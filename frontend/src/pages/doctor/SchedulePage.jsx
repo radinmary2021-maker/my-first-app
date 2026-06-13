@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import MainLayout from '../../layouts/MainLayout'
+import Button from '../../components/Button'
+import Badge from '../../components/Badge'
 import Spinner from '../../components/Spinner'
 import ErrorMessage from '../../components/ErrorMessage'
+import { CalendarCheckIcon, CalendarXIcon, ChevronRightIcon } from '../../components/Icon'
 import { notify } from '../../utils/toast'
 import {
   useMyWorkingHours,
@@ -183,13 +186,15 @@ function ServicesSection() {
             placeholder="توضیح کوتاه برای مشتریان"
             className={inputCls} />
         </div>
-        <button
+        <Button
           type="submit"
+          variant="primary"
+          fullWidth
+          loading={adding}
           disabled={adding || !form.name.trim()}
-          className="w-full bg-cyan-500 text-white text-sm py-2.5 rounded-lg hover:bg-cyan-600 disabled:opacity-50 transition-colors"
         >
-          {adding ? 'در حال ذخیره...' : 'افزودن خدمت'}
-        </button>
+          افزودن خدمت
+        </Button>
       </form>
     </section>
   )
@@ -455,7 +460,10 @@ function TimeOffSection({ providerId }) {
       )}
 
       {!isLoading && !isError && !hasTimeoffs && (
-        <p className="text-sm text-gray-500">هیچ مرخصی یا تعطیلی ثبت نشده.</p>
+        <p className="text-sm text-gray-500 flex items-center gap-2">
+          <CalendarXIcon size={16} className="opacity-40 shrink-0" />
+          هیچ مرخصی یا تعطیلی ثبت نشده.
+        </p>
       )}
 
       {timeoffs?.map((t) => {
@@ -464,11 +472,9 @@ function TimeOffSection({ providerId }) {
           <Card key={t.id}>
             <div className="flex items-center gap-3 text-sm flex-wrap">
               <span className="font-mono font-medium text-gray-800" dir="ltr">{t.date}</span>
-              <span className={`text-xs px-2 py-0.5 rounded-full ${
-                isFullDay ? 'bg-red-50 text-red-600' : 'bg-yellow-50 text-yellow-700'
-              }`}>
+              <Badge variant={isFullDay ? 'danger' : 'warning'}>
                 {isFullDay ? 'تمام روز' : 'جزئی'}
-              </span>
+              </Badge>
               {!isFullDay && (
                 <span className="font-mono text-gray-500 text-xs" dir="ltr">
                   {t.start_time}–{t.end_time}
@@ -535,13 +541,15 @@ function TimeOffSection({ providerId }) {
             className={inputCls} />
         </div>
 
-        <button
+        <Button
           type="submit"
+          variant="primary"
+          fullWidth
+          loading={adding}
           disabled={adding || !form.date}
-          className="w-full bg-cyan-500 text-white text-sm py-2.5 rounded-lg hover:bg-cyan-600 disabled:opacity-50 transition-colors"
         >
-          {adding ? 'در حال ذخیره...' : 'افزودن مرخصی'}
-        </button>
+          افزودن مرخصی
+        </Button>
       </form>
     </section>
   )
@@ -554,8 +562,8 @@ function GoLiveBanner({ navigate }) {
     <div className="bg-gradient-to-l from-emerald-500 to-teal-500 rounded-2xl p-5 text-white shadow-md shadow-emerald-100/40"
          role="status" aria-live="polite">
       <div className="flex items-start gap-3">
-        <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center shrink-0 text-xl">
-          🎉
+        <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center shrink-0 text-white">
+          <CalendarCheckIcon size={22} />
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-bold text-base">آماده دریافت نوبت هستید!</p>
@@ -599,10 +607,11 @@ export default function SchedulePage() {
         <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={() => navigate('/dashboard')}
-            className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-sm text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1"
             aria-label="بازگشت به داشبورد"
           >
-            ← داشبورد
+            <ChevronRightIcon size={14} />
+            داشبورد
           </button>
           <span className="text-gray-300">/</span>
           {providerId && (

@@ -2,17 +2,22 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { updateProfile } from '../../api/auth'
 import { useAuthStore } from '../../store/authStore'
+import Button from '../../components/Button'
+import Input from '../../components/Input'
 import ErrorMessage from '../../components/ErrorMessage'
+import { UserIcon, BuildingIcon } from '../../components/Icon'
+
+const IS_DESKTOP = typeof window !== 'undefined' && window.innerWidth >= 768
 
 export default function SetupProfilePage() {
   const navigate = useNavigate()
-  const setUser = useAuthStore((s) => s.setUser)
-  const user = useAuthStore((s) => s.user)
+  const setUser  = useAuthStore((s) => s.setUser)
+  const user     = useAuthStore((s) => s.user)
 
-  const [fullName, setFullName] = useState('')
+  const [fullName,    setFullName]    = useState('')
   const [accountType, setAccountType] = useState('customer')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [loading,     setLoading]     = useState(false)
+  const [error,       setError]       = useState('')
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -41,7 +46,7 @@ export default function SetupProfilePage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4" dir="rtl">
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 w-full max-w-sm p-8 space-y-6">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 w-full max-w-sm p-6 space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">تکمیل پروفایل</h1>
           <p className="text-sm text-gray-500 mt-1">
@@ -53,22 +58,17 @@ export default function SetupProfilePage() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label htmlFor="full-name" className="block text-sm font-medium text-gray-700 mb-1">
-              نام و نام خانوادگی <span className="text-red-400">*</span>
-            </label>
-            <input
-              id="full-name"
-              type="text"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="مثال: علی رضایی"
-              autoFocus
-              autoComplete="name"
-              disabled={loading}
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent disabled:bg-gray-50"
-            />
-          </div>
+          <Input
+            id="full-name"
+            label={<>نام و نام خانوادگی <span className="text-red-400">*</span></>}
+            type="text"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            placeholder="مثال: علی رضایی"
+            autoFocus={IS_DESKTOP}
+            autoComplete="name"
+            disabled={loading}
+          />
 
           <div>
             <p className="block text-sm font-medium text-gray-700 mb-2">نوع حساب</p>
@@ -82,7 +82,9 @@ export default function SetupProfilePage() {
                     : 'border-gray-200 text-gray-600 hover:border-cyan-300'
                 }`}
               >
-                <span className="block text-xl mb-1">🙋</span>
+                <span className="flex justify-center mb-1 text-current opacity-70">
+                  <UserIcon size={24} />
+                </span>
                 مشتری
                 <span className="block text-xs font-normal text-gray-400 mt-0.5">رزرو نوبت</span>
               </button>
@@ -95,7 +97,9 @@ export default function SetupProfilePage() {
                     : 'border-gray-200 text-gray-600 hover:border-cyan-300'
                 }`}
               >
-                <span className="block text-xl mb-1">🏢</span>
+                <span className="flex justify-center mb-1 text-current opacity-70">
+                  <BuildingIcon size={24} />
+                </span>
                 صاحب کسب‌وکار
                 <span className="block text-xs font-normal text-gray-400 mt-0.5">مدیریت نوبت</span>
               </button>
@@ -104,13 +108,15 @@ export default function SetupProfilePage() {
 
           <ErrorMessage message={error} />
 
-          <button
+          <Button
             type="submit"
+            variant="primary"
+            fullWidth
+            loading={loading}
             disabled={loading || !fullName.trim()}
-            className="w-full bg-cyan-500 text-white py-3 rounded-lg text-sm font-medium hover:bg-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            {loading ? 'در حال ذخیره...' : 'ذخیره و ادامه'}
-          </button>
+            ذخیره و ادامه
+          </Button>
         </form>
       </div>
     </div>

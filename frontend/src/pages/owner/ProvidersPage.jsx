@@ -1,35 +1,13 @@
-/**
- * pages/owner/ProvidersPage.jsx
- *
- * Owner-facing provider management page.
- *
- * Onboarding flow:
- *   CreateBusinessPage → ProvidersPage → (solo fast-path) → /dashboard/schedule
- *
- * Key states:
- *   loading  — Spinner while fetching provider list
- *   error    — ErrorMessage + retry
- *   empty    — Onboarding card with solo fast-path (add myself) and manual add
- *   list     — Provider cards with edit / deactivate / reactivate actions
- *
- * Permissions:
- *   owner    — full CRUD, add myself, edit, deactivate/reactivate
- *   provider — read-only view (legacy role, no management actions shown)
- *   customer — DoctorRoute redirects before this page renders
- *
- * Mutation pattern: mutate(payload, { onSuccess, onError }) — same as DashboardPage
- * and MyAppointmentsPage. We do NOT use mutateAsync to avoid unhandled-rejection
- * issues in React 18's event-handler layer.
- */
-
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import MainLayout from '../../layouts/MainLayout'
+import Button from '../../components/Button'
 import Spinner from '../../components/Spinner'
 import ErrorMessage from '../../components/ErrorMessage'
+import Badge from '../../components/Badge'
+import { UserIcon, CalendarIcon, CheckIcon } from '../../components/Icon'
 import { notify } from '../../utils/toast'
 import { useAuthStore } from '../../store/authStore'
-import Badge from '../../components/Badge'
 import {
   useBusinessProviders,
   useCreateBusinessProvider,
@@ -44,18 +22,14 @@ export default function ProvidersPage() {
   const user      = useAuthStore((s) => s.user)
   const isOwner   = user?.role === 'owner'
 
-  // dialog = null | { type: 'add' | 'edit' | 'deactivate', provider: obj | null }
   const [dialog,      setDialog]      = useState(null)
   const [soloLoading, setSoloLoading] = useState(false)
 
   const { data: providers, isLoading, isError, refetch } = useBusinessProviders()
-  const { mutate: createMutate, isPending: creating }      = useCreateBusinessProvider()
-  const { mutate: updateMutate, isPending: updating }      = useUpdateBusinessProvider()
+  const { mutate: createMutate, isPending: creating }       = useCreateBusinessProvider()
+  const { mutate: updateMutate, isPending: updating }       = useUpdateBusinessProvider()
   const { mutate: deactivateMutate, isPending: deactivating } = useDeactivateBusinessProvider()
 
-  // ── Handlers ──────────────────────────────────────────────────────────────
-
-  /** Solo fast-path: adds the logged-in user as a provider in one click. */
   function handleAddMyself() {
     setSoloLoading(true)
     createMutate(
@@ -76,7 +50,6 @@ export default function ProvidersPage() {
     )
   }
 
-  /** Confirmed deactivation — called from inside the deactivate dialog. */
   function handleDeactivate() {
     const { provider } = dialog
     deactivateMutate(provider.id, {
@@ -91,8 +64,6 @@ export default function ProvidersPage() {
     })
   }
 
-  // ── Render ────────────────────────────────────────────────────────────────
-
   return (
     <MainLayout>
       <div className="space-y-6 max-w-3xl">
@@ -104,19 +75,18 @@ export default function ProvidersPage() {
             <p className="text-sm text-gray-500 mt-0.5">مدیریت ارائه‌دهندگان کسب‌وکار شما</p>
           </div>
           {isOwner && (providers?.length ?? 0) > 0 && (
-            <button
+            <Button
+              size="sm"
+              variant="primary"
               onClick={() => setDialog({ type: 'add', provider: null })}
-              className="text-sm bg-cyan-500 text-white px-4 py-2 rounded-xl hover:bg-cyan-600 transition-colors shadow-sm"
             >
               + افزودن ارائه‌دهنده
-            </button>
+            </Button>
           )}
         </div>
 
-        {/* Loading */}
         {isLoading && <Spinner className="py-20" />}
 
-        {/* Error */}
         {isError && (
           <div className="space-y-3">
             <ErrorMessage message="خطا در دریافت لیست ارائه‌دهندگان." />
@@ -129,26 +99,25 @@ export default function ProvidersPage() {
           </div>
         )}
 
-        {/* Empty state — solo onboarding */}
+        {/* Empty state */}
         {!isLoading && !isError && providers?.length === 0 && (
           <div className="bg-white rounded-2xl border border-cyan-100 shadow-sm p-8 space-y-5">
-            {/* Step context */}
             <div className="flex items-center gap-2 text-xs text-gray-400">
-              <span className="bg-green-100 text-green-700 w-5 h-5 rounded-full flex items-center justify-center font-bold shrink-0">
-                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
+              <span className="bg-green-100 text-green-700 w-5 h-5 rounded-full flex items-center justify-center shrink-0">
+                <CheckIcon size={12} />
               </span>
               <span className="text-gray-400">ایجاد کسب‌وکار</span>
               <span className="text-gray-300">←</span>
-              <span className="bg-cyan-500 text-white w-5 h-5 rounded-full flex items-center justify-center font-bold shrink-0">۲</span>
+              <span className="bg-cyan-500 text-white w-5 h-5 rounded-full flex items-center justify-center font-bold shrink-0 text-[10px]">۲</span>
               <span className="text-cyan-700 font-medium">افزودن ارائه‌دهنده</span>
               <span className="text-gray-300">←</span>
               <span>تنظیم برنامه</span>
             </div>
 
             <div className="text-center space-y-3 pt-2">
-              <div className="text-5xl">👤</div>
+              <div className="flex justify-center text-gray-300">
+                <UserIcon size={48} />
+              </div>
               <h2 className="text-lg font-bold text-gray-800">هنوز ارائه‌دهنده‌ای ندارید</h2>
               <p className="text-sm text-gray-500 max-w-xs mx-auto leading-relaxed">
                 ارائه‌دهنده کسی است که مشتریان برای او نوبت می‌گیرند.
@@ -157,33 +126,33 @@ export default function ProvidersPage() {
 
               {isOwner && (
                 <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-                  <button
+                  <Button
+                    variant="primary"
+                    size="md"
+                    loading={soloLoading}
                     onClick={handleAddMyself}
-                    disabled={soloLoading}
-                    className="bg-cyan-500 text-white text-sm font-medium px-6 py-3 rounded-xl
-                               hover:bg-cyan-600 disabled:opacity-50 transition-colors shadow-sm min-h-[44px]"
                   >
-                    {soloLoading ? 'در حال افزودن...' : 'افزودن خودم به عنوان ارائه‌دهنده'}
-                  </button>
-                  <button
+                    افزودن خودم به عنوان ارائه‌دهنده
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="md"
                     onClick={() => setDialog({ type: 'add', provider: null })}
-                    className="border border-cyan-300 text-cyan-700 text-sm font-medium px-6 py-3 rounded-xl
-                               hover:bg-cyan-50 transition-colors min-h-[44px]"
                   >
                     افزودن ارائه‌دهنده دیگر
-                  </button>
+                  </Button>
                 </div>
               )}
               <p className="text-xs text-gray-400">
                 مرحله بعد: افزودن خدمات و تنظیم ساعات کاری
               </p>
-              <button
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => navigate('/dashboard/schedule')}
-                className="text-sm text-cyan-600 border border-cyan-200 bg-cyan-50 px-4 py-2 rounded-lg
-                           hover:bg-cyan-100 transition-colors font-medium"
               >
-                برو به تنظیم برنامه ←
-              </button>
+                برو به تنظیم برنامه
+              </Button>
             </div>
           </div>
         )}
@@ -214,7 +183,7 @@ export default function ProvidersPage() {
         )}
       </div>
 
-      {/* ── Add Provider Modal ── */}
+      {/* Add Modal */}
       {dialog?.type === 'add' && (
         <ProviderFormModal
           title="افزودن ارائه‌دهنده"
@@ -228,7 +197,7 @@ export default function ProvidersPage() {
         />
       )}
 
-      {/* ── Edit Provider Modal ── */}
+      {/* Edit Modal */}
       {dialog?.type === 'edit' && (
         <ProviderFormModal
           title="ویرایش ارائه‌دهنده"
@@ -246,7 +215,7 @@ export default function ProvidersPage() {
         />
       )}
 
-      {/* ── Deactivate Confirmation Dialog ── */}
+      {/* Deactivate Dialog */}
       {dialog?.type === 'deactivate' && (
         <div
           className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4"
@@ -262,22 +231,22 @@ export default function ProvidersPage() {
               را غیرفعال کنید؟ این عملیات قابل بازگشت است.
             </p>
             <div className="flex gap-3">
-              <button
+              <Button
+                variant="danger"
+                fullWidth
+                loading={deactivating}
                 onClick={handleDeactivate}
-                disabled={deactivating}
-                className="flex-1 bg-red-600 text-white py-2.5 rounded-xl text-sm font-medium
-                           hover:bg-red-700 disabled:opacity-50 transition-colors"
               >
-                {deactivating ? 'در حال پردازش...' : 'غیرفعال کن'}
-              </button>
-              <button
-                onClick={() => setDialog(null)}
+                غیرفعال کن
+              </Button>
+              <Button
+                variant="ghost"
+                fullWidth
                 disabled={deactivating}
-                className="flex-1 border border-gray-200 text-gray-600 py-2.5 rounded-xl text-sm
-                           hover:bg-gray-50 transition-colors"
+                onClick={() => setDialog(null)}
               >
                 انصراف
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -292,8 +261,6 @@ function ProviderCard({ provider, isOwner, onEdit, onDeactivate, onReactivate, o
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-3">
       <div className="flex items-start justify-between gap-3">
-
-        {/* Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <p className="font-bold text-gray-800">{provider.full_name || '—'}</p>
@@ -307,52 +274,29 @@ function ProviderCard({ provider, isOwner, onEdit, onDeactivate, onReactivate, o
           )}
         </div>
 
-        {/* Actions (owner only) */}
         {isOwner && (
           <div className="flex gap-1 shrink-0">
-            <button
-              onClick={onEdit}
-              className="text-xs text-cyan-600 hover:text-cyan-800 px-3 py-1.5 rounded-lg
-                         hover:bg-cyan-50 transition-colors"
-            >
-              ویرایش
-            </button>
+            <Button variant="ghost" size="sm" onClick={onEdit}>ویرایش</Button>
             {provider.is_active ? (
-              <button
-                onClick={onDeactivate}
-                className="text-xs text-red-500 hover:text-red-700 px-3 py-1.5 rounded-lg
-                           hover:bg-red-50 transition-colors"
-              >
-                غیرفعال‌سازی
-              </button>
+              <Button variant="danger" size="sm" onClick={onDeactivate}>غیرفعال‌سازی</Button>
             ) : (
-              <button
-                onClick={onReactivate}
-                className="text-xs text-green-600 hover:text-green-800 px-3 py-1.5 rounded-lg
-                           hover:bg-green-50 transition-colors"
-              >
-                فعال‌سازی
-              </button>
+              <Button variant="secondary" size="sm" onClick={onReactivate}>فعال‌سازی</Button>
             )}
           </div>
         )}
       </div>
 
-      {/* Schedule button */}
       {isOwner && provider.is_active && (
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
+          fullWidth
           onClick={onSchedule}
-          className="w-full text-sm text-cyan-700 bg-cyan-50 border border-cyan-200 px-4 py-2
-                     rounded-xl hover:bg-cyan-100 transition-colors font-medium flex items-center justify-center gap-2"
+          className="border border-cyan-200 bg-cyan-50 text-cyan-700 hover:bg-cyan-100 flex items-center gap-2 justify-center"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <rect x="3" y="4" width="18" height="18" rx="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <line x1="16" y1="2" x2="16" y2="6" strokeLinecap="round"/>
-            <line x1="8" y1="2" x2="8" y2="6" strokeLinecap="round"/>
-            <line x1="3" y1="10" x2="21" y2="10" strokeLinecap="round"/>
-          </svg>
+          <CalendarIcon size={16} />
           تنظیم ساعات کاری
-        </button>
+        </Button>
       )}
     </div>
   )
@@ -360,16 +304,6 @@ function ProviderCard({ provider, isOwner, onEdit, onDeactivate, onReactivate, o
 
 // ── ProviderFormModal ─────────────────────────────────────────────────────────
 
-/**
- * Shared modal for add and edit flows.
- *
- * In add-mode  (editMode=false): shows phone + full_name + specialty + bio
- * In edit-mode (editMode=true):  shows specialty + bio only (phone/name locked by backend)
- *
- * Props:
- *   mutate(payload, { onSuccess, onError }) — the useMutation `.mutate` function (or a wrapper)
- *   onSuccess() — called after mutate's onSuccess fires; parent uses this to close dialog + toast
- */
 function ProviderFormModal({
   title,
   initialValues = {},
@@ -399,7 +333,6 @@ function ProviderFormModal({
 
   function handleSubmit(e) {
     e.preventDefault()
-
     const errs = validate()
     if (Object.keys(errs).length > 0) { setErrors(errs); return }
     setErrors({})
@@ -437,8 +370,6 @@ function ProviderFormModal({
       aria-label={title}
     >
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 space-y-5" dir="rtl">
-
-        {/* Modal header */}
         <div className="flex items-center justify-between">
           <h2 className="text-base font-bold text-gray-800">{title}</h2>
           <button
@@ -452,14 +383,11 @@ function ProviderFormModal({
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-
-          {/* Phone + Name — add-mode only */}
           {!editMode && (
             <>
               <div>
                 <label htmlFor="provider-phone" className="block text-sm font-medium text-gray-700 mb-1">
-                  شماره موبایل
-                  <span className="text-red-400 mr-0.5">*</span>
+                  شماره موبایل <span className="text-red-400">*</span>
                 </label>
                 <input
                   id="provider-phone"
@@ -468,18 +396,14 @@ function ProviderFormModal({
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="09xxxxxxxxx"
                   dir="ltr"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm
-                             focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                  className="input"
                 />
-                {errors.phone && (
-                  <p className="text-xs text-red-600 mt-1">{errors.phone}</p>
-                )}
+                {errors.phone && <p className="text-xs text-red-600 mt-1">{errors.phone}</p>}
               </div>
 
               <div>
                 <label htmlFor="provider-name" className="block text-sm font-medium text-gray-700 mb-1">
-                  نام کامل
-                  <span className="text-red-400 mr-0.5">*</span>
+                  نام کامل <span className="text-red-400">*</span>
                 </label>
                 <input
                   id="provider-name"
@@ -487,17 +411,13 @@ function ProviderFormModal({
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="نام و نام خانوادگی"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm
-                             focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                  className="input"
                 />
-                {errors.full_name && (
-                  <p className="text-xs text-red-600 mt-1">{errors.full_name}</p>
-                )}
+                {errors.full_name && <p className="text-xs text-red-600 mt-1">{errors.full_name}</p>}
               </div>
             </>
           )}
 
-          {/* Specialty */}
           <div>
             <label htmlFor="provider-specialty" className="block text-sm font-medium text-gray-700 mb-1">
               تخصص
@@ -508,12 +428,10 @@ function ProviderFormModal({
               value={specialty}
               onChange={(e) => setSpecialty(e.target.value)}
               placeholder="مثال: آرایشگر، مربی، مشاور"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm
-                         focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+              className="input"
             />
           </div>
 
-          {/* Bio */}
           <div>
             <label htmlFor="provider-bio" className="block text-sm font-medium text-gray-700 mb-1">
               بیوگرافی
@@ -524,35 +442,16 @@ function ProviderFormModal({
               onChange={(e) => setBio(e.target.value)}
               rows={3}
               placeholder="معرفی کوتاه ارائه‌دهنده..."
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm resize-none
-                         focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+              className="input resize-none"
             />
           </div>
 
-          {/* General error */}
           {errors.general && <ErrorMessage message={errors.general} />}
 
-          {/* Actions */}
           <div className="flex gap-3 pt-1">
-            <button
-              type="submit"
-              disabled={isPending}
-              className="flex-1 bg-cyan-500 text-white py-2.5 rounded-xl text-sm font-medium
-                         hover:bg-cyan-600 disabled:opacity-50 transition-colors"
-            >
-              {isPending ? 'در حال ذخیره...' : 'ذخیره'}
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={isPending}
-              className="flex-1 border border-gray-200 text-gray-600 py-2.5 rounded-xl text-sm
-                         hover:bg-gray-50 transition-colors"
-            >
-              انصراف
-            </button>
+            <Button type="submit" variant="primary" fullWidth loading={isPending}>ذخیره</Button>
+            <Button type="button" variant="ghost" fullWidth disabled={isPending} onClick={onClose}>انصراف</Button>
           </div>
-
         </form>
       </div>
     </div>

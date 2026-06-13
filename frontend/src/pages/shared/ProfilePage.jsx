@@ -1,15 +1,26 @@
 import { useState } from 'react'
 import MainLayout from '../../layouts/MainLayout'
+import Button from '../../components/Button'
+import Input from '../../components/Input'
+import Spinner from '../../components/Spinner'
 import { notify } from '../../utils/toast'
 import { useAuthStore } from '../../store/authStore'
 import { updateMe } from '../../api/auth'
 
 export default function ProfilePage() {
-  const user = useAuthStore((s) => s.user)
+  const user    = useAuthStore((s) => s.user)
   const setUser = useAuthStore((s) => s.setUser)
 
   const [fullName, setFullName] = useState(user?.full_name ?? '')
-  const [saving, setSaving] = useState(false)
+  const [saving,   setSaving]   = useState(false)
+
+  if (!user) {
+    return (
+      <MainLayout>
+        <div className="flex justify-center py-20"><Spinner /></div>
+      </MainLayout>
+    )
+  }
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -32,44 +43,45 @@ export default function ProfilePage() {
   return (
     <MainLayout>
       <div className="max-w-sm space-y-6">
-        <h1 className="text-xl font-bold text-gray-800">پروفایل من</h1>
+        <h1 className="text-xl font-bold" style={{ color: 'var(--color-text-primary)' }}>
+          پروفایل من
+        </h1>
 
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
           <div>
-            <p className="text-xs text-gray-500 mb-1">شماره موبایل</p>
-            <p className="font-mono text-gray-700">{user?.phone}</p>
+            <p className="text-xs mb-1" style={{ color: 'var(--color-text-secondary)' }}>شماره موبایل</p>
+            <p className="font-mono" style={{ color: 'var(--color-text-primary)' }}>{user.phone}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-500 mb-1">نقش</p>
-            <p className="text-gray-700">
-              {user?.role === 'customer'  && 'مشتری'}
-              {user?.role === 'owner'     && 'صاحب کسب‌وکار'}
-              {user?.role === 'provider'  && 'ارائه‌دهنده خدمت'}
-              {user?.role === 'secretary' && 'منشی'}
-              {user?.role === 'admin'     && 'ادمین'}
+            <p className="text-xs mb-1" style={{ color: 'var(--color-text-secondary)' }}>نقش</p>
+            <p style={{ color: 'var(--color-text-primary)' }}>
+              {user.role === 'customer'  && 'مشتری'}
+              {user.role === 'owner'     && 'صاحب کسب‌وکار'}
+              {user.role === 'provider'  && 'ارائه‌دهنده خدمت'}
+              {user.role === 'secretary' && 'منشی'}
+              {user.role === 'admin'     && 'ادمین'}
             </p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
-          <h2 className="text-sm font-semibold text-gray-700">ویرایش نام</h2>
-          <div>
-            <label className="text-xs text-gray-500 block mb-1">نام و نام خانوادگی</label>
-            <input
-              type="text"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="نام خود را وارد کنید"
-              className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-            />
-          </div>
-          <button
+          <h2 className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>ویرایش نام</h2>
+          <Input
+            label="نام و نام خانوادگی"
+            type="text"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            placeholder="نام خود را وارد کنید"
+          />
+          <Button
             type="submit"
-            disabled={saving || fullName.trim() === (user?.full_name ?? '')}
-            className="w-full bg-cyan-500 text-white py-2.5 rounded-xl text-sm font-medium hover:bg-cyan-600 disabled:opacity-50 transition-colors"
+            variant="primary"
+            fullWidth
+            loading={saving}
+            disabled={saving || fullName.trim() === (user.full_name ?? '')}
           >
-            {saving ? 'در حال ذخیره...' : 'ذخیره تغییرات'}
-          </button>
+            ذخیره تغییرات
+          </Button>
         </form>
       </div>
     </MainLayout>

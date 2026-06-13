@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import MainLayout from '../../layouts/MainLayout'
+import Button from '../../components/Button'
+import Input from '../../components/Input'
 import Spinner from '../../components/Spinner'
 import ErrorMessage from '../../components/ErrorMessage'
 import { notify } from '../../utils/toast'
@@ -90,24 +92,17 @@ export default function SettingsPage() {
 
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
 
-          <div>
-            <label htmlFor="settings-name" className="block text-sm font-medium text-gray-700 mb-1">
-              نام کسب‌وکار <span className="text-red-400">*</span>
-            </label>
-            <input
-              id="settings-name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              disabled={saving}
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm
-                         focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent
-                         disabled:bg-gray-50"
-            />
-          </div>
+          <Input
+            id="settings-name"
+            label={<>نام کسب‌وکار <span className="text-red-400">*</span></>}
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            disabled={saving}
+          />
 
-          <div>
-            <label htmlFor="settings-category" className="block text-sm font-medium text-gray-700 mb-1">
+          <div className="space-y-1.5">
+            <label htmlFor="settings-category" className="block text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>
               دسته‌بندی
             </label>
             <select
@@ -115,9 +110,7 @@ export default function SettingsPage() {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               disabled={saving}
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm bg-white
-                         focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent
-                         disabled:bg-gray-50"
+              className="input"
             >
               {categories.map((cat) => (
                 <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -125,8 +118,8 @@ export default function SettingsPage() {
             </select>
           </div>
 
-          <div>
-            <label htmlFor="settings-description" className="block text-sm font-medium text-gray-700 mb-1">
+          <div className="space-y-1.5">
+            <label htmlFor="settings-description" className="block text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>
               توضیحات
             </label>
             <textarea
@@ -136,44 +129,28 @@ export default function SettingsPage() {
               rows={3}
               placeholder="معرفی کوتاه کسب‌وکار..."
               disabled={saving}
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm resize-none
-                         focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent
-                         disabled:bg-gray-50"
+              className="input resize-none"
             />
           </div>
 
-          <div>
-            <label htmlFor="settings-phone" className="block text-sm font-medium text-gray-700 mb-1">
-              شماره تماس
-            </label>
-            <input
-              id="settings-phone"
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              dir="ltr"
-              disabled={saving}
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm
-                         focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent
-                         disabled:bg-gray-50"
-            />
-          </div>
+          <Input
+            id="settings-phone"
+            label="شماره تماس"
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            disabled={saving}
+            forceLtr
+          />
 
-          <div>
-            <label htmlFor="settings-address" className="block text-sm font-medium text-gray-700 mb-1">
-              آدرس
-            </label>
-            <input
-              id="settings-address"
-              type="text"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              disabled={saving}
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm
-                         focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent
-                         disabled:bg-gray-50"
-            />
-          </div>
+          <Input
+            id="settings-address"
+            label="آدرس"
+            type="text"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            disabled={saving}
+          />
 
           <ErrorMessage message={formError} />
 
@@ -181,19 +158,20 @@ export default function SettingsPage() {
             {business?.slug && (
               <p className="text-xs text-gray-500">
                 آدرس صفحه:{' '}
-                <span className="font-mono text-gray-600 dir-ltr" dir="ltr">
+                <span className="font-mono text-gray-600" dir="ltr">
                   /providers
                 </span>
               </p>
             )}
-            <button
+            <Button
               type="submit"
-              disabled={saving}
-              className="bg-cyan-500 text-white px-6 py-2.5 rounded-xl text-sm font-medium
-                         hover:bg-cyan-600 disabled:opacity-50 transition-colors ml-auto"
+              variant="primary"
+              size="md"
+              loading={saving}
+              className="ml-auto"
             >
-              {saving ? 'در حال ذخیره...' : 'ذخیره تغییرات'}
-            </button>
+              ذخیره تغییرات
+            </Button>
           </div>
 
         </form>

@@ -3,8 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { getCurrentUser } from '../../api/auth'
 import { createMyBusiness, getBusinessCategories } from '../../api/providers'
+import Button from '../../components/Button'
+import Input from '../../components/Input'
 import ErrorMessage from '../../components/ErrorMessage'
 import Spinner from '../../components/Spinner'
+
+const IS_DESKTOP = typeof window !== 'undefined' && window.innerWidth >= 768
 
 export default function CreateBusinessPage() {
   const navigate  = useNavigate()
@@ -80,7 +84,7 @@ export default function CreateBusinessPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-8" dir="rtl">
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 w-full max-w-sm p-8 space-y-6">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 w-full max-w-sm p-6 space-y-6">
 
         {/* Step indicator */}
         <div className="flex items-center gap-2 text-xs text-gray-400">
@@ -92,7 +96,6 @@ export default function CreateBusinessPage() {
           <span>تنظیم برنامه</span>
         </div>
 
-        {/* Header */}
         <div>
           <h1 className="text-2xl font-bold text-gray-800">ایجاد کسب‌وکار</h1>
           <p className="text-sm text-gray-500 mt-1">
@@ -103,30 +106,22 @@ export default function CreateBusinessPage() {
           )}
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
 
-          <div>
-            <label htmlFor="business-name" className="block text-sm font-medium text-gray-700 mb-1">
-              نام کسب‌وکار <span className="text-red-400">*</span>
-            </label>
-            <input
-              id="business-name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="مثال: آرایشگاه بانو پارسا"
-              autoFocus
-              autoComplete="organization"
-              disabled={loading}
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm
-                         focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent
-                         disabled:bg-gray-50"
-            />
-          </div>
+          <Input
+            id="business-name"
+            label={<>نام کسب‌وکار <span className="text-red-400">*</span></>}
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="مثال: آرایشگاه بانو پارسا"
+            autoFocus={IS_DESKTOP}
+            autoComplete="organization"
+            disabled={loading}
+          />
 
-          <div>
-            <label htmlFor="business-category" className="block text-sm font-medium text-gray-700 mb-1">
+          <div className="space-y-1.5">
+            <label htmlFor="business-category" className="block text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>
               دسته‌بندی <span className="text-red-400">*</span>
             </label>
             <select
@@ -134,9 +129,7 @@ export default function CreateBusinessPage() {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               disabled={loading}
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm bg-white
-                         focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent
-                         disabled:bg-gray-50"
+              className="input"
             >
               {categories.map((cat) => (
                 <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -144,8 +137,8 @@ export default function CreateBusinessPage() {
             </select>
           </div>
 
-          <div>
-            <label htmlFor="business-description" className="block text-sm font-medium text-gray-700 mb-1">
+          <div className="space-y-1.5">
+            <label htmlFor="business-description" className="block text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>
               توضیحات
             </label>
             <textarea
@@ -155,69 +148,55 @@ export default function CreateBusinessPage() {
               placeholder="معرفی کوتاه کسب‌وکار شما..."
               rows={3}
               disabled={loading}
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm resize-none
-                         focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent
-                         disabled:bg-gray-50"
+              className="input resize-none"
             />
           </div>
 
-          <div>
-            <label htmlFor="business-phone" className="block text-sm font-medium text-gray-700 mb-1">
-              شماره تماس
-            </label>
-            <input
-              id="business-phone"
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="مثال: 02112345678"
-              dir="ltr"
-              disabled={loading}
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm
-                         focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent
-                         disabled:bg-gray-50"
-            />
-          </div>
+          <Input
+            id="business-phone"
+            label="شماره تماس"
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="مثال: 02112345678"
+            disabled={loading}
+            forceLtr
+          />
 
-          <div>
-            <label htmlFor="business-address" className="block text-sm font-medium text-gray-700 mb-1">
-              آدرس
-            </label>
-            <input
-              id="business-address"
-              type="text"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              placeholder="آدرس کسب‌وکار"
-              disabled={loading}
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm
-                         focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent
-                         disabled:bg-gray-50"
-            />
-          </div>
+          <Input
+            id="business-address"
+            label="آدرس"
+            type="text"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="آدرس کسب‌وکار"
+            disabled={loading}
+          />
 
           <ErrorMessage message={error} />
 
-          <button
+          <Button
             type="submit"
+            variant="primary"
+            fullWidth
+            loading={loading}
             disabled={loading || !name.trim() || !category}
-            className="w-full bg-cyan-500 text-white py-3 rounded-lg text-sm font-medium
-                       hover:bg-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed
-                       transition-colors"
           >
-            {loading ? 'در حال ایجاد...' : 'ایجاد کسب‌وکار'}
-          </button>
+            ایجاد کسب‌وکار
+          </Button>
         </form>
 
         <p className="text-center text-sm text-gray-400">
           می‌خواهید نوبت بگیرید؟{' '}
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="sm"
             onClick={() => navigate('/providers')}
-            className="text-cyan-600 hover:text-cyan-800 font-medium underline-offset-2 hover:underline"
+            className="text-cyan-600 hover:text-cyan-800 font-medium"
           >
             مشاهده ارائه‌دهندگان
-          </button>
+          </Button>
         </p>
 
       </div>
