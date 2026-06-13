@@ -6,6 +6,7 @@ import ErrorMessage from '../../components/ErrorMessage'
 import DatePicker from '../../components/DatePicker'
 import SlotPicker from '../../components/SlotPicker'
 import DoctorAvatar from '../../components/DoctorAvatar'
+import Badge from '../../components/Badge'
 import { CATEGORY_ICON, BriefcaseIcon, ClockIcon, AlertCircleIcon, ChevronRightIcon } from '../../components/Icon'
 import { useProvider, useProviderSlots, useProviderServices } from '../../hooks/useDoctors'
 import { formatFee } from '../../utils/date'
@@ -63,6 +64,7 @@ export default function DoctorDetailPage() {
   }
 
   const CategoryIcon    = CATEGORY_ICON[provider.category] ?? BriefcaseIcon
+  const isAvailable     = (provider.available_weekdays ?? []).length > 0
   const hasServices     = services && services.length > 0
   const serviceRequired = hasServices
   const canPickDate     = !serviceRequired || selectedService !== null
@@ -96,8 +98,11 @@ export default function DoctorDetailPage() {
                   {provider.category_display || provider.specialty}
                 </p>
               </div>
-              <span className="inline-block mt-1.5 text-xs bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-full px-2.5 py-0.5">
-                فعال
+              <span className="inline-block mt-1.5">
+                {isAvailable
+                  ? <Badge variant="success">فعال</Badge>
+                  : <Badge variant="neutral">هنوز فعال نشده</Badge>
+                }
               </span>
             </div>
           </div>
@@ -122,6 +127,22 @@ export default function DoctorDetailPage() {
             </div>
           )}
         </div>
+
+        {/* No working hours banner */}
+        {!isAvailable && (
+          <div className="rounded-2xl p-5 flex items-start gap-3"
+               style={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)' }}>
+            <AlertCircleIcon size={20} style={{ color: 'var(--color-text-tertiary)', flexShrink: 0, marginTop: 1 }} />
+            <div className="space-y-1">
+              <p className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>
+                این ارائه‌دهنده هنوز ساعات کاری خود را تنظیم نکرده است.
+              </p>
+              <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
+                در حال حاضر امکان رزرو نوبت وجود ندارد. لطفاً بعداً مراجعه کنید یا ارائه‌دهنده دیگری انتخاب کنید.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Step 1 — Service selection */}
         {servicesLoading && <Spinner />}
@@ -184,7 +205,7 @@ export default function DoctorDetailPage() {
         )}
 
         {/* Guidance: service required but not selected */}
-        {serviceRequired && !canPickDate && (
+        {isAvailable && serviceRequired && !canPickDate && (
           <div className="rounded-2xl p-4 flex items-center gap-3"
                style={{ backgroundColor: 'var(--color-warning-bg)', border: '1px solid rgba(245,158,11,.2)' }}>
             <AlertCircleIcon size={20} style={{ color: 'var(--color-warning)', flexShrink: 0 }} />
@@ -195,7 +216,7 @@ export default function DoctorDetailPage() {
         )}
 
         {/* Step 2 — Date picker */}
-        {canPickDate && (
+        {isAvailable && canPickDate && (
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
             {hasServices && (
               <h2 className="text-sm font-semibold mb-4" style={{ color: 'var(--color-text-primary)' }}>
@@ -211,7 +232,7 @@ export default function DoctorDetailPage() {
         )}
 
         {/* Step 3 — Slot picker */}
-        {selectedDate && (
+        {isAvailable && selectedDate && (
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
             {hasServices && (
               <h2 className="text-sm font-semibold mb-4" style={{ color: 'var(--color-text-primary)' }}>
@@ -244,7 +265,7 @@ export default function DoctorDetailPage() {
         )}
 
         {/* Proceed to booking */}
-        {selectedSlot && (
+        {isAvailable && selectedSlot && (
           <div className="rounded-2xl border p-4 space-y-3"
                style={{ backgroundColor: 'var(--color-brand-light)', borderColor: 'rgba(6,182,212,.2)' }}>
             <div className="text-sm space-y-1" style={{ color: 'var(--color-text-primary)' }}>
