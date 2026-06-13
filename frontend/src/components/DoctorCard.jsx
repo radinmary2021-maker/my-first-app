@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { formatFee } from '../utils/date'
 import DoctorAvatar from './DoctorAvatar'
+import Badge from './Badge'
 import { CATEGORY_ICON, BriefcaseIcon } from './Icon'
 
 const WEEKDAY_NAMES = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج']
@@ -62,10 +63,10 @@ export default function DoctorCard({ doctor, provider }) {
                              transition-colors leading-snug truncate">
                 {p.business_name || p.full_name}
               </h2>
-              <span className="shrink-0 text-xs bg-emerald-50 text-emerald-600 border border-emerald-100
-                               rounded-full px-2 py-0.5 font-medium">
-                فعال
-              </span>
+              {p.available_weekdays?.length > 0
+                ? <Badge variant="success">فعال</Badge>
+                : <Badge variant="neutral">هنوز فعال نشده</Badge>
+              }
             </div>
 
             {/* Category with icon */}

@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useSearchParams, useNavigate, Link } from 'react-router-dom'
 import MainLayout from '../../layouts/MainLayout'
 import Spinner from '../../components/Spinner'
+import Badge from '../../components/Badge'
 import { SearchIcon, BuildingIcon, UserIcon, AlertCircleIcon } from '../../components/Icon'
 import { getProviders } from '../../api/providers'
 
@@ -175,9 +176,14 @@ export default function SearchPage() {
                     className="flex items-center justify-between bg-white border border-gray-100 rounded-xl p-4 shadow-sm hover:border-cyan-200 hover:shadow-md transition-all"
                   >
                     <div className="min-w-0">
-                      <p className="font-semibold truncate" style={{ color: 'var(--color-text-primary)' }}>
-                        {p.business_name || p.full_name}
-                      </p>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className="font-semibold truncate" style={{ color: 'var(--color-text-primary)' }}>
+                          {p.business_name || p.full_name}
+                        </p>
+                        {!(p.available_weekdays?.length > 0) && (
+                          <Badge variant="neutral">هنوز فعال نشده</Badge>
+                        )}
+                      </div>
                       <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                         {(p.category_display || p.specialty) && (
                           <span className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
