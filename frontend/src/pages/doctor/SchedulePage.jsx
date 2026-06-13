@@ -64,7 +64,7 @@ function DeleteButton({ onClick, disabled, label = 'حذف' }) {
   )
 }
 
-const inputCls = 'w-full text-sm border border-gray-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-cyan-200 bg-white'
+const inputCls = 'w-full text-sm border border-gray-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent bg-white'
 
 // ── Services section ──────────────────────────────────────────────────────────
 
@@ -112,7 +112,7 @@ function ServicesSection() {
       )}
 
       {!isLoading && !isError && !hasSvcs && (
-        <div className="text-sm text-gray-400 bg-gray-50 rounded-xl px-4 py-3">
+        <div className="text-sm text-gray-500 bg-gray-50 rounded-xl px-4 py-3">
           هیچ خدمتی ثبت نشده. اولین خدمت خود را از فرم زیر اضافه کنید.
         </div>
       )}
@@ -159,19 +159,19 @@ function ServicesSection() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label className="text-xs text-gray-500 block mb-1">مدت (دقیقه)</label>
-            <input type="number" min="5" required value={form.duration_minutes}
+            <input type="number" inputMode="numeric" min="5" required value={form.duration_minutes}
               onChange={(e) => setForm((p) => ({ ...p, duration_minutes: e.target.value }))}
               className={inputCls} />
           </div>
           <div>
             <label className="text-xs text-gray-500 block mb-1">فاصله بعد از نوبت (دقیقه)</label>
-            <input type="number" min="0" value={form.buffer_minutes}
+            <input type="number" inputMode="numeric" min="0" value={form.buffer_minutes}
               onChange={(e) => setForm((p) => ({ ...p, buffer_minutes: e.target.value }))}
               className={inputCls} />
           </div>
           <div>
             <label className="text-xs text-gray-500 block mb-1">قیمت (تومان)</label>
-            <input type="number" min="0" value={form.price}
+            <input type="number" inputMode="numeric" min="0" value={form.price}
               onChange={(e) => setForm((p) => ({ ...p, price: e.target.value }))}
               className={inputCls} />
           </div>
@@ -303,7 +303,7 @@ function WorkingHoursSection({ providerId }) {
                 type="time"
                 value={masterStart}
                 onChange={(e) => setMasterStart(e.target.value)}
-                className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-200 bg-white"
+                className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent bg-white"
                 dir="ltr"
               />
               <span className="text-gray-400 text-xs">تا</span>
@@ -311,7 +311,7 @@ function WorkingHoursSection({ providerId }) {
                 type="time"
                 value={masterEnd}
                 onChange={(e) => setMasterEnd(e.target.value)}
-                className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-200 bg-white"
+                className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent bg-white"
                 dir="ltr"
               />
               <button
@@ -357,7 +357,7 @@ function WorkingHoursSection({ providerId }) {
                     type="time"
                     value={day.start_time}
                     onChange={(e) => updateDay(i, { start_time: e.target.value })}
-                    className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-200 bg-white flex-1 min-w-[100px]"
+                    className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent bg-white flex-1 min-w-[100px]"
                     dir="ltr"
                   />
                   <span className="text-gray-400 text-xs shrink-0">تا</span>
@@ -365,7 +365,7 @@ function WorkingHoursSection({ providerId }) {
                     type="time"
                     value={day.end_time}
                     onChange={(e) => updateDay(i, { end_time: e.target.value })}
-                    className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-200 bg-white flex-1 min-w-[100px]"
+                    className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent bg-white flex-1 min-w-[100px]"
                     dir="ltr"
                   />
                   {day.start_time && day.end_time && day.start_time < day.end_time && (
@@ -455,7 +455,7 @@ function TimeOffSection({ providerId }) {
       )}
 
       {!isLoading && !isError && !hasTimeoffs && (
-        <p className="text-sm text-gray-400">هیچ مرخصی یا تعطیلی ثبت نشده.</p>
+        <p className="text-sm text-gray-500">هیچ مرخصی یا تعطیلی ثبت نشده.</p>
       )}
 
       {timeoffs?.map((t) => {

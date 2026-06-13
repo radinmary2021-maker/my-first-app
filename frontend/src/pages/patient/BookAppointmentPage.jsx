@@ -156,7 +156,7 @@ export default function BookAppointmentPage() {
             className="w-full bg-cyan-500 text-white py-3 rounded-xl text-sm font-medium hover:bg-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
           >
             {step === STEPS.BOOKING ? (
-              <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />در حال ثبت نوبت…</>
+              <><Spinner size="sm" light />در حال ثبت نوبت…</>
             ) : step === STEPS.ERROR ? 'تلاش مجدد' : 'تأیید و پرداخت'}
           </button>
         )}

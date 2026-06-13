@@ -179,7 +179,7 @@ export default function SettingsPage() {
 
           <div className="flex items-center justify-between pt-2">
             {business?.slug && (
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-gray-500">
                 آدرس صفحه:{' '}
                 <span className="font-mono text-gray-600 dir-ltr" dir="ltr">
                   /providers
@@ -190,7 +190,7 @@ export default function SettingsPage() {
               type="submit"
               disabled={saving}
               className="bg-cyan-500 text-white px-6 py-2.5 rounded-xl text-sm font-medium
-                         hover:bg-cyan-600 disabled:opacity-50 transition-colors mr-auto"
+                         hover:bg-cyan-600 disabled:opacity-50 transition-colors ml-auto"
             >
               {saving ? 'در حال ذخیره...' : 'ذخیره تغییرات'}
             </button>

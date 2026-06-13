@@ -5,7 +5,10 @@ const SIZES = {
   lg: 'w-8   h-8   border-[3px]',
 }
 
-export default function Spinner({ size = 'md', className = '' }) {
+export default function Spinner({ size = 'md', light = false, className = '' }) {
+  const trackAndHead = light
+    ? 'border-white/40 border-t-white'
+    : 'border-cyan-200 border-t-cyan-500'
   return (
     <span
       role="status"
@@ -13,7 +16,7 @@ export default function Spinner({ size = 'md', className = '' }) {
       className={`inline-flex items-center justify-center ${className}`}
     >
       <span
-        className={`${SIZES[size] ?? SIZES.md} border-cyan-200 border-t-cyan-500 rounded-full animate-spin block`}
+        className={`${SIZES[size] ?? SIZES.md} ${trackAndHead} rounded-full animate-spin block`}
       />
     </span>
   )
