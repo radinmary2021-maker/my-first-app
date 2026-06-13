@@ -35,6 +35,7 @@ def send_otp_sms(self, phone: str, code: str) -> None:
     if not settings.KAVENEGAR_API_KEY:
         if settings.DEBUG:
             logger.info(f"Development OTP for {phone}: {code}")
+        # TODO: when DEBUG=False and no KAVENEGAR_API_KEY, OTP is silently dropped — add a warning log here
         _log_success(phone, message)
         return
     try:

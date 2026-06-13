@@ -271,6 +271,7 @@ if SENTRY_DSN:
     )
 
 # ── Application Settings ──────────────────────────────────────────────────────
+# TODO: make OTP_EXPIRY_SECONDS configurable via env var: env.int('OTP_EXPIRY_SECONDS', default=120)
 OTP_EXPIRY_SECONDS = 120
 OTP_MAX_ATTEMPTS = 5
 
