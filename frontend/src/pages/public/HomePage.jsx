@@ -47,15 +47,6 @@ function StarIcon({ filled }) {
 }
 
 /* ════════════════════════════════════════════════════
-   Image URL builder — Lorem Picsum (picsum.photos)
-   Free CDN backed by Unsplash contributors. No API key
-   required. Seed keeps each slot deterministic across
-   reloads. Swap for Unsplash API once a key is available.
-════════════════════════════════════════════════════ */
-const IMG = (seed, w = 400, h = 300) =>
-  `https://picsum.photos/seed/${seed}/${w}/${h}`
-
-/* ════════════════════════════════════════════════════
    Business-themed background pattern
 ════════════════════════════════════════════════════ */
 function BusinessPattern() {
@@ -147,32 +138,23 @@ function BusinessPattern() {
    Static data
 ════════════════════════════════════════════════════ */
 
-/**
- * Category cards — Unsplash photo IDs (hotlink permitted, free to use).
- * Photo selection: one well-known Unsplash photo per category.
- * URL format: https://images.unsplash.com/{id}?auto=format&fit=crop&w=400&h=300&q=80
- */
 const CATEGORIES = [
-  { label: 'آرایش و زیبایی',     slug: 'beauty',        seed: 'hair-salon'     },
-  { label: 'ورزش و تناسب اندام', slug: 'fitness',       seed: 'gym-fitness'    },
-  { label: 'آموزش و تدریس',      slug: 'education',     seed: 'classroom'      },
-  { label: 'عکاسی و فیلم',       q:    'عکاسی',         seed: 'camera-studio'  },
-  { label: 'مشاوره تخصصی',       slug: 'psychological', seed: 'business-meeting'},
-  { label: 'حیوانات خانگی',      slug: 'veterinary',    seed: 'vet-pet-dog'    },
-  { label: 'آشپزی و شیرینی',     q:    'آشپزی',         seed: 'kitchen-baking' },
-  { label: 'خدمات تخصصی',        slug: 'automotive',    seed: 'car-mechanic'   },
+  { label: 'آرایش و زیبایی',     slug: 'beauty',        bg: 'linear-gradient(135deg,#f093fb,#f5576c)' },
+  { label: 'ورزش و تناسب اندام', slug: 'fitness',       bg: 'linear-gradient(135deg,#4facfe,#00f2fe)' },
+  { label: 'آموزش و تدریس',      slug: 'education',     bg: 'linear-gradient(135deg,#43e97b,#38f9d7)' },
+  { label: 'عکاسی و فیلم',       q:    'عکاسی',         bg: 'linear-gradient(135deg,#fa709a,#fee140)' },
+  { label: 'مشاوره تخصصی',       slug: 'psychological', bg: 'linear-gradient(135deg,#667eea,#764ba2)' },
+  { label: 'حیوانات خانگی',      slug: 'veterinary',    bg: 'linear-gradient(135deg,#f6d365,#fda085)' },
+  { label: 'آشپزی و شیرینی',     q:    'آشپزی',         bg: 'linear-gradient(135deg,#ff9a9e,#fecfef)' },
+  { label: 'خدمات تخصصی',        slug: 'automotive',    bg: 'linear-gradient(135deg,#30cfd0,#330867)' },
 ]
 
-/**
- * Hero carousel slides — 5 real business photo examples.
- * Shows the diversity of bookable businesses on the platform.
- */
 const CAROUSEL_SLIDES = [
-  { seed: 'hair-salon-beauty',  label: 'آرایش و زیبایی',   sub: 'رزرو آنلاین نوبت آرایش'         },
-  { seed: 'gym-barbell-woman',  label: 'باشگاه ورزشی',     sub: 'سانس تمرین را رزرو کنید'        },
-  { seed: 'doctor-stethoscope', label: 'خدمات پزشکی',      sub: 'با بهترین متخصصان ملاقات کنید'  },
-  { seed: 'car-garage-mechanic',label: 'تعمیرگاه خودرو',   sub: 'نوبت سرویس بدون انتظار'         },
-  { seed: 'photo-studio-camera',label: 'استودیو عکاسی',    sub: 'رزرو سانس عکاسی حرفه‌ای'        },
+  { bg: 'linear-gradient(135deg,#f093fb,#f5576c)', label: 'آرایش و زیبایی',  sub: 'رزرو آنلاین نوبت آرایش'         },
+  { bg: 'linear-gradient(135deg,#4facfe,#00f2fe)', label: 'باشگاه ورزشی',    sub: 'سانس تمرین را رزرو کنید'        },
+  { bg: 'linear-gradient(135deg,#43e97b,#38f9d7)', label: 'خدمات پزشکی',     sub: 'با بهترین متخصصان ملاقات کنید'  },
+  { bg: 'linear-gradient(135deg,#fa709a,#fee140)', label: 'تعمیرگاه خودرو',  sub: 'نوبت سرویس بدون انتظار'         },
+  { bg: 'linear-gradient(135deg,#667eea,#764ba2)', label: 'استودیو عکاسی',   sub: 'رزرو سانس عکاسی حرفه‌ای'        },
 ]
 
 /**
@@ -318,21 +300,14 @@ function HeroCarousel({ slides }) {
         height: 0,
       }}
     >
-      {/* All images, only active one is visible */}
+      {/* Gradient slides, only active one is visible */}
       {slides.map((s, i) => (
-        <img
-          key={s.seed}
-          src={IMG(s.seed, 900, 562)}
-          alt={s.label}
-          loading={i === 0 ? 'eager' : 'lazy'}
-          className={i === active ? 'nv-carousel-active' : ''}
+        <div
+          key={s.label}
           style={{
             position: 'absolute',
             inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            display: 'block',
+            background: s.bg,
             opacity: i === active ? 1 : 0,
             transition: 'opacity .55s ease',
           }}
@@ -630,7 +605,7 @@ export default function HomePage() {
             gridTemplateColumns: 'repeat(auto-fill,minmax(160px,1fr))',
             gap: 14,
           }}>
-            {CATEGORIES.map(({ label, slug, q, seed }) => (
+            {CATEGORIES.map(({ label, slug, q, bg }) => (
               <button
                 key={label}
                 className="nv-cat-card"
@@ -650,25 +625,14 @@ export default function HomePage() {
                   padding: 0,
                   cursor: 'pointer',
                   fontFamily: 'inherit',
-                  background: '#E2E8F0',
+                  background: bg,
                   boxShadow: '0 2px 8px rgba(0,0,0,.07)',
                 }}
               >
-                {/* Photo */}
-                <img
-                  src={IMG(seed, 400, 300)}
-                  alt={label}
-                  loading="lazy"
-                  className="nv-cat-img"
-                  style={{
-                    position: 'absolute', inset: 0,
-                    width: '100%', height: '100%', objectFit: 'cover', display: 'block',
-                  }}
-                />
                 {/* Dark gradient overlay for text legibility */}
                 <div style={{
                   position: 'absolute', inset: 0,
-                  background: 'linear-gradient(to top, rgba(0,0,0,.72) 0%, rgba(0,0,0,.18) 55%, transparent 100%)',
+                  background: 'linear-gradient(to top, rgba(0,0,0,.55) 0%, transparent 60%)',
                 }} />
                 {/* Label */}
                 <span style={{
