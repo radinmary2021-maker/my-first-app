@@ -13,7 +13,7 @@ set -euo pipefail
 
 # ── User-configurable ─────────────────────────────────────────────────────────
 DOMAIN="nobatiic.ir"
-CERTBOT_EMAIL="your-email@example.com"   # ← set your email before running
+CERTBOT_EMAIL="radin.mary2021@gmail.com"
 APP_DIR="/opt/nobatic"
 REPO_URL="https://github.com/radinmary2021-maker/my-first-app.git"
 SECRETS_FILE="/root/.env.production"     # master secrets — stays outside repo
@@ -28,9 +28,6 @@ err()   { echo -e "${R}  ✖  $*${NC}"; exit 1; }
 # ── Preflight checks ──────────────────────────────────────────────────────────
 [[ $EUID -ne 0 ]] && err "Run as root: sudo bash setup.sh"
 
-if [[ "$CERTBOT_EMAIL" == "your-email@example.com" ]]; then
-    err "Set CERTBOT_EMAIL at the top of this script before running."
-fi
 
 echo -e "${B}"
 echo "  ╔═══════════════════════════════════════════╗"
