@@ -47,12 +47,13 @@ function StarIcon({ filled }) {
 }
 
 /* ════════════════════════════════════════════════════
-   Unsplash URL builder
-   Source: images.unsplash.com — free to embed, attribution
-   required per Unsplash guidelines (hotlinking is permitted).
+   Image URL builder — Lorem Picsum (picsum.photos)
+   Free CDN backed by Unsplash contributors. No API key
+   required. Seed keeps each slot deterministic across
+   reloads. Swap for Unsplash API once a key is available.
 ════════════════════════════════════════════════════ */
-const UNSPLASH = (id, w = 400, h = 300) =>
-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&h=${h}&q=80`
+const IMG = (seed, w = 400, h = 300) =>
+  `https://picsum.photos/seed/${seed}/${w}/${h}`
 
 /* ════════════════════════════════════════════════════
    Business-themed background pattern
@@ -152,46 +153,14 @@ function BusinessPattern() {
  * URL format: https://images.unsplash.com/{id}?auto=format&fit=crop&w=400&h=300&q=80
  */
 const CATEGORIES = [
-  {
-    label: 'آرایش و زیبایی',
-    slug:  'beauty',
-    photo: '9AIwDXBBdSU', // unsplash.com/photos/a-woman-holding-a-hair-dryer-in-her-hand-9AIwDXBBdSU
-  },
-  {
-    label: 'ورزش و تناسب اندام',
-    slug:  'fitness',
-    photo: 'AzX5iNFYBMY', // unsplash.com/photos/a-gym-with-a-barbell-and-weight-plates-AzX5iNFYBMY
-  },
-  {
-    label: 'آموزش و تدریس',
-    slug:  'education',
-    photo: 'aA2Fadydc', // unsplash.com/photos/a-group-of-people-in-a-room-with-a-projector-screen-1-aA2Fadydc
-  },
-  {
-    label: 'عکاسی و فیلم',
-    q:     'عکاسی',
-    photo: 'aS4Duj2j7r4', // unsplash.com/photos/camera-studio-set-up-aS4Duj2j7r4
-  },
-  {
-    label: 'مشاوره تخصصی',
-    slug:  'psychological',
-    photo: 'jHy5ngFCrg8', // unsplash.com/photos/business-consultation-team-for-marketing-success-jHy5ngFCrg8
-  },
-  {
-    label: 'حیوانات خانگی',
-    slug:  'veterinary',
-    photo: 'LCcJPoayxfM', // unsplash.com/photos/veterinarian-examining-black-dog-with-sore-ear-LCcJPoayxfM
-  },
-  {
-    label: 'آشپزی و شیرینی',
-    q:     'آشپزی',
-    photo: '5e-JfidWFH0', // unsplash.com/photos/person-baking-infront-of-table-5e-JfidWFH0
-  },
-  {
-    label: 'خدمات تخصصی',
-    slug:  'automotive',
-    photo: 'mxwwIA9U6lk', // unsplash.com/photos/an-auto-mechanic-repairing-car-engine-in-garage-mxwwIA9U6lk
-  },
+  { label: 'آرایش و زیبایی',     slug: 'beauty',        seed: 'hair-salon'     },
+  { label: 'ورزش و تناسب اندام', slug: 'fitness',       seed: 'gym-fitness'    },
+  { label: 'آموزش و تدریس',      slug: 'education',     seed: 'classroom'      },
+  { label: 'عکاسی و فیلم',       q:    'عکاسی',         seed: 'camera-studio'  },
+  { label: 'مشاوره تخصصی',       slug: 'psychological', seed: 'business-meeting'},
+  { label: 'حیوانات خانگی',      slug: 'veterinary',    seed: 'vet-pet-dog'    },
+  { label: 'آشپزی و شیرینی',     q:    'آشپزی',         seed: 'kitchen-baking' },
+  { label: 'خدمات تخصصی',        slug: 'automotive',    seed: 'car-mechanic'   },
 ]
 
 /**
@@ -199,31 +168,11 @@ const CATEGORIES = [
  * Shows the diversity of bookable businesses on the platform.
  */
 const CAROUSEL_SLIDES = [
-  {
-    photo: '9AIwDXBBdSU', // unsplash.com/photos/a-woman-holding-a-hair-dryer-in-her-hand-9AIwDXBBdSU
-    label: 'آرایش و زیبایی',
-    sub:   'رزرو آنلاین نوبت آرایش',
-  },
-  {
-    photo: 'mZisJGLWtOM', // unsplash.com/photos/woman-lifting-a-heavy-barbell-in-a-gym-mZisJGLWtOM
-    label: 'باشگاه ورزشی',
-    sub:   'سانس تمرین را رزرو کنید',
-  },
-  {
-    photo: 'JJEOuvnY1Tw', // unsplash.com/photos/doctor-wearing-a-stethoscope-sits-at-a-desk-JJEOuvnY1Tw
-    label: 'خدمات پزشکی',
-    sub:   'با بهترین متخصصان ملاقات کنید',
-  },
-  {
-    photo: 'P1itawXTCgg', // unsplash.com/photos/mechanic-working-on-a-car-inside-of-a-garage-P1itawXTCgg
-    label: 'تعمیرگاه خودرو',
-    sub:   'نوبت سرویس بدون انتظار',
-  },
-  {
-    photo: 'olMagWbnzYc', // unsplash.com/photos/stock-photo-of-professional-photographer-during-photo-shoot-in-studio-olMagWbnzYc
-    label: 'استودیو عکاسی',
-    sub:   'رزرو سانس عکاسی حرفه‌ای',
-  },
+  { seed: 'hair-salon-beauty',  label: 'آرایش و زیبایی',   sub: 'رزرو آنلاین نوبت آرایش'         },
+  { seed: 'gym-barbell-woman',  label: 'باشگاه ورزشی',     sub: 'سانس تمرین را رزرو کنید'        },
+  { seed: 'doctor-stethoscope', label: 'خدمات پزشکی',      sub: 'با بهترین متخصصان ملاقات کنید'  },
+  { seed: 'car-garage-mechanic',label: 'تعمیرگاه خودرو',   sub: 'نوبت سرویس بدون انتظار'         },
+  { seed: 'photo-studio-camera',label: 'استودیو عکاسی',    sub: 'رزرو سانس عکاسی حرفه‌ای'        },
 ]
 
 /**
@@ -372,8 +321,8 @@ function HeroCarousel({ slides }) {
       {/* All images, only active one is visible */}
       {slides.map((s, i) => (
         <img
-          key={s.photo}
-          src={UNSPLASH(s.photo, 900, 562)}
+          key={s.seed}
+          src={IMG(s.seed, 900, 562)}
           alt={s.label}
           loading={i === 0 ? 'eager' : 'lazy'}
           className={i === active ? 'nv-carousel-active' : ''}
@@ -681,7 +630,7 @@ export default function HomePage() {
             gridTemplateColumns: 'repeat(auto-fill,minmax(160px,1fr))',
             gap: 14,
           }}>
-            {CATEGORIES.map(({ label, slug, q, photo }) => (
+            {CATEGORIES.map(({ label, slug, q, seed }) => (
               <button
                 key={label}
                 className="nv-cat-card"
@@ -707,7 +656,7 @@ export default function HomePage() {
               >
                 {/* Photo */}
                 <img
-                  src={UNSPLASH(photo, 400, 300)}
+                  src={IMG(seed, 400, 300)}
                   alt={label}
                   loading="lazy"
                   className="nv-cat-img"
