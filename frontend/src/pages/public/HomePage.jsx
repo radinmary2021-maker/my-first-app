@@ -155,42 +155,42 @@ const CATEGORIES = [
   {
     label: 'آرایش و زیبایی',
     slug:  'beauty',
-    photo: 'photo-1560066984-138dadb4c035', // hair salon interior
+    photo: '9AIwDXBBdSU', // unsplash.com/photos/a-woman-holding-a-hair-dryer-in-her-hand-9AIwDXBBdSU
   },
   {
     label: 'ورزش و تناسب اندام',
     slug:  'fitness',
-    photo: 'photo-1534438327276-14e5300c3a48', // gym weights
+    photo: 'AzX5iNFYBMY', // unsplash.com/photos/a-gym-with-a-barbell-and-weight-plates-AzX5iNFYBMY
   },
   {
     label: 'آموزش و تدریس',
     slug:  'education',
-    photo: 'photo-1503676260728-1c00da094a0b', // classroom / books
+    photo: 'aA2Fadydc', // unsplash.com/photos/a-group-of-people-in-a-room-with-a-projector-screen-1-aA2Fadydc
   },
   {
     label: 'عکاسی و فیلم',
     q:     'عکاسی',
-    photo: 'photo-1516035069371-29a1b244cc32', // professional camera
+    photo: 'aS4Duj2j7r4', // unsplash.com/photos/camera-studio-set-up-aS4Duj2j7r4
   },
   {
     label: 'مشاوره تخصصی',
     slug:  'psychological',
-    photo: 'photo-1573496359142-b8d87734a5a2', // professional consultation
+    photo: 'jHy5ngFCrg8', // unsplash.com/photos/business-consultation-team-for-marketing-success-jHy5ngFCrg8
   },
   {
     label: 'حیوانات خانگی',
     slug:  'veterinary',
-    photo: 'photo-1548767797-d8c844163c4a', // pets / veterinary
+    photo: 'LCcJPoayxfM', // unsplash.com/photos/veterinarian-examining-black-dog-with-sore-ear-LCcJPoayxfM
   },
   {
     label: 'آشپزی و شیرینی',
     q:     'آشپزی',
-    photo: 'photo-1556910103-1c02745aae4d', // cooking / kitchen
+    photo: '5e-JfidWFH0', // unsplash.com/photos/person-baking-infront-of-table-5e-JfidWFH0
   },
   {
     label: 'خدمات تخصصی',
     slug:  'automotive',
-    photo: 'photo-1492144534655-ae79c964c9d7', // automotive / mechanic
+    photo: 'mxwwIA9U6lk', // unsplash.com/photos/an-auto-mechanic-repairing-car-engine-in-garage-mxwwIA9U6lk
   },
 ]
 
@@ -200,27 +200,27 @@ const CATEGORIES = [
  */
 const CAROUSEL_SLIDES = [
   {
-    photo: 'photo-1560066984-138dadb4c035',
+    photo: '9AIwDXBBdSU', // unsplash.com/photos/a-woman-holding-a-hair-dryer-in-her-hand-9AIwDXBBdSU
     label: 'آرایش و زیبایی',
     sub:   'رزرو آنلاین نوبت آرایش',
   },
   {
-    photo: 'photo-1571019613454-1cb2f99b2d8b',
+    photo: 'mZisJGLWtOM', // unsplash.com/photos/woman-lifting-a-heavy-barbell-in-a-gym-mZisJGLWtOM
     label: 'باشگاه ورزشی',
     sub:   'سانس تمرین را رزرو کنید',
   },
   {
-    photo: 'photo-1579684385127-1ef15d508118',
+    photo: 'JJEOuvnY1Tw', // unsplash.com/photos/doctor-wearing-a-stethoscope-sits-at-a-desk-JJEOuvnY1Tw
     label: 'خدمات پزشکی',
     sub:   'با بهترین متخصصان ملاقات کنید',
   },
   {
-    photo: 'photo-1503376780353-7e6692767b70',
+    photo: 'P1itawXTCgg', // unsplash.com/photos/mechanic-working-on-a-car-inside-of-a-garage-P1itawXTCgg
     label: 'تعمیرگاه خودرو',
     sub:   'نوبت سرویس بدون انتظار',
   },
   {
-    photo: 'photo-1516035069371-29a1b244cc32',
+    photo: 'olMagWbnzYc', // unsplash.com/photos/stock-photo-of-professional-photographer-during-photo-shoot-in-studio-olMagWbnzYc
     label: 'استودیو عکاسی',
     sub:   'رزرو سانس عکاسی حرفه‌ای',
   },
