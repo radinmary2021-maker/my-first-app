@@ -72,12 +72,14 @@ class ProviderDetailView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, pk):
+        qs = Provider.objects.select_related('user', 'business').prefetch_related('reviews')
         try:
-            qs = Provider.objects.select_related('user', 'business').prefetch_related('reviews')
             if str(pk).isdigit():
                 provider = qs.get(pk=int(pk), is_active=True)
             else:
-                provider = qs.get(business__slug=pk, is_active=True)
+                provider = qs.filter(business__slug=pk, is_active=True).order_by('id').first()
+                if provider is None:
+                    raise Provider.DoesNotExist
         except Provider.DoesNotExist:
             return Response({'error': 'ارائه‌دهنده یافت نشد.'}, status=status.HTTP_404_NOT_FOUND)
         return Response(ProviderSerializer(provider).data)
