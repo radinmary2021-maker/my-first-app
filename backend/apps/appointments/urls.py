@@ -15,6 +15,7 @@ from .views import (
     CompleteAppointmentView,
     NoShowAppointmentView,
 )
+from apps.reviews.views import AppointmentReviewView
 
 urlpatterns = [
     # Customer
@@ -29,4 +30,5 @@ urlpatterns = [
     path('<int:pk>/confirm/',       ConfirmAppointmentView.as_view(),     name='confirm-appointment'),
     path('<int:pk>/complete/',      CompleteAppointmentView.as_view(),    name='complete-appointment'),
     path('<int:pk>/no-show/',       NoShowAppointmentView.as_view(),      name='no-show-appointment'),
+    path('<int:pk>/review/',        AppointmentReviewView.as_view(),      name='appointment-review'),
 ]

@@ -6,9 +6,11 @@ from .models import BusinessCategory, Provider
 
 
 class ProviderSerializer(serializers.ModelSerializer):
-    full_name        = serializers.CharField(source='user.full_name', read_only=True)
-    category_display = serializers.CharField(source='get_category_display', read_only=True)
+    full_name          = serializers.CharField(source='user.full_name', read_only=True)
+    category_display   = serializers.CharField(source='get_category_display', read_only=True)
     available_weekdays = serializers.SerializerMethodField()
+    average_rating     = serializers.SerializerMethodField()
+    reviews_count      = serializers.SerializerMethodField()
 
     class Meta:
         model  = Provider
@@ -17,7 +19,17 @@ class ProviderSerializer(serializers.ModelSerializer):
             'specialty', 'bio', 'address',
             'slot_duration', 'service_fee', 'is_active',
             'available_weekdays',
+            'average_rating', 'reviews_count',
         ]
+
+    def get_average_rating(self, obj) -> float | None:
+        reviews = list(obj.reviews.all())  # uses prefetch cache when available
+        if not reviews:
+            return None
+        return round(sum(r.rating for r in reviews) / len(reviews), 1)
+
+    def get_reviews_count(self, obj) -> int:
+        return len(obj.reviews.all())  # uses prefetch cache when available
 
     def get_available_weekdays(self, obj) -> list[int]:
         """Returns weekdays with active WorkingHours — provider-specific first, business-wide fallback."""

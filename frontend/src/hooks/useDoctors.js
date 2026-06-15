@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { getProviders, getProvider, getProviderSlots, getProviderServices, getMyServices, getBusinessCategories } from '../api/providers'
+import { getProviders, getProvider, getProviderSlots, getProviderServices, getMyServices, getBusinessCategories, getProviderReviews } from '../api/providers'
 
 /** @deprecated use useProviders */
 export function useDoctors() { return useProviders() }
@@ -61,6 +61,15 @@ export function useMyServices() {
  * Each item shape: { value: string, label: string } — falls back gracefully
  * if the API returns a plain string array.
  */
+export function useProviderReviews(providerId, page = 1) {
+  return useQuery({
+    queryKey: ['provider-reviews', providerId, page],
+    queryFn:  () => getProviderReviews(providerId, page),
+    enabled:  Boolean(providerId),
+    staleTime: 60_000,
+  })
+}
+
 export function useBusinessCategories() {
   return useQuery({
     queryKey: ['business-categories'],

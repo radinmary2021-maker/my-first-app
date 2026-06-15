@@ -60,16 +60,19 @@ class AppointmentSerializer(serializers.ModelSerializer):
     provider_category = serializers.SerializerMethodField()
     service_name      = serializers.SerializerMethodField()
     status_display    = serializers.CharField(source='get_status_display', read_only=True)
+    has_review        = serializers.SerializerMethodField()
 
     class Meta:
         model  = Appointment
         fields = [
             'id', 'tracking_code',
+            'provider_id',
             'provider_name', 'provider_category', 'service_name',
             'date', 'start_time', 'end_time',
             'status', 'status_display',
             'total_price', 'deposit_paid',
             'notes',
+            'has_review',
             'created_at', 'updated_at',
         ]
         read_only_fields = fields
@@ -91,6 +94,9 @@ class AppointmentSerializer(serializers.ModelSerializer):
         if obj.service_id:
             return getattr(obj.service, 'name', '') or ''
         return ''
+
+    def get_has_review(self, obj: Appointment) -> bool:
+        return hasattr(obj, 'review')
 
 
 class StaffAppointmentSerializer(serializers.ModelSerializer):

@@ -41,6 +41,7 @@ def list_appointments_for_customer(
         Appointment.objects
         .filter(customer_id=customer_id)
         .select_related('provider', 'service', 'business')
+        .prefetch_related('review')
         .order_by('-date', '-start_time')
     )
     if status:

@@ -8,6 +8,7 @@ from .views import (
     ProviderListView,
     ProviderServicesView,
 )
+from apps.reviews.views import ProviderReviewListView
 
 urlpatterns = [
     path('',                    ProviderListView.as_view(),          name='provider-list'),
@@ -16,4 +17,5 @@ urlpatterns = [
     path('<int:pk>/',           ProviderDetailView.as_view(),        name='provider-detail'),
     path('<int:pk>/slots/',     ProviderAvailableSlotsView.as_view(), name='provider-slots'),
     path('<int:pk>/services/',  ProviderServicesView.as_view(),      name='provider-services'),
+    path('<int:pk>/reviews/',   ProviderReviewListView.as_view(),    name='provider-reviews'),
 ]

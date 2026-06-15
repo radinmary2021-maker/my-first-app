@@ -154,6 +154,16 @@ export function createMyBusiness(data) {
  * Retrieve the authenticated user's current business.
  * Returns 403 / context error if the user has no business membership.
  */
+// ── Reviews ──────────────────────────────────────────────────────────────────
+
+export function submitReview(appointmentId, data) {
+  return client.post(`/api/appointments/${appointmentId}/review/`, data).then((r) => r.data)
+}
+
+export function getProviderReviews(providerId, page = 1) {
+  return client.get(`/api/providers/${providerId}/reviews/`, { params: { page } }).then((r) => r.data)
+}
+
 export function getMyBusiness() {
   return client.get('/api/v1/businesses/me/').then((r) => r.data)
 }
