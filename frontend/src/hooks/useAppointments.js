@@ -8,6 +8,7 @@ import {
   noShowAppointment,
   confirmAppointment,
 } from '../api/appointments'
+import { submitReview } from '../api/providers'
 
 export const BUSINESS_APPOINTMENTS_KEY = ['business-appointments']
 export const PROVIDER_APPOINTMENTS_KEY = ['provider-appointments']
@@ -95,5 +96,13 @@ export function useConfirmAppointment() {
       queryClient.invalidateQueries({ queryKey: PROVIDER_APPOINTMENTS_KEY })
       queryClient.invalidateQueries({ queryKey: BUSINESS_APPOINTMENTS_KEY })
     },
+  })
+}
+
+export function useSubmitReview() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ appointmentId, data }) => submitReview(appointmentId, data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['my-appointments'] }),
   })
 }

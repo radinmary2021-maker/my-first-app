@@ -53,7 +53,7 @@ class ProviderListView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        qs = Provider.objects.filter(is_active=True).select_related('user')
+        qs = Provider.objects.filter(is_active=True).select_related('user').prefetch_related('reviews')
         category = request.query_params.get('category')
         if category:
             qs = qs.filter(category=category)
@@ -73,7 +73,7 @@ class ProviderDetailView(APIView):
 
     def get(self, request, pk):
         try:
-            provider = Provider.objects.select_related('user').get(pk=pk, is_active=True)
+            provider = Provider.objects.select_related('user').prefetch_related('reviews').get(pk=pk, is_active=True)
         except Provider.DoesNotExist:
             return Response({'error': 'ارائه‌دهنده یافت نشد.'}, status=status.HTTP_404_NOT_FOUND)
         return Response(ProviderSerializer(provider).data)
