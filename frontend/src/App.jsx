@@ -91,12 +91,14 @@ export default function App() {
             {/* Public providers */}
             <Route path="/providers"     element={<DoctorListPage />} />
             <Route path="/providers/:id" element={<DoctorDetailPage />} />
+            {/* Public slug-based provider page (shareable) */}
+            <Route path="/book/:slug"    element={<DoctorDetailPage />} />
             {/* Legacy aliases */}
             <Route path="/doctors"     element={<Navigate to="/providers" replace />} />
             <Route path="/doctors/:id" element={<Navigate to="/providers/:id" replace />} />
 
             {/* Protected */}
-            <Route path="/book/:id"        element={<ProtectedRoute><BookAppointmentPage /></ProtectedRoute>} />
+            <Route path="/booking/:id"     element={<ProtectedRoute><BookAppointmentPage /></ProtectedRoute>} />
             <Route path="/my-appointments" element={<ProtectedRoute><MyAppointmentsPage /></ProtectedRoute>} />
 
             {/* Payment result — public (Zarinpal redirects here) */}

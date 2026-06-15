@@ -11,6 +11,7 @@ import { CATEGORY_ICON, BriefcaseIcon, ClockIcon, AlertCircleIcon, ChevronRightI
 import { useProvider, useProviderSlots, useProviderServices, useProviderReviews } from '../../hooks/useDoctors'
 import { formatFee } from '../../utils/date'
 import { toJalali } from '../../utils/jalali'
+import { notify } from '../../utils/toast'
 
 const STAR_PATH = 'M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z'
 
@@ -30,29 +31,44 @@ function StarDisplay({ value, size = 'sm' }) {
 }
 
 export default function DoctorDetailPage() {
-  const { id } = useParams()
+  // Supports two routes: /providers/:id (numeric) and /book/:slug (string)
+  const { id: paramId, slug: paramSlug } = useParams()
+  const lookup = paramId || paramSlug       // whichever is present
   const navigate = useNavigate()
 
   const [selectedService, setSelectedService] = useState(null)
   const [selectedDate, setSelectedDate]       = useState(null)
   const [selectedSlot, setSelectedSlot]       = useState(null)
+  const [reviewPage, setReviewPage]           = useState(1)
 
-  const [reviewPage, setReviewPage] = useState(1)
+  const { data: provider,  isLoading: providerLoading,  isError: providerError  } = useProvider(lookup)
+  const providerId = provider?.id   // always numeric once loaded
 
-  const { data: provider,  isLoading: providerLoading,  isError: providerError  } = useProvider(id)
-  const { data: services,  isLoading: servicesLoading                            } = useProviderServices(id)
-  const { data: slotsData, isLoading: slotsLoading,     isError: slotsError, refetch: refetchSlots } = useProviderSlots(id, selectedDate, selectedService?.id)
-  const { data: reviewsData } = useProviderReviews(id, reviewPage)
+  const { data: services,  isLoading: servicesLoading                            } = useProviderServices(providerId)
+  const { data: slotsData, isLoading: slotsLoading,     isError: slotsError, refetch: refetchSlots } = useProviderSlots(providerId, selectedDate, selectedService?.id)
+  const { data: reviewsData } = useProviderReviews(providerId, reviewPage)
 
   function handleDateSelect(date) {
     setSelectedDate(date)
     setSelectedSlot(null)
   }
 
+  function handleShare() {
+    if (!provider?.business_slug) return
+    const shareUrl = `${window.location.origin}/book/${provider.business_slug}`
+    if (navigator.share) {
+      navigator.share({ title: provider.business_name || provider.full_name, url: shareUrl }).catch(() => {})
+    } else {
+      navigator.clipboard.writeText(shareUrl)
+        .then(() => notify('لینک کپی شد', 'success'))
+        .catch(() => notify('خطا در کپی لینک', 'error'))
+    }
+  }
+
   function handleProceed() {
-    navigate(`/book/${id}`, {
+    navigate(`/booking/${provider.id}`, {
       state: {
-        providerId:   Number(id),
+        providerId:   provider.id,
         date:         selectedDate,
         slot:         selectedSlot,
         serviceId:    selectedService?.id    ?? null,
@@ -136,6 +152,18 @@ export default function DoctorDetailPage() {
                   </div>
                 )}
               </div>
+              {provider.business_slug && (
+                <button
+                  onClick={handleShare}
+                  className="mt-2 flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border transition-colors hover:bg-gray-50"
+                  style={{ borderColor: 'var(--color-border)', color: 'var(--color-text-secondary)' }}
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                  </svg>
+                  اشتراک‌گذاری لینک
+                </button>
+              )}
             </div>
           </div>
 
