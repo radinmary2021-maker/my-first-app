@@ -11,6 +11,7 @@ class ProviderSerializer(serializers.ModelSerializer):
     available_weekdays = serializers.SerializerMethodField()
     average_rating     = serializers.SerializerMethodField()
     reviews_count      = serializers.SerializerMethodField()
+    business_slug      = serializers.SerializerMethodField()
 
     class Meta:
         model  = Provider
@@ -20,6 +21,7 @@ class ProviderSerializer(serializers.ModelSerializer):
             'slot_duration', 'service_fee', 'is_active',
             'available_weekdays',
             'average_rating', 'reviews_count',
+            'business_slug',
         ]
 
     def get_average_rating(self, obj) -> float | None:
@@ -30,6 +32,9 @@ class ProviderSerializer(serializers.ModelSerializer):
 
     def get_reviews_count(self, obj) -> int:
         return len(obj.reviews.all())  # uses prefetch cache when available
+
+    def get_business_slug(self, obj) -> str | None:
+        return obj.business.slug if obj.business else None
 
     def get_available_weekdays(self, obj) -> list[int]:
         """Returns weekdays with active WorkingHours — provider-specific first, business-wide fallback."""
