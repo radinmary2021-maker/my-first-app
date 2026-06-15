@@ -15,6 +15,7 @@ import {
   useDeleteTimeOff,
   useMyServicesList,
   useCreateService,
+  useUpdateService,
   useDeleteService,
 } from '../../hooks/useDoctorSchedule'
 
@@ -71,14 +72,35 @@ const inputCls = 'w-full text-sm border border-gray-200 rounded-lg px-3 py-2.5 f
 
 // ── Services section ──────────────────────────────────────────────────────────
 
+const EMPTY_FORM = { name: '', duration_minutes: '30', buffer_minutes: '0', price: '0', description: '' }
+
+function serviceToForm(svc) {
+  return {
+    name:             svc.name,
+    duration_minutes: String(svc.duration_minutes ?? 30),
+    buffer_minutes:   String(svc.buffer_minutes   ?? 0),
+    price:            String(svc.price            ?? 0),
+    description:      svc.description             ?? '',
+  }
+}
+
 function ServicesSection() {
   const { data: services, isLoading, isError, refetch } = useMyServicesList()
-  const { mutate: addService,    isPending: adding   } = useCreateService()
-  const { mutate: removeService, isPending: removing } = useDeleteService()
+  const { mutate: addService,  isPending: adding  } = useCreateService()
+  const { mutate: saveService, isPending: saving  } = useUpdateService()
+  const { mutate: removeService                   } = useDeleteService()
 
-  const [form, setForm] = useState({
-    name: '', duration_minutes: '30', buffer_minutes: '0', price: '0', description: '',
-  })
+  const [form, setForm]             = useState(EMPTY_FORM)
+  const [editingId, setEditingId]   = useState(null)
+  const [editForm, setEditForm]     = useState(EMPTY_FORM)
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null)
+
+  function startEdit(svc) {
+    setEditingId(svc.id)
+    setEditForm(serviceToForm(svc))
+  }
+
+  function cancelEdit() { setEditingId(null) }
 
   function handleAdd(e) {
     e.preventDefault()
@@ -93,11 +115,50 @@ function ServicesSection() {
       {
         onSuccess: () => {
           notify('خدمت با موفقیت اضافه شد.', 'success')
-          setForm({ name: '', duration_minutes: '30', buffer_minutes: '0', price: '0', description: '' })
+          setForm(EMPTY_FORM)
         },
         onError: (err) => notify(extractError(err, 'خطا در ذخیره خدمت. دوباره تلاش کنید.'), 'error'),
       }
     )
+  }
+
+  function handleUpdate(e) {
+    e.preventDefault()
+    saveService(
+      {
+        id: editingId,
+        data: {
+          name:             editForm.name.trim(),
+          duration_minutes: parseInt(editForm.duration_minutes),
+          buffer_minutes:   parseInt(editForm.buffer_minutes),
+          price:            parseInt(editForm.price),
+          description:      editForm.description.trim(),
+        },
+      },
+      {
+        onSuccess: () => {
+          notify('خدمت با موفقیت ویرایش شد.', 'success')
+          setEditingId(null)
+        },
+        onError: (err) => notify(extractError(err, 'خطا در ذخیره تغییرات. دوباره تلاش کنید.'), 'error'),
+      }
+    )
+  }
+
+  function handleDeleteConfirmed() {
+    const id = confirmDeleteId
+    setConfirmDeleteId(null)
+    removeService(id, {
+      onSuccess: () => notify('خدمت غیرفعال شد.', 'success'),
+      onError: (err) => {
+        const msg = String(err?.response?.data?.error || err?.response?.data?.detail || '')
+        if (msg.toLowerCase().includes('appointment') || msg.includes('نوبت')) {
+          notify('این سرویس دارای نوبت‌های فعال است و قابل حذف نیست — می‌توانید آن را غیرفعال کنید', 'error')
+        } else {
+          notify(extractError(err, 'خطا در حذف خدمت. دوباره تلاش کنید.'), 'error')
+        }
+      },
+    })
   }
 
   const hasSvcs = (services?.length ?? 0) > 0
@@ -120,31 +181,122 @@ function ServicesSection() {
         </div>
       )}
 
-      {services?.map((svc) => (
-        <Card key={svc.id}>
-          <div className="flex items-center gap-3 text-sm flex-1 min-w-0 flex-wrap">
-            <span className="font-medium text-gray-800 truncate">{svc.name}</span>
-            <span className="text-gray-500 text-xs">{svc.duration_minutes} دقیقه</span>
-            {svc.buffer_minutes > 0 && (
-              <span className="text-xs text-gray-400">+{svc.buffer_minutes}د فاصله</span>
-            )}
-            {Number(svc.price) > 0 && (
-              <span className="text-xs text-emerald-700 font-medium">
-                {Number(svc.price).toLocaleString('fa-IR')} تومان
-              </span>
-            )}
-            {!svc.is_active && <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">غیرفعال</span>}
+      {services?.map((svc) =>
+        editingId === svc.id ? (
+          /* ── Inline edit form ── */
+          <form
+            key={svc.id}
+            onSubmit={handleUpdate}
+            className="bg-cyan-50 border border-cyan-200 rounded-xl p-4 space-y-3"
+          >
+            <p className="text-sm font-medium text-cyan-700">ویرایش خدمت</p>
+            <div>
+              <label className="text-xs text-gray-500 block mb-1">نام خدمت <span className="text-red-400">*</span></label>
+              <input
+                type="text"
+                required
+                value={editForm.name}
+                onChange={(e) => setEditForm((p) => ({ ...p, name: e.target.value }))}
+                className={inputCls}
+                autoFocus
+              />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label className="text-xs text-gray-500 block mb-1">مدت (دقیقه)</label>
+                <input type="number" inputMode="numeric" min="5" required
+                  value={editForm.duration_minutes}
+                  onChange={(e) => setEditForm((p) => ({ ...p, duration_minutes: e.target.value }))}
+                  className={inputCls} />
+              </div>
+              <div>
+                <label className="text-xs text-gray-500 block mb-1">فاصله بعد از نوبت (دقیقه)</label>
+                <input type="number" inputMode="numeric" min="0"
+                  value={editForm.buffer_minutes}
+                  onChange={(e) => setEditForm((p) => ({ ...p, buffer_minutes: e.target.value }))}
+                  className={inputCls} />
+              </div>
+              <div>
+                <label className="text-xs text-gray-500 block mb-1">قیمت (تومان)</label>
+                <input type="number" inputMode="numeric" min="0"
+                  value={editForm.price}
+                  onChange={(e) => setEditForm((p) => ({ ...p, price: e.target.value }))}
+                  className={inputCls} />
+              </div>
+            </div>
+            <div>
+              <label className="text-xs text-gray-500 block mb-1">توضیحات (اختیاری)</label>
+              <input type="text"
+                value={editForm.description}
+                onChange={(e) => setEditForm((p) => ({ ...p, description: e.target.value }))}
+                placeholder="توضیح کوتاه برای مشتریان"
+                className={inputCls} />
+            </div>
+            <div className="flex gap-2">
+              <Button type="submit" variant="primary" loading={saving} disabled={saving || !editForm.name.trim()}>
+                ذخیره تغییرات
+              </Button>
+              <Button type="button" variant="ghost" onClick={cancelEdit} disabled={saving}>
+                انصراف
+              </Button>
+            </div>
+          </form>
+        ) : (
+          /* ── Normal card row ── */
+          <Card key={svc.id}>
+            <div className="flex items-center gap-3 text-sm flex-1 min-w-0 flex-wrap">
+              <span className="font-medium text-gray-800 truncate">{svc.name}</span>
+              <span className="text-gray-500 text-xs">{svc.duration_minutes} دقیقه</span>
+              {svc.buffer_minutes > 0 && (
+                <span className="text-xs text-gray-400">+{svc.buffer_minutes}د فاصله</span>
+              )}
+              {Number(svc.price) > 0 && (
+                <span className="text-xs text-emerald-700 font-medium">
+                  {Number(svc.price).toLocaleString('fa-IR')} تومان
+                </span>
+              )}
+              {!svc.is_active && <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">غیرفعال</span>}
+            </div>
+            <div className="flex items-center gap-1 shrink-0">
+              <button
+                onClick={() => startEdit(svc)}
+                className="text-xs text-cyan-500 hover:text-cyan-700 px-2 py-1 rounded hover:bg-cyan-50 transition-colors"
+              >
+                ویرایش
+              </button>
+              <DeleteButton
+                label={`حذف خدمت ${svc.name}`}
+                onClick={() => setConfirmDeleteId(svc.id)}
+              />
+            </div>
+          </Card>
+        )
+      )}
+
+      {/* ── Delete confirm dialog ── */}
+      {confirmDeleteId && (
+        <div
+          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-svc-title"
+        >
+          <div className="card p-6 w-full max-w-sm space-y-4" dir="rtl">
+            <h2 id="delete-svc-title" className="text-base font-bold text-gray-800">حذف خدمت</h2>
+            <p className="text-sm text-gray-500">
+              آیا مطمئن هستید؟ این خدمت غیرفعال می‌شود و برای مشتریان جدید قابل رزرو نخواهد بود.
+            </p>
+            <div className="flex gap-3">
+              <Button variant="danger" fullWidth onClick={handleDeleteConfirmed}>
+                بله، حذف کن
+              </Button>
+              <Button variant="ghost" fullWidth onClick={() => setConfirmDeleteId(null)}>
+                انصراف
+              </Button>
+            </div>
           </div>
-          <DeleteButton
-            label={`حذف خدمت ${svc.name}`}
-            onClick={() => removeService(svc.id, {
-              onSuccess: () => notify('خدمت حذف شد.', 'success'),
-              onError: () => notify('خطا در حذف خدمت. دوباره تلاش کنید.', 'error'),
-            })}
-            disabled={removing}
-          />
-        </Card>
-      ))}
+        </div>
+      )}
 
       <form onSubmit={handleAdd} className="bg-gray-50 rounded-xl p-4 space-y-3">
         <p className="text-sm font-medium text-gray-700">افزودن خدمت جدید</p>
