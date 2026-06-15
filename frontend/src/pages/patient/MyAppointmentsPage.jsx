@@ -8,6 +8,7 @@ import Badge, { APPOINTMENT_STATUS_LABEL } from '../../components/Badge'
 import { CalendarIcon, ClockIcon, RefreshCwIcon } from '../../components/Icon'
 import { notify } from '../../utils/toast'
 import { useMyAppointments, useCancelAppointment } from '../../hooks/useAppointments'
+import { toJalali } from '../../utils/jalali'
 
 const ACTIVE_STATUSES = ['pending_payment', 'confirmed']
 
@@ -165,8 +166,8 @@ function AppointmentCard({ appt, onCancel, cancelling }) {
             <CalendarIcon size={11} />
             تاریخ
           </span>
-          <span dir="ltr" className="font-medium" style={{ color: 'var(--color-text-primary)' }}>
-            {appt.date}
+          <span className="font-medium" style={{ color: 'var(--color-text-primary)' }}>
+            {toJalali(appt.date)}
           </span>
         </div>
         <div>

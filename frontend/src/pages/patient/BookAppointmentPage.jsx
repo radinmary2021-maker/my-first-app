@@ -7,6 +7,7 @@ import { useProvider } from '../../hooks/useDoctors'
 import { useBookAppointment } from '../../hooks/useBookAppointment'
 import { useInitiatePayment } from '../../hooks/useInitiatePayment'
 import { formatFee } from '../../utils/date'
+import { toJalali } from '../../utils/jalali'
 
 const STEPS = { IDLE: 'idle', BOOKING: 'booking', REDIRECTING: 'redirecting', ERROR: 'error' }
 
@@ -111,7 +112,7 @@ export default function BookAppointmentPage() {
                 }
               />
             )}
-            <Row label="تاریخ" value={<span dir="ltr">{date}</span>} />
+            <Row label="تاریخ" value={<span>{toJalali(date)}</span>} />
             <Row label="ساعت"  value={<span className="font-mono">{slot}</span>} />
             {displayFee && (
               <Row
