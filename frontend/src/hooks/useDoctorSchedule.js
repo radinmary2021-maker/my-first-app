@@ -53,10 +53,10 @@ export const useUpdateDoctorProfile = useUpdateProviderProfile
 
 // ── Services ──────────────────────────────────────────────────────────────────
 
-export function useMyServicesList() {
+export function useMyServicesList(includeInactive = false) {
   return useQuery({
-    queryKey: ['my-services'],
-    queryFn:  getMyServices,
+    queryKey: ['my-services', includeInactive],
+    queryFn:  () => getMyServices(includeInactive),
     staleTime: 60_000,
   })
 }

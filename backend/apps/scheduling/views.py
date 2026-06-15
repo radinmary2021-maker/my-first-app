@@ -53,7 +53,8 @@ class ServiceListView(BusinessContextMixin, generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, IsBusinessMember]
 
     def get_queryset(self):
-        return list_services(self.business.id)
+        include_inactive = self.request.query_params.get('include_inactive') == 'true'
+        return list_services(self.business.id, active_only=not include_inactive)
 
     def perform_create(self, serializer):
         serializer.save(business=self.business)
