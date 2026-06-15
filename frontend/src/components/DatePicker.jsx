@@ -1,9 +1,21 @@
-import { upcomingDays, toIranianWeekday, toISODate, formatDateFa } from '../utils/date'
+import { upcomingDays, toIranianWeekday, toISODate } from '../utils/date'
+import { getJalali, toJalali, toFa, JALALI_MONTH_NAMES } from '../utils/jalali'
 
 const WEEKDAY_NAMES = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج']
 
 export default function DatePicker({ availableWeekdays = [], selectedDate, onSelect }) {
   const days = upcomingDays(30)
+
+  // Build Jalali month header from visible days (may span 1–2 months)
+  const seenMonths = []
+  for (const day of days) {
+    const { jy, jm } = getJalali(day)
+    const key = `${jy}/${jm}`
+    if (!seenMonths.find(m => m.key === key)) {
+      seenMonths.push({ key, label: `${JALALI_MONTH_NAMES[jm - 1]} ${toFa(jy)}` })
+    }
+  }
+  const monthHeader = seenMonths.map(m => m.label).join(' — ')
 
   if (availableWeekdays.length === 0) {
     return (
@@ -20,7 +32,7 @@ export default function DatePicker({ availableWeekdays = [], selectedDate, onSel
 
   return (
     <div className="space-y-3">
-      <p className="text-sm font-medium text-gray-700">انتخاب تاریخ</p>
+      <p className="text-sm font-medium text-gray-700">{monthHeader}</p>
 
       {/* Weekday legend */}
       <div className="flex gap-1 mb-1">
@@ -57,9 +69,9 @@ export default function DatePicker({ availableWeekdays = [], selectedDate, onSel
                   ? 'bg-cyan-50 text-cyan-700 hover:bg-cyan-100'
                   : 'bg-gray-50 text-gray-300 cursor-not-allowed'}
               `}
-              title={isAvailable ? formatDateFa(day) : undefined}
+              title={isAvailable ? toJalali(toISODate(day)) : undefined}
             >
-              {day.getDate()}
+              {toFa(getJalali(day).jd)}
             </button>
           )
         })}
@@ -67,7 +79,7 @@ export default function DatePicker({ availableWeekdays = [], selectedDate, onSel
 
       {selectedDate && (
         <p className="text-xs text-cyan-600 mt-1">
-          تاریخ انتخاب‌شده: <span dir="ltr">{selectedDate}</span>
+          تاریخ انتخاب‌شده: <span>{toJalali(selectedDate)}</span>
         </p>
       )}
     </div>

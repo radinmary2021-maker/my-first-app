@@ -17,6 +17,7 @@ import {
   UsersIcon,
 } from '../../components/Icon'
 import { notify } from '../../utils/toast'
+import { toJalali } from '../../utils/jalali'
 import { useAuthStore } from '../../store/authStore'
 import {
   useProviderAppointments,
@@ -351,8 +352,8 @@ function AppointmentRow({ appt, showProvider, onAction, disabled }) {
             <CalendarIcon size={10} />
             تاریخ
           </span>
-          <span dir="ltr" className="font-medium" style={{ color: 'var(--color-text-primary)' }}>
-            {appt.date}
+          <span className="font-medium" style={{ color: 'var(--color-text-primary)' }}>
+            {toJalali(appt.date)}
           </span>
         </div>
         <div>
