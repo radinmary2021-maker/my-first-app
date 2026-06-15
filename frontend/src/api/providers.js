@@ -53,8 +53,9 @@ export function updateMyProviderProfile(data) {
 
 // ── Business management: services ────────────────────────────────────────────
 
-export function getMyServices() {
-  return client.get('/api/v1/businesses/me/services/').then((r) => r.data)
+export function getMyServices(includeInactive = false) {
+  const params = includeInactive ? { include_inactive: 'true' } : {}
+  return client.get('/api/v1/businesses/me/services/', { params }).then((r) => r.data)
 }
 
 export function createService(data) {

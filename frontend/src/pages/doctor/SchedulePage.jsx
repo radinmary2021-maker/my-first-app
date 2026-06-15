@@ -85,7 +85,9 @@ function serviceToForm(svc) {
 }
 
 function ServicesSection() {
-  const { data: services, isLoading, isError, refetch } = useMyServicesList()
+  const [showInactive, setShowInactive] = useState(false)
+
+  const { data: services, isLoading, isError, refetch } = useMyServicesList(showInactive)
   const { mutate: addService,  isPending: adding  } = useCreateService()
   const { mutate: saveService, isPending: saving  } = useUpdateService()
   const { mutate: removeService                   } = useDeleteService()
@@ -94,6 +96,16 @@ function ServicesSection() {
   const [editingId, setEditingId]   = useState(null)
   const [editForm, setEditForm]     = useState(EMPTY_FORM)
   const [confirmDeleteId, setConfirmDeleteId] = useState(null)
+
+  function handleReactivate(id) {
+    saveService(
+      { id, data: { is_active: true } },
+      {
+        onSuccess: () => notify('خدمت مجدداً فعال شد.', 'success'),
+        onError: (err) => notify(extractError(err, 'خطا در فعال‌سازی خدمت.'), 'error'),
+      }
+    )
+  }
 
   function startEdit(svc) {
     setEditingId(svc.id)
@@ -161,11 +173,23 @@ function ServicesSection() {
     })
   }
 
-  const hasSvcs = (services?.length ?? 0) > 0
+  const activeSvcs  = services?.filter(s => s.is_active) ?? []
+  const hasSvcs     = activeSvcs.length > 0
+  const inactiveCnt = showInactive ? (services?.filter(s => !s.is_active).length ?? 0) : 0
 
   return (
     <section className="space-y-4">
-      <SectionHeader step="۱" isDone={hasSvcs}>خدمات</SectionHeader>
+      <div className="flex items-center justify-between">
+        <SectionHeader step="۱" isDone={hasSvcs}>خدمات</SectionHeader>
+        {!isLoading && !isError && (
+          <button
+            onClick={() => { setShowInactive(p => !p); setEditingId(null) }}
+            className="text-xs text-gray-400 hover:text-gray-600 underline-offset-2 hover:underline transition-colors"
+          >
+            {showInactive ? 'پنهان کردن غیرفعال‌ها' : 'نمایش غیرفعال‌ها'}
+          </button>
+        )}
+      </div>
 
       {isLoading && <Spinner />}
       {isError && (
@@ -177,12 +201,32 @@ function ServicesSection() {
 
       {!isLoading && !isError && !hasSvcs && (
         <div className="text-sm text-gray-500 bg-gray-50 rounded-xl px-4 py-3">
-          هیچ خدمتی ثبت نشده. اولین خدمت خود را از فرم زیر اضافه کنید.
+          {showInactive && inactiveCnt > 0
+            ? 'همه خدمات غیرفعال هستند. برای بازگشت به حالت فعال، روی «فعال‌سازی مجدد» کلیک کنید.'
+            : 'هیچ خدمتی ثبت نشده. اولین خدمت خود را از فرم زیر اضافه کنید.'}
         </div>
       )}
 
       {services?.map((svc) =>
-        editingId === svc.id ? (
+        !svc.is_active ? (
+          /* ── Inactive service row ── */
+          <div key={svc.id} className="opacity-60">
+            <Card>
+              <div className="flex items-center gap-3 text-sm flex-1 min-w-0 flex-wrap">
+                <span className="font-medium text-gray-800 truncate">{svc.name}</span>
+                <span className="text-gray-500 text-xs">{svc.duration_minutes} دقیقه</span>
+                <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">غیرفعال</span>
+              </div>
+              <button
+                onClick={() => handleReactivate(svc.id)}
+                disabled={saving}
+                className="text-xs text-emerald-600 hover:text-emerald-800 px-2 py-1 rounded hover:bg-emerald-50 transition-colors shrink-0 disabled:opacity-50 whitespace-nowrap"
+              >
+                فعال‌سازی مجدد
+              </button>
+            </Card>
+          </div>
+        ) : editingId === svc.id ? (
           /* ── Inline edit form ── */
           <form
             key={svc.id}
