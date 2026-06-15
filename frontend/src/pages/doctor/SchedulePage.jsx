@@ -286,6 +286,9 @@ function ServicesSection() {
             <p className="text-sm text-gray-500">
               آیا مطمئن هستید؟ این خدمت غیرفعال می‌شود و برای مشتریان جدید قابل رزرو نخواهد بود.
             </p>
+            <p className="text-xs text-gray-400">
+              داده از بین نمی‌رود — در صورت نیاز از طریق پنل مدیریت قابل بازگشت است.
+            </p>
             <div className="flex gap-3">
               <Button variant="danger" fullWidth onClick={handleDeleteConfirmed}>
                 بله، حذف کن
