@@ -4,6 +4,7 @@ from .views import (
     BranchDetailView,
     BranchListView,
     BusinessCreateView,
+    BusinessReportSummaryView,
     MemberDetailView,
     MemberListView,
     MyBusinessView,
@@ -22,4 +23,7 @@ urlpatterns = [
     # Branch management
     path('me/branches/',                     BranchListView.as_view(),       name='branch-list'),
     path('me/branches/<int:pk>/',            BranchDetailView.as_view(),     name='branch-detail'),
+
+    # Financial reports
+    path('me/reports/summary/',              BusinessReportSummaryView.as_view(), name='business-report-summary'),
 ]

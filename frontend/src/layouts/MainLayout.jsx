@@ -62,6 +62,11 @@ export default function MainLayout({ children }) {
           تنظیمات
         </NavLink>
       )}
+      {isBiz && (
+        <NavLink to="/dashboard/reports" className={navLinkCls} onClick={() => setMobileOpen(false)}>
+          گزارش مالی
+        </NavLink>
+      )}
     </>
   )
 

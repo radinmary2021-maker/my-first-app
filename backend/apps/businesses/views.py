@@ -19,7 +19,9 @@ URL structure (see urls.py):
 """
 
 import logging
+from datetime import date, timedelta
 
+from django.db.models import Count, Q, Sum
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -33,6 +35,7 @@ from common.exceptions import (
 from common.mixins import BusinessContextMixin
 from common.permissions import IsBusinessMember, IsBusinessOwner
 from apps.accounts.models import User
+from apps.appointments.models import Appointment, AppointmentStatus
 from .models import Branch, BusinessMember
 from .serializers import (
     AddMemberSerializer,
@@ -236,6 +239,128 @@ class BranchListView(BusinessContextMixin, APIView):
         serializer.is_valid(raise_exception=True)
         branch = serializer.save(business=self.business)
         return Response(BranchSerializer(branch).data, status=status.HTTP_201_CREATED)
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Financial reports
+# ──────────────────────────────────────────────────────────────────────────────
+
+class BusinessReportSummaryView(BusinessContextMixin, APIView):
+    """
+    GET /api/v1/businesses/me/reports/summary/
+
+    Query params:
+      period — this_month | last_month | this_week | custom  (default: this_month)
+      from   — YYYY-MM-DD  (required when period=custom)
+      to     — YYYY-MM-DD  (required when period=custom)
+    """
+    permission_classes = [IsAuthenticated, IsBusinessOwner]
+
+    def get(self, request):
+        period = request.query_params.get('period', 'this_month')
+        today  = date.today()
+
+        if period == 'this_week':
+            days_since_sat = (today.weekday() - 5 + 7) % 7  # Persian week starts Saturday
+            start = today - timedelta(days=days_since_sat)
+            end   = today
+        elif period == 'last_month':
+            first_of_this = today.replace(day=1)
+            end   = first_of_this - timedelta(days=1)
+            start = end.replace(day=1)
+        elif period == 'custom':
+            from_str = request.query_params.get('from')
+            to_str   = request.query_params.get('to')
+            if not from_str or not to_str:
+                return Response(
+                    {'error': 'پارامترهای from و to برای دوره سفارشی الزامی هستند.'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            try:
+                start = date.fromisoformat(from_str)
+                end   = date.fromisoformat(to_str)
+            except ValueError:
+                return Response(
+                    {'error': 'فرمت تاریخ نادرست است. از YYYY-MM-DD استفاده کنید.'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            if start > end:
+                return Response(
+                    {'error': 'تاریخ شروع نمی‌تواند بعد از تاریخ پایان باشد.'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        else:  # this_month
+            start = today.replace(day=1)
+            end   = today
+
+        qs = Appointment.objects.filter(
+            business=self.business,
+            date__gte=start,
+            date__lte=end,
+        )
+
+        # Revenue aggregation (completed only)
+        rev = qs.filter(status=AppointmentStatus.COMPLETED).aggregate(
+            total=Sum('total_price'),
+            count=Count('id'),
+        )
+        total_revenue   = int(rev['total'] or 0)
+        completed_count = rev['count'] or 0
+
+        # By-status counts
+        by_status = {
+            row['status']: row['cnt']
+            for row in qs.values('status').annotate(cnt=Count('id'))
+        }
+
+        # Top 5 services by appointment count
+        top_services = [
+            {
+                'name':    row['service__name'],
+                'count':   row['cnt'],
+                'revenue': int(row['rev'] or 0),
+            }
+            for row in (
+                qs.filter(service__isnull=False)
+                .values('service__name')
+                .annotate(cnt=Count('id'), rev=Sum('total_price'))
+                .order_by('-cnt')[:5]
+            )
+        ]
+
+        # Daily breakdown
+        daily_appointments = [
+            {
+                'date':    str(row['date']),
+                'count':   row['cnt'],
+                'revenue': int(row['rev'] or 0),
+            }
+            for row in (
+                qs.values('date')
+                .annotate(
+                    cnt=Count('id'),
+                    rev=Sum('total_price', filter=Q(status=AppointmentStatus.COMPLETED)),
+                )
+                .order_by('date')
+            )
+        ]
+
+        return Response({
+            'period': period,
+            'from':   str(start),
+            'to':     str(end),
+            'revenue': {
+                'total':           total_revenue,
+                'completed_count': completed_count,
+                'average':         total_revenue // completed_count if completed_count else 0,
+            },
+            'appointments': {
+                'total':     qs.count(),
+                'by_status': by_status,
+            },
+            'top_services':        top_services,
+            'daily_appointments':  daily_appointments,
+        })
 
 
 class BranchDetailView(BusinessContextMixin, APIView):
