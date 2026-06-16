@@ -56,18 +56,20 @@ class AppointmentSerializer(serializers.ModelSerializer):
     Customer-facing serializer.
     Exposes provider/service info but NOT other customers' data.
     """
-    provider_name     = serializers.SerializerMethodField()
-    provider_category = serializers.SerializerMethodField()
-    service_name      = serializers.SerializerMethodField()
-    status_display    = serializers.CharField(source='get_status_display', read_only=True)
-    has_review        = serializers.SerializerMethodField()
+    provider_name      = serializers.SerializerMethodField()
+    provider_category  = serializers.SerializerMethodField()
+    provider_is_active = serializers.SerializerMethodField()
+    service_name       = serializers.SerializerMethodField()
+    status_display     = serializers.CharField(source='get_status_display', read_only=True)
+    has_review         = serializers.SerializerMethodField()
 
     class Meta:
         model  = Appointment
         fields = [
             'id', 'tracking_code',
             'provider_id',
-            'provider_name', 'provider_category', 'service_name',
+            'provider_name', 'provider_category', 'provider_is_active',
+            'service_id', 'service_name',
             'date', 'start_time', 'end_time',
             'status', 'status_display',
             'total_price', 'deposit_paid',
@@ -89,6 +91,11 @@ class AppointmentSerializer(serializers.ModelSerializer):
             except Exception:
                 return ''
         return ''
+
+    def get_provider_is_active(self, obj: Appointment) -> bool:
+        if obj.provider_id:
+            return bool(getattr(obj.provider, 'is_active', False))
+        return False
 
     def get_service_name(self, obj: Appointment) -> str:
         if obj.service_id:

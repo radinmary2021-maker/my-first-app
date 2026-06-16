@@ -126,6 +126,9 @@ export default function MyAppointmentsPage() {
                 onCancel={() => handleCancelRequest(appt.id)}
                 cancelling={cancelling && confirmId === appt.id}
                 onReview={() => openReviewModal(appt)}
+                onRebook={() => navigate(`/providers/${appt.provider_id}`, {
+                  state: { preselectedServiceId: appt.service_id ?? null },
+                })}
               />
             ))}
           </div>
@@ -215,9 +218,10 @@ export default function MyAppointmentsPage() {
   )
 }
 
-function AppointmentCard({ appt, onCancel, cancelling, onReview }) {
+function AppointmentCard({ appt, onCancel, cancelling, onReview, onRebook }) {
   const isActive    = ACTIVE_STATUSES.includes(appt.status)
   const canReview   = appt.status === 'completed' && !appt.has_review
+  const canRebook   = (appt.status === 'completed' || appt.status === 'cancelled') && appt.provider_id
 
   return (
     <div className="card p-5 space-y-4">
@@ -283,6 +287,19 @@ function AppointmentCard({ appt, onCancel, cancelling, onReview }) {
         <p className="text-xs text-center" style={{ color: 'var(--color-text-tertiary)' }}>
           ✓ نظر شما ثبت شده است
         </p>
+      )}
+
+      {canRebook && (
+        appt.provider_is_active === false ? (
+          <p className="text-xs text-center" style={{ color: 'var(--color-text-tertiary)' }}>
+            این ارائه‌دهنده فعلاً پذیرش ندارد
+          </p>
+        ) : (
+          <Button variant="ghost" size="sm" fullWidth onClick={onRebook}>
+            <CalendarIcon size={14} />
+            رزرو مجدد
+          </Button>
+        )
       )}
     </div>
   )

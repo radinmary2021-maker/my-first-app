@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import MainLayout from '../../layouts/MainLayout'
 import Spinner from '../../components/Spinner'
 import ErrorMessage from '../../components/ErrorMessage'
@@ -35,6 +35,8 @@ export default function DoctorDetailPage() {
   const { id: paramId, slug: paramSlug } = useParams()
   const lookup = paramId || paramSlug       // whichever is present
   const navigate = useNavigate()
+  const { state: locationState } = useLocation()
+  const preselectedServiceId = locationState?.preselectedServiceId ?? null
 
   const [selectedService, setSelectedService] = useState(null)
   const [selectedDate, setSelectedDate]       = useState(null)
@@ -45,6 +47,13 @@ export default function DoctorDetailPage() {
   const providerId = provider?.id   // always numeric once loaded
 
   const { data: services,  isLoading: servicesLoading                            } = useProviderServices(providerId)
+
+  useEffect(() => {
+    if (!preselectedServiceId || !services?.length || selectedService) return
+    const match = services.find((s) => s.id === preselectedServiceId)
+    if (match) setSelectedService(match)
+  }, [services, preselectedServiceId])
+
   const { data: slotsData, isLoading: slotsLoading,     isError: slotsError, refetch: refetchSlots } = useProviderSlots(providerId, selectedDate, selectedService?.id)
   const { data: reviewsData } = useProviderReviews(providerId, reviewPage)
 
