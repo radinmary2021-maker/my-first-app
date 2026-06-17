@@ -73,6 +73,15 @@ class Business(SoftDeleteModel):
         verbose_name='شناسه URL',
         help_text='آدرس صفحه رزرو: nobatic.ir/book/{slug}',
     )
+    latin_slug  = models.SlugField(
+        max_length=80,
+        unique=True,
+        null=True,
+        blank=True,
+        allow_unicode=False,
+        verbose_name='آدرس اختصاصی (لاتین)',
+        help_text='آدرس اختصاصی انگلیسی صفحه رزرو: nobatic.ir/book/{latin_slug}',
+    )
     category    = models.CharField(
         max_length=30,
         choices=BusinessCategory.choices,

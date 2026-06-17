@@ -63,8 +63,9 @@ export default function DoctorDetailPage() {
   }
 
   function handleShare() {
-    if (!provider?.business_slug) return
-    const shareUrl = `${window.location.origin}/book/${provider.business_slug}`
+    if (!provider?.business_slug && !provider?.latin_slug) return
+    const slug = provider.latin_slug || provider.business_slug
+    const shareUrl = `${window.location.origin}/book/${slug}`
     if (navigator.share) {
       navigator.share({ title: provider.business_name || provider.full_name, url: shareUrl }).catch(() => {})
     } else {
