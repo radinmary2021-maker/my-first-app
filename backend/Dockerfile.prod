@@ -30,7 +30,8 @@ ENV SECRET_KEY=build-time-placeholder-not-used-at-runtime \
     DB_PASSWORD=x \
     DB_HOST=localhost \
     DB_PORT=5432 \
-    REDIS_URL=redis://localhost:6379/0
+    REDIS_URL=redis://localhost:6379/0 \
+    CORS_ALLOWED_ORIGINS=http://localhost
 
 RUN python manage.py collectstatic --noinput
 
