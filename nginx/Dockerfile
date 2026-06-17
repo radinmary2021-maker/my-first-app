@@ -5,7 +5,7 @@ WORKDIR /app
 
 # Install dependencies first (layer-cached unless package files change)
 COPY frontend/package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci
 
 COPY frontend/ .
 
