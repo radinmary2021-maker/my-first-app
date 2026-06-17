@@ -40,9 +40,32 @@ class BusinessCreateSerializer(serializers.Serializer):
 class BusinessUpdateSerializer(serializers.ModelSerializer):
     """Validates and applies partial updates to an existing Business."""
 
+    latin_slug = serializers.SlugField(
+        max_length=80, required=False, allow_null=True, allow_blank=True
+    )
+
     class Meta:
         model  = Business
-        fields = ['name', 'category', 'description', 'phone', 'address', 'timezone']
+        fields = ['name', 'category', 'description', 'phone', 'address', 'timezone', 'latin_slug']
+
+    def validate_latin_slug(self, value):
+        if not value:
+            return None
+        value = value.lower().strip()
+        import re
+        if not re.match(r'^[a-z0-9][a-z0-9-]{1,78}[a-z0-9]$', value):
+            raise serializers.ValidationError(
+                'آدرس اختصاصی باید بین ۳ تا ۸۰ کاراکتر، فقط حروف انگلیسی کوچک، اعداد و خط‌فاصله باشد و با خط‌فاصله شروع یا تمام نشود.'
+            )
+        if '--' in value:
+            raise serializers.ValidationError('آدرس اختصاصی نمی‌تواند شامل دو خط‌فاصله متوالی باشد.')
+        instance = self.instance
+        qs = Business.objects.filter(latin_slug=value)
+        if instance:
+            qs = qs.exclude(pk=instance.pk)
+        if qs.exists():
+            raise serializers.ValidationError('این آدرس قبلاً توسط کسب‌وکار دیگری انتخاب شده است.')
+        return value
 
     def validate_name(self, value: str) -> str:
         value = value.strip()
@@ -69,7 +92,7 @@ class BusinessSerializer(serializers.ModelSerializer):
     class Meta:
         model  = Business
         fields = [
-            'id', 'name', 'slug', 'category', 'category_display',
+            'id', 'name', 'slug', 'latin_slug', 'category', 'category_display',
             'description', 'phone', 'address', 'logo', 'timezone',
             'is_active', 'owner', 'member_count', 'created_at',
         ]

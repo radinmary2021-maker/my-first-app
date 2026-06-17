@@ -77,7 +77,9 @@ class ProviderDetailView(APIView):
             if str(pk).isdigit():
                 provider = qs.get(pk=int(pk), is_active=True)
             else:
-                provider = qs.filter(business__slug=pk, is_active=True).order_by('id').first()
+                provider = qs.filter(business__latin_slug=pk, is_active=True).order_by('id').first()
+                if provider is None:
+                    provider = qs.filter(business__slug=pk, is_active=True).order_by('id').first()
                 if provider is None:
                     raise Provider.DoesNotExist
         except Provider.DoesNotExist:
