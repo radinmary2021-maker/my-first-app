@@ -35,7 +35,10 @@ ENV SECRET_KEY=build-time-placeholder-not-used-at-runtime \
 RUN python manage.py collectstatic --noinput
 
 # Non-root user for security
-RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
+RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser \
+    && mkdir -p /app/celerybeat-data \
+    && chown appuser:appgroup /app/celerybeat-data
+
 USER appuser
 
 EXPOSE 8000
