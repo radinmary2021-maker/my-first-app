@@ -8,6 +8,28 @@ import { useAuthStore } from '../../store/authStore'
 import { useProviders } from '../../hooks/useDoctors'
 import DoctorCard from '../../components/DoctorCard'
 import Logo from '../../components/Logo'
+import SEOHead from '../../components/SEOHead'
+
+const HOME_JSON_LD = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'نوبتیک',
+    url: 'https://nobatiic.ir',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: { '@type': 'EntryPoint', urlTemplate: 'https://nobatiic.ir/search?q={search_term_string}' },
+      'query-input': 'required name=search_term_string',
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'نوبتیک',
+    url: 'https://nobatiic.ir',
+    description: 'پلتفرم رزرو آنلاین نوبت برای هر کسب‌وکاری',
+  },
+]
 
 /* ════════════════════════════════════════════════════
    Tiny SVG helpers
@@ -415,6 +437,11 @@ export default function HomePage() {
 
   return (
     <div dir="rtl" style={{ background: '#F8FAFC', color: '#1E293B', minHeight: '100vh' }}>
+      <SEOHead
+        description="نوبتیک — پلتفرم رزرو آنلاین نوبت برای آرایشگاه، باشگاه، مشاوره، آموزشگاه و هر کسب‌وکاری. سریع، ساده، بدون انتظار تلفنی."
+        canonical="/"
+        jsonLd={HOME_JSON_LD}
+      />
       <style dangerouslySetInnerHTML={{ __html: CSS }} />
 
       {/* ══ NAVBAR ══════════════════════════════════════ */}

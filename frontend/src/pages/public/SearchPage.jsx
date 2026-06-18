@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useSearchParams, useNavigate, Link } from 'react-router-dom'
+import SEOHead from '../../components/SEOHead'
 import MainLayout from '../../layouts/MainLayout'
 import Spinner from '../../components/Spinner'
 import Badge from '../../components/Badge'
@@ -42,6 +43,11 @@ export default function SearchPage() {
 
   return (
     <MainLayout>
+      <SEOHead
+        title={q ? `جستجو: ${q}` : 'جستجوی کسب‌وکار'}
+        description={q ? `نتایج جستجو برای «${q}» در نوبتیک` : 'جستجوی کسب‌وکار و ارائه‌دهنده در نوبتیک'}
+        canonical="/search"
+      />
       <div className="max-w-2xl space-y-6" dir="rtl">
 
         {/* Search bar */}
