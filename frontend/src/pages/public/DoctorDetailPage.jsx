@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
+import SEOHead from '../../components/SEOHead'
 import MainLayout from '../../layouts/MainLayout'
 import Spinner from '../../components/Spinner'
 import ErrorMessage from '../../components/ErrorMessage'
@@ -116,8 +117,38 @@ export default function DoctorDetailPage() {
   const serviceRequired = hasServices
   const canPickDate     = !serviceRequired || selectedService !== null
 
+  const providerName = provider.business_name || provider.full_name
+  const providerSlug = provider.latin_slug || provider.business_slug
+  const seoDescription = provider.bio
+    ? `${providerName} — ${provider.bio.slice(0, 120)}`
+    : `رزرو آنلاین نوبت از ${providerName}. ${provider.category_display || provider.specialty || ''} در نوبتیک.`
+
+  const providerJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    name: providerName,
+    description: seoDescription,
+    url: providerSlug ? `https://nobatiic.ir/book/${providerSlug}` : `https://nobatiic.ir/providers/${provider.id}`,
+    ...(provider.average_rating != null && provider.reviews_count > 0
+      ? {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: provider.average_rating,
+            reviewCount: provider.reviews_count,
+          },
+        }
+      : {}),
+  }
+
   return (
     <MainLayout>
+      <SEOHead
+        title={providerName}
+        description={seoDescription}
+        canonical={providerSlug ? `/book/${providerSlug}` : `/providers/${provider.id}`}
+        ogType="business.business"
+        jsonLd={providerJsonLd}
+      />
       <div className="space-y-8 max-w-2xl">
 
         {/* Back */}

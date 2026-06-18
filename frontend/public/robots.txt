@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+Allow: /providers
+Allow: /book/
+Allow: /search
+
+Disallow: /dashboard
+Disallow: /schedule
+Disallow: /settings
+Disallow: /reports
+Disallow: /my-appointments
+Disallow: /booking/
+Disallow: /payment/
+Disallow: /login
+Disallow: /verify
+Disallow: /setup-profile
+Disallow: /create-business
+
+Sitemap: https://nobatiic.ir/sitemap.xml

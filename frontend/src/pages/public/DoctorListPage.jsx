@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
+import SEOHead from '../../components/SEOHead'
 import MainLayout from '../../layouts/MainLayout'
 import ErrorMessage from '../../components/ErrorMessage'
 import DoctorCard from '../../components/DoctorCard'
@@ -81,8 +82,17 @@ export default function DoctorListPage() {
       ? selectedCategory
       : ALL
 
+  const listTitle = categoryParam
+    ? `کسب‌وکارهای ${effectiveCategory !== ALL ? effectiveCategory : categoryParam}`
+    : 'کسب‌وکارها و ارائه‌دهندگان'
+
   return (
     <MainLayout>
+      <SEOHead
+        title={listTitle}
+        description="فهرست کامل کسب‌وکارها و ارائه‌دهندگان در نوبتیک — آرایشگاه، باشگاه، مشاوره، آموزشگاه و بیشتر. نوبت آنلاین بگیرید."
+        canonical="/providers"
+      />
       <div className="space-y-6">
 
         {/* Page header */}
