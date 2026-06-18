@@ -30,6 +30,7 @@ const ProvidersPage       = lazy(() => import('./pages/owner/ProvidersPage'))
 const SettingsPage        = lazy(() => import('./pages/owner/SettingsPage'))
 const ReportsPage         = lazy(() => import('./pages/owner/ReportsPage'))
 const AboutPage           = lazy(() => import('./pages/public/AboutPage'))
+const ContactPage         = lazy(() => import('./pages/public/ContactPage'))
 
 // ── Query client ───────────────────────────────────────────────────────────
 const queryClient = new QueryClient({
@@ -90,6 +91,7 @@ export default function App() {
             {/* Search */}
             <Route path="/search"        element={<SearchPage />} />
             <Route path="/about"         element={<AboutPage />} />
+            <Route path="/contact"       element={<ContactPage />} />
 
             {/* Public providers */}
             <Route path="/providers"     element={<DoctorListPage />} />
