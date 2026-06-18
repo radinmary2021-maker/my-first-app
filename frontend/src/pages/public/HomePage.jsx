@@ -465,6 +465,26 @@ export default function HomePage() {
             کسب‌وکارها
           </button>
           <button
+            onClick={() => navigate('/about')}
+            style={{
+              color: '#475569', fontSize: 14, fontWeight: 500, padding: '7px 14px',
+              borderRadius: 8, border: 'none', background: 'transparent', cursor: 'pointer', fontFamily: 'inherit',
+            }}
+            {...hov({ background: '#F8FAFC' }, { background: 'transparent' })}
+          >
+            درباره ما
+          </button>
+          <button
+            onClick={() => navigate('/contact')}
+            style={{
+              color: '#475569', fontSize: 14, fontWeight: 500, padding: '7px 14px',
+              borderRadius: 8, border: 'none', background: 'transparent', cursor: 'pointer', fontFamily: 'inherit',
+            }}
+            {...hov({ background: '#F8FAFC' }, { background: 'transparent' })}
+          >
+            تماس با ما
+          </button>
+          <button
             onClick={() => navigate(user
               ? (user.role === 'provider' || user.role === 'owner' ? '/dashboard' : '/my-appointments')
               : '/login'
@@ -887,14 +907,44 @@ export default function HomePage() {
       {/* ══ FOOTER ══════════════════════════════════════ */}
       <footer style={{
         borderTop: '1px solid #F1F5F9', background: '#fff',
-        padding: '28px 24px', textAlign: 'center',
+        padding: '32px 24px',
       }}>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
-          <Logo size={28} textSize={15} />
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <div style={{
+            display: 'flex', flexWrap: 'wrap',
+            alignItems: 'center', justifyContent: 'space-between',
+            gap: 16, marginBottom: 20,
+          }}>
+            <Logo size={28} textSize={15} />
+            <nav style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+              {[
+                { label: 'کسب‌وکارها', path: '/providers' },
+                { label: 'درباره ما',   path: '/about'     },
+                { label: 'تماس با ما', path: '/contact'   },
+                { label: 'قوانین و مقررات', path: '/terms' },
+              ].map(({ label, path }) => (
+                <button
+                  key={path}
+                  onClick={() => navigate(path)}
+                  style={{
+                    color: '#64748B', fontSize: 13, fontWeight: 500,
+                    padding: '5px 12px', borderRadius: 7,
+                    border: 'none', background: 'transparent',
+                    cursor: 'pointer', fontFamily: 'inherit',
+                  }}
+                  {...hov({ color: '#0891B2', background: '#F8FAFC' }, { color: '#64748B', background: 'transparent' })}
+                >
+                  {label}
+                </button>
+              ))}
+            </nav>
+          </div>
+          <div style={{ borderTop: '1px solid #F1F5F9', paddingTop: 16, textAlign: 'center' }}>
+            <p style={{ fontSize: 12, color: '#94A3B8', margin: 0 }}>
+              © ۱۴۰۴ Nobatic — تمامی حقوق محفوظ است
+            </p>
+          </div>
         </div>
-        <p style={{ fontSize: 12, color: '#94A3B8', margin: 0 }}>
-          © ۱۴۰۴ Nobatic — تمامی حقوق محفوظ است
-        </p>
       </footer>
     </div>
   )
