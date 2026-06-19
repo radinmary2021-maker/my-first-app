@@ -168,6 +168,6 @@ describe('MyAppointmentsPage', () => {
     expect(screen.getByText('تأیید شده')).toBeInTheDocument()
     expect(screen.getByText('لغو شده')).toBeInTheDocument()
     expect(screen.getByText('انجام شده')).toBeInTheDocument()
-    expect(screen.getByText('غیبت')).toBeInTheDocument()
+    expect(screen.getByText('حاضر نشد')).toBeInTheDocument()
   })
 })

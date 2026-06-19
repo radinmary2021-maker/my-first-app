@@ -232,7 +232,7 @@ describe('ProvidersPage — solo fast-path', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /افزودن خودم/ }))
 
-    expect(screen.getByRole('button', { name: /در حال افزودن/ })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /افزودن خودم/ })).toHaveAttribute('aria-busy', 'true')
   })
 
   it('hides management buttons for legacy provider role', () => {

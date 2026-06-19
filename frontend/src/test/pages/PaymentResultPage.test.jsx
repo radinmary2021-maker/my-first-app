@@ -20,11 +20,11 @@ describe('PaymentResultPage', () => {
     expect(screen.getByText('پرداخت ناموفق')).toBeInTheDocument()
   })
 
-  it('shows failure UI when status param is missing', () => {
+  it('shows unknown state UI when status param is missing', () => {
     renderWithProviders(<PaymentResultPage />, {
       route: '/payment/result',
     })
-    expect(screen.getByText('پرداخت ناموفق')).toBeInTheDocument()
+    expect(screen.getByText('نتیجه نامشخص')).toBeInTheDocument()
   })
 
   it('does not render tracking_code section when missing', () => {

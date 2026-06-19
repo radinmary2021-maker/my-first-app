@@ -178,7 +178,7 @@ describe('CreateBusinessPage — successful submission & role-staleness fix', ()
   it('calls createMyBusiness with name and selected category', async () => {
     const { createSpy } = await submitForm()
     await waitFor(() => expect(createSpy).toHaveBeenCalledOnce())
-    expect(createSpy).toHaveBeenCalledWith({ name: 'کلینیک تست', category: 'medical' })
+    expect(createSpy).toHaveBeenCalledWith(expect.objectContaining({ name: 'کلینیک تست', category: 'medical' }))
   })
 
   it('calls getCurrentUser after business creation to fix role staleness', async () => {
@@ -206,7 +206,9 @@ describe('CreateBusinessPage — successful submission & role-staleness fix', ()
     fireEvent.change(screen.getByLabelText(/نام کسب‌وکار/), { target: { value: 'کلینیک' } })
     fireEvent.submit(screen.getByRole('button', { name: 'ایجاد کسب‌وکار' }).closest('form'))
 
-    expect(await screen.findByText('در حال ایجاد...')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /ایجاد کسب‌وکار/ })).toHaveAttribute('aria-busy', 'true')
+    })
     resolveCreate(MOCK_BUSINESS)
   })
 

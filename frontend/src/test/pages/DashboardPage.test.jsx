@@ -15,11 +15,13 @@ import DashboardPage from '../../pages/doctor/DashboardPage'
 import {
   useProviderAppointments,
   useBusinessAppointments,
+  useConfirmAppointment,
   useCompleteAppointment,
   useNoShowAppointment,
   useProviderCancelAppointment,
 } from '../../hooks/useAppointments'
 import { useAuthStore } from '../../store/authStore'
+import { toJalali } from '../../utils/jalali'
 import { ToastContainer } from '../../components/Toast'
 
 // ── Must be at module level so Vitest can hoist it before imports ─────────────
@@ -109,12 +111,14 @@ function mockHooks({
   providerAppts = [],
   isLoading     = false,
   isError       = false,
+  confirmMutate   = noopMutate,
   completeMutate  = noopMutate,
   noShowMutate    = noopMutate,
   cancelMutate    = noopMutate,
 } = {}) {
   useBusinessAppointments.mockReturnValue({ data: businessAppts, isLoading, isError })
   useProviderAppointments.mockReturnValue({ data: providerAppts, isLoading, isError })
+  useConfirmAppointment.mockReturnValue({ mutate: confirmMutate, isPending: false })
   useCompleteAppointment.mockReturnValue({ mutate: completeMutate, isPending: false })
   useNoShowAppointment.mockReturnValue({ mutate: noShowMutate, isPending: false })
   useProviderCancelAppointment.mockReturnValue({ mutate: cancelMutate, isPending: false })
@@ -402,7 +406,7 @@ describe('appointment list rendering', () => {
     setProvider()
     mockHooks({ providerAppts: [confirmedToday] })
     renderPage()
-    expect(screen.getByText(TODAY)).toBeInTheDocument()
+    expect(screen.getByText(toJalali(TODAY))).toBeInTheDocument()
     expect(screen.getByText(/10:00/)).toBeInTheDocument()
   })
 
@@ -622,24 +626,24 @@ describe('filter UI', () => {
   it('shows date filter input', () => {
     setProvider()
     renderPage()
-    expect(screen.getByDisplayValue('')).toBeInTheDocument() // date input
+    expect(screen.getByLabelText('فیلتر بر اساس تاریخ')).toBeInTheDocument()
   })
 
   it('shows clear date button when date is set', () => {
     setProvider()
     renderPage()
-    const dateInput = screen.getByDisplayValue('')
+    const dateInput = screen.getByLabelText('فیلتر بر اساس تاریخ')
     fireEvent.change(dateInput, { target: { value: '2026-06-09' } })
-    expect(screen.getByRole('button', { name: 'پاک کردن تاریخ' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'پاک کردن' })).toBeInTheDocument()
   })
 
   it('clicking clear date button removes the date filter', () => {
     setProvider()
     renderPage()
-    const dateInput = screen.getByDisplayValue('')
+    const dateInput = screen.getByLabelText('فیلتر بر اساس تاریخ')
     fireEvent.change(dateInput, { target: { value: '2026-06-09' } })
-    fireEvent.click(screen.getByRole('button', { name: 'پاک کردن تاریخ' }))
-    expect(screen.queryByRole('button', { name: 'پاک کردن تاریخ' })).not.toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'پاک کردن' }))
+    expect(screen.queryByRole('button', { name: 'پاک کردن' })).not.toBeInTheDocument()
   })
 })
 
