@@ -76,7 +76,7 @@ describe('MyAppointmentsPage', () => {
     mockHooks({ appointments: [confirmedAppt] })
     renderWithProviders(<MyAppointmentsPage />)
     expect(screen.getByText('دکتر احمدی')).toBeInTheDocument()
-    expect(screen.getByText('TRK001')).toBeInTheDocument()
+    expect(screen.getByText(/TRK001/)).toBeInTheDocument()
     expect(screen.getByText('تأیید شده')).toBeInTheDocument()
   })
 
