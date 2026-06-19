@@ -287,7 +287,7 @@ export default function ProviderListPage() {
 
 function CheckboxItem({ label, checked, onChange }) {
   return (
-    <label className="flex items-center gap-3 py-2 px-2 rounded-xl hover:bg-slate-50 cursor-pointer">
+    <label onClick={onChange} className="flex items-center gap-3 py-2 px-2 rounded-xl hover:bg-slate-50 cursor-pointer">
       <div className={`w-4 h-4 rounded border-2 shrink-0 flex items-center justify-center transition-colors ${
         checked ? 'border-cyan-500 bg-cyan-500' : 'border-slate-200'
       }`}>

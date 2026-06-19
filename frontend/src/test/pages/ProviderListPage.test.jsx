@@ -1,4 +1,4 @@
-import { screen, fireEvent } from '@testing-library/react'
+import { screen, fireEvent, within } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { renderWithProviders } from '../utils'
 import ProviderListPage from '../../pages/public/ProviderListPage'
@@ -18,6 +18,10 @@ const DOCTORS = [
   { id: 2, full_name: 'دکتر احمدی', specialty: 'عمومی', visit_duration: 15, consultation_fee: '300000', available_weekdays: [2] },
   { id: 3, full_name: 'دکتر صادقی', specialty: 'قلب', visit_duration: 30, consultation_fee: '700000', available_weekdays: [3] },
 ]
+
+function getSidebar() {
+  return document.querySelector('aside')
+}
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -46,7 +50,7 @@ describe('ProviderListPage', () => {
     expect(screen.getByText('نتیجه‌ای یافت نشد')).toBeInTheDocument()
   })
 
-  it('renders all doctor cards', () => {
+  it('renders all provider cards', () => {
     mockUseDoctors({ doctors: DOCTORS })
     renderWithProviders(<ProviderListPage />)
     expect(screen.getByText('دکتر رضایی')).toBeInTheDocument()
@@ -54,51 +58,33 @@ describe('ProviderListPage', () => {
     expect(screen.getByText('دکتر صادقی')).toBeInTheDocument()
   })
 
-  it('renders specialty filter chips when 2+ specialties exist', () => {
+  it('renders category filters in sidebar when 2+ categories exist', () => {
     mockUseDoctors({ doctors: DOCTORS })
     renderWithProviders(<ProviderListPage />)
-    expect(screen.getByRole('group', { name: 'فیلتر دسته‌بندی' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'همه' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'قلب' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'عمومی' })).toBeInTheDocument()
+    const sidebar = getSidebar()
+    expect(sidebar).toBeTruthy()
+    const sidebarScope = within(sidebar)
+    expect(sidebarScope.getByText('همه')).toBeInTheDocument()
+    expect(sidebarScope.getByText('قلب')).toBeInTheDocument()
+    expect(sidebarScope.getByText('عمومی')).toBeInTheDocument()
   })
 
-  it('does not render filter chips when only one specialty', () => {
-    const singleSpecialty = DOCTORS.filter((d) => d.specialty === 'قلب')
-    mockUseDoctors({ doctors: singleSpecialty })
-    renderWithProviders(<ProviderListPage />)
-    expect(screen.queryByRole('group', { name: 'فیلتر دسته‌بندی' })).toBeNull()
-  })
-
-  it('"همه" chip is active by default', () => {
+  it('filters providers by clicking a category in sidebar', () => {
     mockUseDoctors({ doctors: DOCTORS })
     renderWithProviders(<ProviderListPage />)
-    expect(screen.getByRole('button', { name: 'همه' })).toHaveAttribute('aria-pressed', 'true')
-  })
-
-  it('filters doctors by selected specialty', () => {
-    mockUseDoctors({ doctors: DOCTORS })
-    renderWithProviders(<ProviderListPage />)
-    fireEvent.click(screen.getByRole('button', { name: 'قلب' }))
+    const sidebarScope = within(getSidebar())
+    fireEvent.click(sidebarScope.getByText('قلب'))
     expect(screen.getByText('دکتر رضایی')).toBeInTheDocument()
     expect(screen.getByText('دکتر صادقی')).toBeInTheDocument()
     expect(screen.queryByText('دکتر احمدی')).toBeNull()
   })
 
-  it('marks selected specialty chip as active and deactivates others', () => {
+  it('clicking "همه" restores all providers after filtering', () => {
     mockUseDoctors({ doctors: DOCTORS })
     renderWithProviders(<ProviderListPage />)
-    fireEvent.click(screen.getByRole('button', { name: 'قلب' }))
-    expect(screen.getByRole('button', { name: 'قلب' })).toHaveAttribute('aria-pressed', 'true')
-    expect(screen.getByRole('button', { name: 'همه' })).toHaveAttribute('aria-pressed', 'false')
-    expect(screen.getByRole('button', { name: 'عمومی' })).toHaveAttribute('aria-pressed', 'false')
-  })
-
-  it('clicking "همه" chip restores all doctors after filtering', () => {
-    mockUseDoctors({ doctors: DOCTORS })
-    renderWithProviders(<ProviderListPage />)
-    fireEvent.click(screen.getByRole('button', { name: 'قلب' }))
-    fireEvent.click(screen.getByRole('button', { name: 'همه' }))
+    const sidebarScope = within(getSidebar())
+    fireEvent.click(sidebarScope.getByText('قلب'))
+    fireEvent.click(sidebarScope.getByText('همه'))
     expect(screen.getByText('دکتر رضایی')).toBeInTheDocument()
     expect(screen.getByText('دکتر احمدی')).toBeInTheDocument()
     expect(screen.getByText('دکتر صادقی')).toBeInTheDocument()
