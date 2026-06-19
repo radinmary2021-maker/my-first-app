@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
-import MainLayout from '../../layouts/MainLayout'
+import OwnerLayout from '../../layouts/OwnerLayout'
 import Button from '../../components/Button'
-import Input from '../../components/Input'
 import Spinner from '../../components/Spinner'
 import ErrorMessage from '../../components/ErrorMessage'
 import { notify } from '../../utils/toast'
@@ -71,29 +70,17 @@ export default function SettingsPage() {
   async function handleSubmit(e) {
     e.preventDefault()
     const trimmedName = name.trim()
-    if (trimmedName.length < 2) {
-      setFormError('نام کسب‌وکار باید حداقل ۲ کاراکتر باشد.')
-      return
-    }
+    if (trimmedName.length < 2) { setFormError('نام کسب‌وکار باید حداقل ۲ کاراکتر باشد.'); return }
     setFormError('')
     setSaving(true)
     try {
-      const updated = await updateMyBusiness({
-        name:        trimmedName,
-        category,
-        description: description.trim(),
-        phone:       phone.trim(),
-        address:     address.trim(),
-      })
+      const updated = await updateMyBusiness({ name: trimmedName, category, description: description.trim(), phone: phone.trim(), address: address.trim() })
       setBusiness(updated)
       notify('اطلاعات کسب‌وکار بروزرسانی شد.', 'success')
     } catch (err) {
       const data = err?.response?.data
-      const msg  = data?.name?.[0] || data?.phone?.[0] || data?.error || 'خطا در ذخیره اطلاعات.'
-      setFormError(msg)
-    } finally {
-      setSaving(false)
-    }
+      setFormError(data?.name?.[0] || data?.phone?.[0] || data?.error || 'خطا در ذخیره اطلاعات.')
+    } finally { setSaving(false) }
   }
 
   async function handleSlugSubmit(e) {
@@ -109,27 +96,16 @@ export default function SettingsPage() {
       notify('آدرس اختصاصی ذخیره شد.', 'success')
     } catch (err) {
       const data = err?.response?.data
-      const msg  = data?.latin_slug?.[0] || data?.error || 'خطا در ذخیره آدرس.'
-      setSlugError(msg)
-    } finally {
-      setSavingSlug(false)
-    }
+      setSlugError(data?.latin_slug?.[0] || data?.error || 'خطا در ذخیره آدرس.')
+    } finally { setSavingSlug(false) }
   }
 
   function handleLogoSelect(e) {
     const file = e.target.files?.[0]
     if (!file) return
     setLogoError('')
-
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-      setLogoError('فقط فرمت‌های JPG، PNG و WebP مجاز است.')
-      return
-    }
-    if (file.size > LOGO_MAX_SIZE) {
-      setLogoError('حجم فایل نباید بیشتر از ۲ مگابایت باشد.')
-      return
-    }
-
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) { setLogoError('فقط فرمت‌های JPG، PNG و WebP مجاز است.'); return }
+    if (file.size > LOGO_MAX_SIZE) { setLogoError('حجم فایل نباید بیشتر از ۲ مگابایت باشد.'); return }
     setLogoFile(file)
     setLogoPreview(URL.createObjectURL(file))
   }
@@ -137,10 +113,7 @@ export default function SettingsPage() {
   function handleLogoClear() {
     setLogoFile(null)
     setLogoError('')
-    if (logoPreview) {
-      URL.revokeObjectURL(logoPreview)
-      setLogoPreview(null)
-    }
+    if (logoPreview) { URL.revokeObjectURL(logoPreview); setLogoPreview(null) }
     if (logoInputRef.current) logoInputRef.current.value = ''
   }
 
@@ -156,240 +129,130 @@ export default function SettingsPage() {
       handleLogoClear()
       notify('لوگو با موفقیت بروزرسانی شد.', 'success')
     } catch (err) {
-      const msg = err?.response?.data?.logo?.[0] || err?.response?.data?.error || 'خطا در آپلود لوگو.'
-      setLogoError(msg)
-    } finally {
-      setUploadingLogo(false)
-    }
+      setLogoError(err?.response?.data?.logo?.[0] || err?.response?.data?.error || 'خطا در آپلود لوگو.')
+    } finally { setUploadingLogo(false) }
   }
 
-  const previewUrl = latinSlug
-    ? `nobatiic.ir/book/${latinSlug}`
-    : business?.slug
-    ? `nobatiic.ir/book/${business.slug}`
-    : ''
+  const previewUrl = latinSlug ? `nobatiic.ir/book/${latinSlug}` : business?.slug ? `nobatiic.ir/book/${business.slug}` : ''
+  const inputCls = "w-full border-2 border-cyan-100 rounded-xl px-4 py-3 text-sm text-slate-700 outline-none focus:border-cyan-400 focus:bg-white transition-colors"
+  const inputBg = { background: '#F0FDFF' }
 
   if (loading) {
-    return (
-      <MainLayout>
-        <div className="flex justify-center py-20"><Spinner /></div>
-      </MainLayout>
-    )
+    return <OwnerLayout title="تنظیمات"><div className="flex justify-center py-20"><Spinner /></div></OwnerLayout>
   }
-
   if (fetchError) {
-    return (
-      <MainLayout>
-        <div className="max-w-xl">
-          <ErrorMessage message={fetchError} />
-        </div>
-      </MainLayout>
-    )
+    return <OwnerLayout title="تنظیمات"><ErrorMessage message={fetchError} /></OwnerLayout>
   }
 
   return (
-    <MainLayout>
-      <div className="max-w-xl space-y-6" dir="rtl">
-        <div>
-          <h1 className="text-xl font-bold text-gray-800">تنظیمات کسب‌وکار</h1>
-          <p className="text-sm text-gray-500 mt-0.5">اطلاعات عمومی کسب‌وکار خود را ویرایش کنید.</p>
-        </div>
+    <OwnerLayout title="تنظیمات" subtitle="مدیریت اطلاعات و تنظیمات کسب‌وکار">
+      <div className="max-w-3xl space-y-5">
 
-        {/* ── لوگو ── */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
-          <div>
-            <h2 className="text-base font-semibold text-gray-800">لوگوی کسب‌وکار</h2>
-            <p className="text-xs text-gray-500 mt-0.5">JPG، PNG یا WebP — حداکثر ۲ مگابایت</p>
-          </div>
-
+        {/* Logo upload */}
+        <div className="bg-white rounded-2xl border border-slate-100 p-5">
+          <h2 className="text-sm font-bold text-slate-800 mb-1">لوگوی کسب‌وکار</h2>
+          <p className="text-xs text-slate-400 mb-4">JPG، PNG یا WebP — حداکثر ۲ مگابایت</p>
           <div className="flex items-center gap-4">
-            {/* Current / Preview */}
-            <div className="w-20 h-20 rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden bg-gray-50 shrink-0">
+            <div className="w-20 h-20 rounded-2xl flex items-center justify-center shrink-0 shadow-md shadow-cyan-200 overflow-hidden"
+                 style={{ background: 'linear-gradient(135deg, #0891B2 0%, #06B6D4 60%, #22D3EE 100%)' }}>
               {logoPreview ? (
                 <img src={logoPreview} alt="پیش‌نمایش" className="w-full h-full object-cover" />
               ) : business?.logo ? (
                 <img src={business.logo} alt="لوگو" className="w-full h-full object-cover" />
               ) : (
-                <svg className="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.41a2.25 2.25 0 013.182 0l2.909 2.91m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                </svg>
+                <span className="text-white text-3xl">📋</span>
               )}
             </div>
-
             <div className="flex flex-col gap-2">
-              <input
-                ref={logoInputRef}
-                type="file"
-                accept={LOGO_ACCEPT}
-                onChange={handleLogoSelect}
-                className="hidden"
-              />
+              <input ref={logoInputRef} type="file" accept={LOGO_ACCEPT} onChange={handleLogoSelect} className="hidden" />
               {!logoFile ? (
-                <button
-                  type="button"
-                  onClick={() => logoInputRef.current?.click()}
-                  className="text-sm font-semibold px-4 py-2 rounded-lg border transition-colors"
-                  style={{ color: 'var(--color-brand)', borderColor: 'var(--color-brand)' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--color-brand-light)' }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
-                >
+                <button type="button" onClick={() => logoInputRef.current?.click()}
+                        className="bg-cyan-50 text-cyan-700 text-xs font-bold px-4 py-2.5 rounded-xl border border-cyan-100 hover:bg-cyan-100 transition-colors flex items-center gap-1.5">
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
                   {business?.logo ? 'تغییر لوگو' : 'انتخاب لوگو'}
                 </button>
               ) : (
                 <div className="flex items-center gap-2">
-                  <Button
-                    type="button"
-                    variant="primary"
-                    size="sm"
-                    loading={uploadingLogo}
-                    onClick={handleLogoUpload}
-                  >
-                    آپلود
-                  </Button>
-                  <button
-                    type="button"
-                    onClick={handleLogoClear}
-                    disabled={uploadingLogo}
-                    className="text-xs text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50"
-                  >
-                    انصراف
-                  </button>
+                  <Button type="button" variant="primary" size="sm" loading={uploadingLogo} onClick={handleLogoUpload}>آپلود</Button>
+                  <button type="button" onClick={handleLogoClear} disabled={uploadingLogo} className="text-xs text-slate-400 hover:text-red-500 transition-colors disabled:opacity-50">انصراف</button>
                 </div>
               )}
-              {logoFile && (
-                <p className="text-xs text-gray-400">{logoFile.name} — {(logoFile.size / 1024).toFixed(0)} KB</p>
-              )}
+              {logoFile && <p className="text-xs text-slate-400">{logoFile.name} — {(logoFile.size / 1024).toFixed(0)} KB</p>}
             </div>
           </div>
-
-          {logoError && <p className="text-xs text-red-500">{logoError}</p>}
+          {logoError && <p className="text-xs text-red-500 mt-2">{logoError}</p>}
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
+        {/* General info */}
+        <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-slate-100 p-5 space-y-4">
+          <h2 className="text-sm font-bold text-slate-800 mb-2">اطلاعات کلی</h2>
 
-          <Input
-            id="settings-name"
-            label={<>نام کسب‌وکار <span className="text-red-400">*</span></>}
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            disabled={saving}
-          />
+          <div>
+            <label htmlFor="settings-name" className="text-xs font-bold text-slate-600 mb-2 block">نام کسب‌وکار <span className="text-red-400">*</span></label>
+            <input id="settings-name" type="text" value={name} onChange={(e) => setName(e.target.value)} disabled={saving} className={inputCls} style={inputBg} />
+          </div>
 
-          <div className="space-y-1.5">
-            <label htmlFor="settings-category" className="block text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>
-              دسته‌بندی
-            </label>
-            <select
-              id="settings-category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              disabled={saving}
-              className="input"
-            >
-              {categories.map((cat) => (
-                <option key={cat.value} value={cat.value}>{cat.label}</option>
-              ))}
+          <div>
+            <label htmlFor="settings-category" className="text-xs font-bold text-slate-600 mb-2 block">دسته‌بندی</label>
+            <select id="settings-category" value={category} onChange={(e) => setCategory(e.target.value)} disabled={saving} className={inputCls} style={inputBg}>
+              {categories.map((cat) => <option key={cat.value} value={cat.value}>{cat.label}</option>)}
             </select>
           </div>
 
-          <div className="space-y-1.5">
-            <label htmlFor="settings-description" className="block text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>
-              توضیحات
-            </label>
-            <textarea
-              id="settings-description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={3}
-              placeholder="معرفی کوتاه کسب‌وکار..."
-              disabled={saving}
-              className="input resize-none"
-            />
+          <div>
+            <label htmlFor="settings-description" className="text-xs font-bold text-slate-600 mb-2 block">توضیحات</label>
+            <textarea id="settings-description" value={description} onChange={(e) => setDescription(e.target.value)} rows={3} placeholder="معرفی کوتاه کسب‌وکار..." disabled={saving} className={`${inputCls} resize-none`} style={inputBg} />
           </div>
 
-          <Input
-            id="settings-phone"
-            label="شماره تماس"
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            disabled={saving}
-            forceLtr
-          />
-
-          <Input
-            id="settings-address"
-            label="آدرس"
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            disabled={saving}
-          />
-
-          <ErrorMessage message={formError} />
-
-          <div className="flex items-center justify-between pt-2">
-            <Button
-              type="submit"
-              variant="primary"
-              size="md"
-              loading={saving}
-              className="ml-auto"
-            >
-              ذخیره تغییرات
-            </Button>
+          <div>
+            <label htmlFor="settings-phone" className="text-xs font-bold text-slate-600 mb-2 block">شماره تماس</label>
+            <input id="settings-phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} disabled={saving} dir="ltr" className={`${inputCls} text-left`} style={inputBg} />
           </div>
 
+          <div>
+            <label htmlFor="settings-address" className="text-xs font-bold text-slate-600 mb-2 block">آدرس</label>
+            <input id="settings-address" type="text" value={address} onChange={(e) => setAddress(e.target.value)} disabled={saving} className={inputCls} style={inputBg} />
+          </div>
+
+          {formError && <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">{formError}</div>}
+
+          <div className="flex justify-end gap-3 pt-2">
+            <button type="submit" disabled={saving}
+                    className="text-white text-sm font-bold px-6 py-3 rounded-xl shadow-sm shadow-cyan-200 hover:opacity-90 transition-opacity disabled:opacity-50"
+                    style={{ background: 'linear-gradient(135deg, #0891B2 0%, #06B6D4 60%, #22D3EE 100%)' }}>
+              {saving ? <Spinner size="xs" light /> : 'ذخیره تغییرات'}
+            </button>
+          </div>
         </form>
 
-        {/* آدرس اختصاصی */}
-        <form onSubmit={handleSlugSubmit} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
+        {/* Latin slug */}
+        <form onSubmit={handleSlugSubmit} className="bg-white rounded-2xl border border-slate-100 p-5 space-y-4">
           <div>
-            <h2 className="text-base font-semibold text-gray-800">آدرس اختصاصی</h2>
-            <p className="text-xs text-gray-500 mt-0.5">یک آدرس انگلیسی برای صفحه رزرو خود انتخاب کنید.</p>
+            <h2 className="text-sm font-bold text-slate-800">آدرس اختصاصی</h2>
+            <p className="text-xs text-slate-400 mt-0.5">یک آدرس انگلیسی برای صفحه رزرو خود انتخاب کنید.</p>
           </div>
 
-          <div className="space-y-1.5">
-            <label htmlFor="latin-slug" className="block text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>
-              آدرس اختصاصی کسب‌وکار
-            </label>
-            <input
-              id="latin-slug"
-              type="text"
-              value={latinSlug}
-              onChange={handleLatinSlugChange}
-              placeholder="ariya-beauty"
-              disabled={savingSlug}
-              dir="ltr"
-              className={`input text-left ${slugError ? 'border-red-400' : ''}`}
-              autoComplete="off"
-            />
-            <p className="text-xs text-gray-400">فقط حروف انگلیسی کوچک، اعداد و خط‌فاصله مجاز است</p>
-            {slugError && <p className="text-xs text-red-500">{slugError}</p>}
+          <div>
+            <label htmlFor="latin-slug" className="text-xs font-bold text-slate-600 mb-2 block">آدرس اختصاصی کسب‌وکار</label>
+            <input id="latin-slug" type="text" value={latinSlug} onChange={handleLatinSlugChange} placeholder="ariya-beauty" disabled={savingSlug} dir="ltr" autoComplete="off"
+                   className={`${inputCls} text-left ${slugError ? 'border-red-400!' : ''}`} style={inputBg} />
+            <p className="text-xs text-slate-400 mt-1">فقط حروف انگلیسی کوچک، اعداد و خط‌فاصله مجاز است</p>
+            {slugError && <p className="text-xs text-red-500 mt-1">{slugError}</p>}
           </div>
 
           {previewUrl && (
-            <div className="bg-gray-50 rounded-lg px-3 py-2">
-              <p className="text-xs text-gray-500 mb-0.5">پیش‌نمایش لینک:</p>
-              <p className="text-sm font-mono text-gray-700" dir="ltr">{previewUrl}</p>
+            <div className="bg-slate-50 rounded-xl px-3 py-2 border border-slate-100">
+              <p className="text-xs text-slate-500 mb-0.5">پیش‌نمایش لینک:</p>
+              <p className="text-sm font-mono text-slate-700" dir="ltr">{previewUrl}</p>
             </div>
           )}
 
-          <div className="flex justify-end pt-1">
-            <Button
-              type="submit"
-              variant="primary"
-              size="md"
-              loading={savingSlug}
-              disabled={!!slugError}
-            >
-              ذخیره آدرس
-            </Button>
+          <div className="flex justify-end">
+            <Button type="submit" variant="primary" size="md" loading={savingSlug} disabled={!!slugError}>ذخیره آدرس</Button>
           </div>
         </form>
 
       </div>
-    </MainLayout>
+    </OwnerLayout>
   )
 }
