@@ -102,7 +102,7 @@ export default function MainLayout({ children, fullWidth = false }) {
             </div>
             <span className="text-lg font-extrabold tracking-tight"
                   style={{ background: 'linear-gradient(135deg,#0891B2,#06B6D4)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              نوبتیک
+              Nobatic
             </span>
           </button>
 
