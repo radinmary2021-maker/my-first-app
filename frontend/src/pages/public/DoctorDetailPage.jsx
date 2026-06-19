@@ -7,34 +7,14 @@ import ErrorMessage from '../../components/ErrorMessage'
 import DatePicker from '../../components/DatePicker'
 import SlotPicker from '../../components/SlotPicker'
 import DoctorAvatar from '../../components/DoctorAvatar'
-import Badge from '../../components/Badge'
-import { CATEGORY_ICON, BriefcaseIcon, ClockIcon, AlertCircleIcon, ChevronRightIcon } from '../../components/Icon'
 import { useProvider, useProviderSlots, useProviderServices, useProviderReviews } from '../../hooks/useDoctors'
 import { formatFee } from '../../utils/date'
 import { toJalali } from '../../utils/jalali'
 import { notify } from '../../utils/toast'
 
-const STAR_PATH = 'M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z'
-
-function StarDisplay({ value, size = 'sm' }) {
-  const full = Math.floor(value ?? 0)
-  const cls  = size === 'lg' ? 'w-4 h-4' : 'w-3 h-3'
-  return (
-    <div className="flex gap-px">
-      {[1,2,3,4,5].map((i) => (
-        <svg key={i} viewBox="0 0 20 20" fill="currentColor"
-             className={`${cls} ${i <= full ? 'text-amber-400' : 'text-gray-200'}`}>
-          <path d={STAR_PATH} />
-        </svg>
-      ))}
-    </div>
-  )
-}
-
 export default function DoctorDetailPage() {
-  // Supports two routes: /providers/:id (numeric) and /book/:slug (string)
   const { id: paramId, slug: paramSlug } = useParams()
-  const lookup = paramId || paramSlug       // whichever is present
+  const lookup = paramId || paramSlug
   const navigate = useNavigate()
   const { state: locationState } = useLocation()
   const preselectedServiceId = locationState?.preselectedServiceId ?? null
@@ -43,11 +23,12 @@ export default function DoctorDetailPage() {
   const [selectedDate, setSelectedDate]       = useState(null)
   const [selectedSlot, setSelectedSlot]       = useState(null)
   const [reviewPage, setReviewPage]           = useState(1)
+  const [activeTab, setActiveTab]             = useState('services')
 
   const { data: provider,  isLoading: providerLoading,  isError: providerError  } = useProvider(lookup)
-  const providerId = provider?.id   // always numeric once loaded
+  const providerId = provider?.id
 
-  const { data: services,  isLoading: servicesLoading                            } = useProviderServices(providerId)
+  const { data: services,  isLoading: servicesLoading } = useProviderServices(providerId)
 
   useEffect(() => {
     if (!preselectedServiceId || !services?.length || selectedService) return
@@ -55,7 +36,7 @@ export default function DoctorDetailPage() {
     if (match) setSelectedService(match)
   }, [services, preselectedServiceId])
 
-  const { data: slotsData, isLoading: slotsLoading,     isError: slotsError, refetch: refetchSlots } = useProviderSlots(providerId, selectedDate, selectedService?.id)
+  const { data: slotsData, isLoading: slotsLoading, isError: slotsError, refetch: refetchSlots } = useProviderSlots(providerId, selectedDate, selectedService?.id)
   const { data: reviewsData } = useProviderReviews(providerId, reviewPage)
 
   function handleDateSelect(date) {
@@ -90,20 +71,16 @@ export default function DoctorDetailPage() {
   }
 
   if (providerLoading) {
-    return <MainLayout><Spinner className="py-20" /></MainLayout>
+    return <MainLayout><div className="flex justify-center py-20"><Spinner /></div></MainLayout>
   }
 
   if (providerError || !provider) {
     return (
       <MainLayout>
         <div className="space-y-4">
-          <button
-            onClick={() => navigate('/providers')}
-            className="flex items-center gap-1 text-sm"
-            style={{ color: 'var(--color-brand)' }}
-          >
-            <ChevronRightIcon size={14} />
-            بازگشت به لیست ارائه‌دهندگان
+          <button onClick={() => navigate('/providers')} className="flex items-center gap-1 text-sm text-cyan-600 hover:text-cyan-700">
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6" /></svg>
+            بازگشت به لیست
           </button>
           <ErrorMessage message="ارائه‌دهنده مورد نظر یافت نشد" />
         </div>
@@ -111,17 +88,19 @@ export default function DoctorDetailPage() {
     )
   }
 
-  const CategoryIcon    = CATEGORY_ICON[provider.category] ?? BriefcaseIcon
   const isAvailable     = (provider.available_weekdays ?? []).length > 0
   const hasServices     = services && services.length > 0
   const serviceRequired = hasServices
   const canPickDate     = !serviceRequired || selectedService !== null
+  const providerName    = provider.business_name || provider.full_name
+  const providerSlug    = provider.latin_slug || provider.business_slug
+  const category        = provider.category_display || provider.specialty
+  const hasRating       = provider.average_rating != null && provider.reviews_count > 0
+  const reviews         = reviewsData?.results ?? reviewsData ?? []
 
-  const providerName = provider.business_name || provider.full_name
-  const providerSlug = provider.latin_slug || provider.business_slug
   const seoDescription = provider.bio
     ? `${providerName} — ${provider.bio.slice(0, 120)}`
-    : `رزرو آنلاین نوبت از ${providerName}. ${provider.category_display || provider.specialty || ''} در نوبتیک.`
+    : `رزرو آنلاین نوبت از ${providerName}. ${category || ''} در نوبتیک.`
 
   const providerJsonLd = {
     '@context': 'https://schema.org',
@@ -129,19 +108,11 @@ export default function DoctorDetailPage() {
     name: providerName,
     description: seoDescription,
     url: providerSlug ? `https://nobatiic.ir/book/${providerSlug}` : `https://nobatiic.ir/providers/${provider.id}`,
-    ...(provider.average_rating != null && provider.reviews_count > 0
-      ? {
-          aggregateRating: {
-            '@type': 'AggregateRating',
-            ratingValue: provider.average_rating,
-            reviewCount: provider.reviews_count,
-          },
-        }
-      : {}),
+    ...(hasRating ? { aggregateRating: { '@type': 'AggregateRating', ratingValue: provider.average_rating, reviewCount: provider.reviews_count } } : {}),
   }
 
   return (
-    <MainLayout>
+    <MainLayout fullWidth>
       <SEOHead
         title={providerName}
         description={seoDescription}
@@ -149,298 +120,328 @@ export default function DoctorDetailPage() {
         ogType="business.business"
         jsonLd={providerJsonLd}
       />
-      <div className="space-y-8 max-w-2xl">
 
-        {/* Back */}
-        <button
-          onClick={() => navigate('/providers')}
-          className="flex items-center gap-1 text-sm"
-          style={{ color: 'var(--color-brand)' }}
-        >
-          <ChevronRightIcon size={14} />
-          بازگشت به لیست
-        </button>
+      {/* Breadcrumb */}
+      <div className="bg-white border-b border-slate-100 px-4 py-3">
+        <div className="max-w-7xl mx-auto flex items-center gap-2 text-xs text-slate-400">
+          <button onClick={() => navigate('/')} className="hover:text-cyan-600 transition-colors">خانه</button>
+          <svg className="w-3 h-3 rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6" /></svg>
+          <button onClick={() => navigate('/providers')} className="hover:text-cyan-600 transition-colors">{category || 'کسب‌وکارها'}</button>
+          <svg className="w-3 h-3 rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6" /></svg>
+          <span className="text-slate-600 font-medium">{providerName}</span>
+        </div>
+      </div>
 
-        {/* Provider info card */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
-          <div className="flex items-center gap-4">
-            <DoctorAvatar name={provider.business_name || provider.full_name} size={72} />
-            <div>
-              <h1 className="text-xl font-bold" style={{ color: 'var(--color-text-primary)' }}>
-                {provider.business_name || provider.full_name}
-              </h1>
-              <div className="flex items-center gap-1.5 mt-0.5"
-                   style={{ color: 'var(--color-brand)' }}>
-                <CategoryIcon size={14} />
-                <p className="text-sm font-medium">
-                  {provider.category_display || provider.specialty}
-                </p>
+      {/* Cover gallery */}
+      <div className="bg-white">
+        <div className="max-w-7xl mx-auto px-4 py-5">
+          <div className="grid grid-cols-4 gap-2 rounded-2xl overflow-hidden h-48 sm:h-72">
+            <div className="col-span-2 row-span-2 relative bg-gradient-to-br from-cyan-500 to-cyan-400">
+              {provider.logo ? (
+                <img src={provider.logo} alt={providerName} className="w-full h-full object-cover" />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center opacity-30">
+                  <DoctorAvatar name={providerName} size={120} />
+                </div>
+              )}
+            </div>
+            <div className="relative bg-gradient-to-br from-violet-500 to-violet-400" />
+            <div className="relative bg-gradient-to-br from-pink-500 to-pink-400" />
+            <div className="relative bg-gradient-to-br from-teal-500 to-teal-400" />
+            <div className="relative bg-gradient-to-br from-amber-500 to-amber-300" />
+          </div>
+        </div>
+      </div>
+
+      {/* Main content */}
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="flex flex-col lg:flex-row gap-6 items-start">
+
+          {/* Left: Info + Tabs */}
+          <div className="flex-1 min-w-0 space-y-4">
+
+            {/* Provider header */}
+            <div className="bg-white rounded-2xl border border-slate-100 p-5">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-cyan-400 flex items-center justify-center text-white shrink-0 shadow-md shadow-cyan-200 overflow-hidden">
+                    {provider.logo ? (
+                      <img src={provider.logo} alt={providerName} className="w-full h-full object-cover" />
+                    ) : (
+                      <DoctorAvatar name={providerName} size={64} />
+                    )}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h1 className="text-xl font-black text-slate-900">{providerName}</h1>
+                      {isAvailable
+                        ? <span className="bg-cyan-50 text-cyan-600 text-xs font-bold px-2.5 py-1 rounded-full border border-cyan-100">فعال</span>
+                        : <span className="bg-slate-100 text-slate-500 text-xs font-bold px-2.5 py-1 rounded-full">غیرفعال</span>
+                      }
+                    </div>
+                    <p className="text-slate-500 text-sm mb-2">{category}</p>
+                    <div className="flex items-center gap-3 flex-wrap">
+                      {hasRating && (
+                        <div className="flex items-center gap-1">
+                          <span className="text-amber-400">{'★'.repeat(Math.floor(provider.average_rating))}{'☆'.repeat(5 - Math.floor(provider.average_rating))}</span>
+                          <span className="text-sm font-bold text-slate-700">{provider.average_rating}</span>
+                          <span className="text-xs text-slate-400">({provider.reviews_count} نظر)</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    onClick={handleShare}
+                    className="w-9 h-9 rounded-xl border border-slate-200 flex items-center justify-center text-slate-400 hover:text-cyan-500 hover:border-cyan-200 transition-colors"
+                  >
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98" /></svg>
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                {isAvailable
-                  ? <Badge variant="success">فعال</Badge>
-                  : <Badge variant="neutral">هنوز فعال نشده</Badge>
-                }
-                {provider.average_rating != null && provider.reviews_count > 0 && (
-                  <div className="flex items-center gap-1">
-                    <StarDisplay value={provider.average_rating} size="lg" />
-                    <span className="text-xs font-semibold text-amber-600">
-                      {provider.average_rating}
-                    </span>
-                    <span className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
-                      ({provider.reviews_count} نظر)
-                    </span>
+
+              {/* Quick info pills */}
+              <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-slate-50">
+                {provider.slot_duration && (
+                  <div className="flex items-center gap-1.5 bg-slate-50 text-slate-600 text-xs px-3 py-1.5 rounded-full">
+                    <svg className="w-3.5 h-3.5 text-cyan-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
+                    مدت نوبت: {provider.slot_duration} دقیقه
+                  </div>
+                )}
+                {provider.service_fee && (
+                  <div className="flex items-center gap-1.5 bg-slate-50 text-slate-600 text-xs px-3 py-1.5 rounded-full">
+                    💰 {formatFee(provider.service_fee)}
                   </div>
                 )}
               </div>
-              {provider.business_slug && (
-                <button
-                  onClick={handleShare}
-                  className="mt-2 flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border transition-colors hover:bg-gray-50"
-                  style={{ borderColor: 'var(--color-border)', color: 'var(--color-text-secondary)' }}
-                >
-                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                  </svg>
-                  اشتراک‌گذاری لینک
-                </button>
+
+              {provider.bio && (
+                <p className="text-sm text-slate-500 leading-7 mt-3">{provider.bio}</p>
               )}
             </div>
-          </div>
 
-          {provider.bio && (
-            <p className="text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
-              {provider.bio}
-            </p>
-          )}
-
-          {!hasServices && (
-            <div className="flex flex-wrap gap-4 text-sm border-t pt-3"
-                 style={{ color: 'var(--color-text-secondary)', borderColor: 'var(--color-border)' }}>
-              <span className="flex items-center gap-1.5">
-                <ClockIcon size={14} style={{ color: 'var(--color-brand)' }} />
-                مدت نوبت: {provider.slot_duration} دقیقه
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span style={{ color: 'var(--color-brand)' }}>💰</span>
-                هزینه خدمت: {formatFee(provider.service_fee)}
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* No working hours banner */}
-        {!isAvailable && (
-          <div className="rounded-2xl p-5 flex items-start gap-3"
-               style={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)' }}>
-            <AlertCircleIcon size={20} style={{ color: 'var(--color-text-tertiary)', flexShrink: 0, marginTop: 1 }} />
-            <div className="space-y-1">
-              <p className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>
-                این ارائه‌دهنده هنوز ساعات کاری خود را تنظیم نکرده است.
-              </p>
-              <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
-                در حال حاضر امکان رزرو نوبت وجود ندارد. لطفاً بعداً مراجعه کنید یا ارائه‌دهنده دیگری انتخاب کنید.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Step 1 — Service selection */}
-        {servicesLoading && <Spinner />}
-
-        {hasServices && (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
-            <h2 className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>
-              ۱. انتخاب خدمت
-            </h2>
-            <div className="grid gap-3">
-              {services.map((svc) => {
-                const active = selectedService?.id === svc.id
-                return (
-                  <button
-                    key={svc.id}
-                    onClick={() => {
-                      setSelectedService(svc)
-                      setSelectedDate(null)
-                      setSelectedSlot(null)
-                    }}
-                    className={`w-full text-right p-4 rounded-xl border transition-colors ${
-                      active
-                        ? 'border-cyan-400 bg-cyan-50'
-                        : 'border-gray-100 hover:border-cyan-200 hover:bg-gray-50'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-0.5">
-                        <p className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>
-                          {svc.name}
-                        </p>
-                        {svc.description && (
-                          <p className="text-xs line-clamp-1" style={{ color: 'var(--color-text-tertiary)' }}>
-                            {svc.description}
-                          </p>
-                        )}
-                      </div>
-                      <div className="text-left shrink-0 space-y-0.5">
-                        <p className="text-xs font-mono" style={{ color: 'var(--color-text-secondary)' }}>
-                          {svc.duration_minutes} دقیقه
-                        </p>
-                        {Number(svc.price) > 0 && (
-                          <p className="text-xs font-medium text-emerald-700">
-                            {Number(svc.price).toLocaleString('fa-IR')} تومان
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    {active && (
-                      <span className="inline-block mt-2 text-xs font-medium"
-                            style={{ color: 'var(--color-brand)' }}>
-                        ✓ انتخاب شد
-                      </span>
-                    )}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Guidance: service required but not selected */}
-        {isAvailable && serviceRequired && !canPickDate && (
-          <div className="rounded-2xl p-4 flex items-center gap-3"
-               style={{ backgroundColor: 'var(--color-warning-bg)', border: '1px solid rgba(245,158,11,.2)' }}>
-            <AlertCircleIcon size={20} style={{ color: 'var(--color-warning)', flexShrink: 0 }} />
-            <p className="text-sm" style={{ color: '#92400E' }}>
-              برای ادامه، ابتدا خدمت مورد نظر را از لیست بالا انتخاب کنید.
-            </p>
-          </div>
-        )}
-
-        {/* Step 2 — Date picker */}
-        {isAvailable && canPickDate && (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            {hasServices && (
-              <h2 className="text-sm font-semibold mb-4" style={{ color: 'var(--color-text-primary)' }}>
-                ۲. انتخاب تاریخ
-              </h2>
-            )}
-            <DatePicker
-              availableWeekdays={provider.available_weekdays ?? []}
-              selectedDate={selectedDate}
-              onSelect={handleDateSelect}
-            />
-          </div>
-        )}
-
-        {/* Step 3 — Slot picker */}
-        {isAvailable && selectedDate && (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            {hasServices && (
-              <h2 className="text-sm font-semibold mb-4" style={{ color: 'var(--color-text-primary)' }}>
-                ۳. انتخاب ساعت
-              </h2>
-            )}
-            {!hasServices ? (
-              <p className="text-sm text-center py-6" style={{ color: 'var(--color-text-tertiary)' }}>
-                این ارائه‌دهنده هنوز خدمتی تعریف نکرده است.
-              </p>
-            ) : slotsError ? (
-              <div className="space-y-3">
-                <ErrorMessage message="خطا در دریافت زمان‌های خالی" />
+            {/* Tabs */}
+            <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+              <div className="flex border-b border-slate-100 px-1">
                 <button
-                  onClick={() => refetchSlots()}
-                  className="text-sm bg-cyan-50 text-cyan-700 border border-cyan-100 px-4 py-2 rounded-lg hover:bg-cyan-100 transition-colors font-medium"
+                  onClick={() => setActiveTab('services')}
+                  className={`text-sm px-5 py-4 font-medium transition-colors border-b-2 ${
+                    activeTab === 'services' ? 'text-cyan-600 border-cyan-500 font-semibold' : 'text-slate-500 border-transparent hover:text-slate-700'
+                  }`}
                 >
-                  تلاش مجدد
+                  خدمات
+                </button>
+                <button
+                  onClick={() => setActiveTab('reviews')}
+                  className={`text-sm px-5 py-4 font-medium transition-colors border-b-2 ${
+                    activeTab === 'reviews' ? 'text-cyan-600 border-cyan-500 font-semibold' : 'text-slate-500 border-transparent hover:text-slate-700'
+                  }`}
+                >
+                  نظرات {hasRating ? `(${provider.reviews_count})` : ''}
                 </button>
               </div>
-            ) : (
-              <SlotPicker
-                slots={slotsData?.slots}
-                isLoading={slotsLoading}
-                selectedSlot={selectedSlot}
-                onSelect={setSelectedSlot}
-              />
-            )}
-          </div>
-        )}
 
-        {/* Proceed to booking */}
-        {isAvailable && selectedSlot && (
-          <div className="rounded-2xl border p-4 space-y-3"
-               style={{ backgroundColor: 'var(--color-brand-light)', borderColor: 'rgba(6,182,212,.2)' }}>
-            <div className="text-sm space-y-1" style={{ color: 'var(--color-text-primary)' }}>
-              <p>
-                <span style={{ color: 'var(--color-text-secondary)' }}>ارائه‌دهنده: </span>
-                <span className="font-medium">{provider.business_name || provider.full_name}</span>
-              </p>
-              {selectedService && (
-                <p>
-                  <span style={{ color: 'var(--color-text-secondary)' }}>خدمت: </span>
-                  <span className="font-medium">{selectedService.name}</span>
-                </p>
-              )}
-              <p>
-                <span style={{ color: 'var(--color-text-secondary)' }}>تاریخ: </span>
-                <span className="font-medium" dir="ltr">{selectedDate}</span>
-              </p>
-              <p>
-                <span style={{ color: 'var(--color-text-secondary)' }}>ساعت: </span>
-                <span className="font-medium font-mono">{selectedSlot}</span>
-              </p>
-            </div>
-            <button
-              onClick={handleProceed}
-              className="w-full text-white py-3 rounded-xl text-sm font-medium hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: 'var(--color-brand)' }}
-            >
-              ادامه و رزرو نوبت
-            </button>
-          </div>
-        )}
-        {/* Reviews section */}
-        {reviewsData && (reviewsData.results ?? reviewsData).length > 0 && (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
-            <h2 className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>
-              نظرات کاربران
-            </h2>
-            <div className="space-y-4">
-              {(reviewsData.results ?? reviewsData).map((review) => (
-                <div key={review.id} className="border-b pb-4 last:border-0 last:pb-0 space-y-1"
-                     style={{ borderColor: 'var(--color-border)' }}>
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <StarDisplay value={review.rating} />
-                      <span className="text-xs font-medium" style={{ color: 'var(--color-text-primary)' }}>
-                        {review.customer_display}
-                      </span>
-                    </div>
-                    <span className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
-                      {toJalali(review.created_at?.slice(0, 10))}
-                    </span>
+              <div className="p-5">
+                {/* Services tab */}
+                {activeTab === 'services' && (
+                  <>
+                    {servicesLoading && <Spinner />}
+                    {!hasServices && !servicesLoading && (
+                      <p className="text-sm text-slate-400 text-center py-8">خدمتی تعریف نشده است.</p>
+                    )}
+                    {hasServices && (
+                      <div className="space-y-2">
+                        {services.map((svc) => {
+                          const active = selectedService?.id === svc.id
+                          return (
+                            <div
+                              key={svc.id}
+                              onClick={() => { setSelectedService(svc); setSelectedDate(null); setSelectedSlot(null) }}
+                              className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-colors group ${
+                                active ? 'bg-cyan-50 border border-cyan-200' : 'hover:bg-slate-50'
+                              }`}
+                            >
+                              <div className="flex items-start gap-3">
+                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0 ${
+                                  active ? 'bg-cyan-100' : 'bg-slate-50'
+                                }`}>
+                                  ✂️
+                                </div>
+                                <div>
+                                  <div className={`text-sm font-semibold ${active ? 'text-cyan-700' : 'text-slate-800'}`}>
+                                    {svc.name}
+                                  </div>
+                                  <div className="text-xs text-slate-400 mt-0.5">{svc.duration_minutes} دقیقه</div>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                {Number(svc.price) > 0 && (
+                                  <span className="text-sm font-bold text-slate-700">
+                                    {Number(svc.price).toLocaleString('fa-IR')}ت
+                                  </span>
+                                )}
+                                <button className={`text-xs font-bold px-3 py-1.5 rounded-lg transition-all ${
+                                  active
+                                    ? 'bg-cyan-500 text-white'
+                                    : 'opacity-0 group-hover:opacity-100 bg-cyan-500 text-white'
+                                }`}>
+                                  {active ? '✓ انتخاب شد' : 'انتخاب'}
+                                </button>
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* Reviews tab */}
+                {activeTab === 'reviews' && (
+                  <div className="space-y-4">
+                    {reviews.length === 0 && (
+                      <p className="text-sm text-slate-400 text-center py-8">هنوز نظری ثبت نشده.</p>
+                    )}
+                    {reviews.map((review) => (
+                      <div key={review.id} className="border-b border-slate-50 pb-4 last:border-0 last:pb-0">
+                        <div className="flex items-center justify-between gap-2 mb-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-amber-400 text-sm">{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</span>
+                            <span className="text-xs font-medium text-slate-700">{review.customer_display}</span>
+                          </div>
+                          <span className="text-xs text-slate-400">{toJalali(review.created_at?.slice(0, 10))}</span>
+                        </div>
+                        {review.comment && (
+                          <p className="text-sm text-slate-600 leading-7">{review.comment}</p>
+                        )}
+                      </div>
+                    ))}
+                    {reviewsData?.next && (
+                      <button
+                        onClick={() => setReviewPage((p) => p + 1)}
+                        className="w-full text-sm py-2 rounded-xl border border-slate-200 text-cyan-600 hover:bg-slate-50 transition-colors font-semibold"
+                      >
+                        نمایش بیشتر
+                      </button>
+                    )}
                   </div>
-                  {review.comment && (
-                    <p className="text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
-                      {review.comment}
-                    </p>
-                  )}
-                </div>
-              ))}
+                )}
+              </div>
             </div>
-
-            {/* Pagination */}
-            {reviewsData.next && (
-              <button
-                onClick={() => setReviewPage((p) => p + 1)}
-                className="w-full text-sm py-2 rounded-xl border transition-colors hover:bg-gray-50"
-                style={{ borderColor: 'var(--color-border)', color: 'var(--color-brand)' }}
-              >
-                نمایش بیشتر
-              </button>
-            )}
           </div>
-        )}
 
+          {/* Right: Booking panel */}
+          <div className="w-full lg:w-80 shrink-0 lg:sticky lg:top-24">
+            <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+
+              <div className="p-4 border-b border-slate-50">
+                <h2 className="text-base font-black text-slate-900">رزرو نوبت</h2>
+                <p className="text-xs text-slate-400 mt-0.5">تاریخ و ساعت مناسب را انتخاب کن</p>
+              </div>
+
+              <div className="p-4 space-y-4">
+
+                {/* Not available */}
+                {!isAvailable && (
+                  <div className="bg-amber-50 border border-amber-100 rounded-xl p-3">
+                    <p className="text-xs text-amber-700 leading-5">
+                      این ارائه‌دهنده هنوز ساعات کاری خود را تنظیم نکرده است. در حال حاضر امکان رزرو وجود ندارد.
+                    </p>
+                  </div>
+                )}
+
+                {/* Service required prompt */}
+                {isAvailable && serviceRequired && !canPickDate && (
+                  <div className="bg-cyan-50 border border-cyan-100 rounded-xl p-3">
+                    <p className="text-xs text-cyan-700 leading-5">
+                      ابتدا از تب «خدمات» یک خدمت انتخاب کنید.
+                    </p>
+                  </div>
+                )}
+
+                {/* Date picker */}
+                {isAvailable && canPickDate && (
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-2 block">تاریخ</label>
+                    <div className="bg-slate-50 rounded-xl border border-slate-100 p-3">
+                      <DatePicker
+                        availableWeekdays={provider.available_weekdays ?? []}
+                        selectedDate={selectedDate}
+                        onSelect={handleDateSelect}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Slot picker */}
+                {isAvailable && selectedDate && (
+                  <div>
+                    <label className="text-xs font-bold text-slate-600 mb-2 block">ساعت</label>
+                    {slotsError ? (
+                      <div className="space-y-2">
+                        <p className="text-xs text-red-500">خطا در دریافت ساعت‌ها</p>
+                        <button onClick={() => refetchSlots()} className="text-xs text-cyan-600 font-semibold">تلاش مجدد</button>
+                      </div>
+                    ) : (
+                      <SlotPicker
+                        slots={slotsData?.slots}
+                        isLoading={slotsLoading}
+                        selectedSlot={selectedSlot}
+                        onSelect={setSelectedSlot}
+                      />
+                    )}
+                  </div>
+                )}
+
+                {/* Summary */}
+                {(selectedService || selectedDate || selectedSlot) && (
+                  <div className="bg-slate-50 rounded-xl p-3 border border-slate-100 space-y-2">
+                    {selectedService && (
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-slate-500">خدمت</span>
+                        <span className="font-semibold text-slate-700">{selectedService.name}</span>
+                      </div>
+                    )}
+                    {selectedDate && (
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-slate-500">تاریخ</span>
+                        <span className="font-semibold text-slate-700" dir="ltr">{selectedDate}</span>
+                      </div>
+                    )}
+                    {selectedSlot && (
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-slate-500">ساعت</span>
+                        <span className="font-semibold text-slate-700 font-mono">{selectedSlot}</span>
+                      </div>
+                    )}
+                    {selectedService && Number(selectedService.price) > 0 && (
+                      <div className="border-t border-slate-200 mt-2 pt-2 flex items-center justify-between">
+                        <span className="text-xs text-slate-500">مبلغ</span>
+                        <span className="text-sm font-black text-cyan-600">
+                          {Number(selectedService.price).toLocaleString('fa-IR')} تومان
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* CTA */}
+                {isAvailable && selectedSlot && (
+                  <button
+                    onClick={handleProceed}
+                    className="w-full text-white font-black py-3.5 rounded-xl text-sm hover:opacity-90 transition-opacity shadow-lg shadow-cyan-200"
+                    style={{ background: 'linear-gradient(135deg, #0891B2 0%, #06B6D4 60%, #22D3EE 100%)' }}
+                  >
+                    تأیید و پرداخت
+                  </button>
+                )}
+                <p className="text-center text-xs text-slate-400">پرداخت امن با زرین‌پال</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </MainLayout>
   )
