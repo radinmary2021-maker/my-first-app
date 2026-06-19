@@ -1,7 +1,7 @@
 import { screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { renderWithProviders } from '../utils'
-import DoctorListPage from '../../pages/public/DoctorListPage'
+import ProviderListPage from '../../pages/public/ProviderListPage'
 import * as useDoctorsModule from '../../hooks/useDoctors'
 
 function mockUseDoctors({ doctors = [], isLoading = false, isError = false } = {}) {
@@ -27,28 +27,28 @@ afterEach(() => {
   vi.restoreAllMocks()
 })
 
-describe('DoctorListPage', () => {
+describe('ProviderListPage', () => {
   it('shows spinner and skeleton while loading', () => {
     mockUseDoctors({ isLoading: true })
-    renderWithProviders(<DoctorListPage />)
+    renderWithProviders(<ProviderListPage />)
     expect(document.querySelector('.animate-pulse')).toBeTruthy()
   })
 
   it('shows error message on fetch failure', () => {
     mockUseDoctors({ isError: true })
-    renderWithProviders(<DoctorListPage />)
+    renderWithProviders(<ProviderListPage />)
     expect(screen.getByText(/خطا در دریافت لیست ارائه‌دهندگان/)).toBeInTheDocument()
   })
 
   it('shows empty state when no doctors exist', () => {
     mockUseDoctors({ doctors: [] })
-    renderWithProviders(<DoctorListPage />)
+    renderWithProviders(<ProviderListPage />)
     expect(screen.getByText('نتیجه‌ای یافت نشد')).toBeInTheDocument()
   })
 
   it('renders all doctor cards', () => {
     mockUseDoctors({ doctors: DOCTORS })
-    renderWithProviders(<DoctorListPage />)
+    renderWithProviders(<ProviderListPage />)
     expect(screen.getByText('دکتر رضایی')).toBeInTheDocument()
     expect(screen.getByText('دکتر احمدی')).toBeInTheDocument()
     expect(screen.getByText('دکتر صادقی')).toBeInTheDocument()
@@ -56,7 +56,7 @@ describe('DoctorListPage', () => {
 
   it('renders specialty filter chips when 2+ specialties exist', () => {
     mockUseDoctors({ doctors: DOCTORS })
-    renderWithProviders(<DoctorListPage />)
+    renderWithProviders(<ProviderListPage />)
     expect(screen.getByRole('group', { name: 'فیلتر دسته‌بندی' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'همه' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'قلب' })).toBeInTheDocument()
@@ -66,19 +66,19 @@ describe('DoctorListPage', () => {
   it('does not render filter chips when only one specialty', () => {
     const singleSpecialty = DOCTORS.filter((d) => d.specialty === 'قلب')
     mockUseDoctors({ doctors: singleSpecialty })
-    renderWithProviders(<DoctorListPage />)
+    renderWithProviders(<ProviderListPage />)
     expect(screen.queryByRole('group', { name: 'فیلتر دسته‌بندی' })).toBeNull()
   })
 
   it('"همه" chip is active by default', () => {
     mockUseDoctors({ doctors: DOCTORS })
-    renderWithProviders(<DoctorListPage />)
+    renderWithProviders(<ProviderListPage />)
     expect(screen.getByRole('button', { name: 'همه' })).toHaveAttribute('aria-pressed', 'true')
   })
 
   it('filters doctors by selected specialty', () => {
     mockUseDoctors({ doctors: DOCTORS })
-    renderWithProviders(<DoctorListPage />)
+    renderWithProviders(<ProviderListPage />)
     fireEvent.click(screen.getByRole('button', { name: 'قلب' }))
     expect(screen.getByText('دکتر رضایی')).toBeInTheDocument()
     expect(screen.getByText('دکتر صادقی')).toBeInTheDocument()
@@ -87,7 +87,7 @@ describe('DoctorListPage', () => {
 
   it('marks selected specialty chip as active and deactivates others', () => {
     mockUseDoctors({ doctors: DOCTORS })
-    renderWithProviders(<DoctorListPage />)
+    renderWithProviders(<ProviderListPage />)
     fireEvent.click(screen.getByRole('button', { name: 'قلب' }))
     expect(screen.getByRole('button', { name: 'قلب' })).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getByRole('button', { name: 'همه' })).toHaveAttribute('aria-pressed', 'false')
@@ -96,7 +96,7 @@ describe('DoctorListPage', () => {
 
   it('clicking "همه" chip restores all doctors after filtering', () => {
     mockUseDoctors({ doctors: DOCTORS })
-    renderWithProviders(<DoctorListPage />)
+    renderWithProviders(<ProviderListPage />)
     fireEvent.click(screen.getByRole('button', { name: 'قلب' }))
     fireEvent.click(screen.getByRole('button', { name: 'همه' }))
     expect(screen.getByText('دکتر رضایی')).toBeInTheDocument()

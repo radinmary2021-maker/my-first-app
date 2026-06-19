@@ -15,8 +15,8 @@ const HomePage            = lazy(() => import('./pages/public/HomePage'))
 const LoginPage           = lazy(() => import('./pages/auth/LoginPage'))
 const VerifyOtpPage       = lazy(() => import('./pages/auth/VerifyOtpPage'))
 const SetupProfilePage    = lazy(() => import('./pages/auth/SetupProfilePage'))
-const DoctorListPage      = lazy(() => import('./pages/public/DoctorListPage'))
-const DoctorDetailPage    = lazy(() => import('./pages/public/DoctorDetailPage'))
+const ProviderListPage    = lazy(() => import('./pages/public/ProviderListPage'))
+const ProviderDetailPage  = lazy(() => import('./pages/public/ProviderDetailPage'))
 const SearchPage          = lazy(() => import('./pages/public/SearchPage'))
 const BookAppointmentPage = lazy(() => import('./pages/patient/BookAppointmentPage'))
 const MyAppointmentsPage  = lazy(() => import('./pages/patient/MyAppointmentsPage'))
@@ -96,10 +96,10 @@ export default function App() {
             <Route path="/terms"         element={<TermsPage />} />
 
             {/* Public providers */}
-            <Route path="/providers"     element={<DoctorListPage />} />
-            <Route path="/providers/:id" element={<DoctorDetailPage />} />
+            <Route path="/providers"     element={<ProviderListPage />} />
+            <Route path="/providers/:id" element={<ProviderDetailPage />} />
             {/* Public slug-based provider page (shareable) */}
-            <Route path="/book/:slug"    element={<DoctorDetailPage />} />
+            <Route path="/book/:slug"    element={<ProviderDetailPage />} />
             {/* Legacy aliases */}
             <Route path="/doctors"     element={<Navigate to="/providers" replace />} />
             <Route path="/doctors/:id" element={<Navigate to="/providers/:id" replace />} />

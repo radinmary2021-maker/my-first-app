@@ -19,7 +19,7 @@ function getInitials(fullName) {
   return parts[0]?.[0] ?? '؟'
 }
 
-export default function DoctorAvatar({ name, size = 64 }) {
+export default function ProviderAvatar({ name, size = 64 }) {
   const [bg, fg] = getColor(name)
   const initials = getInitials(name)
 

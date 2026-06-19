@@ -4,7 +4,7 @@ import { useAuthStore } from '../../store/authStore'
 import { useProviders } from '../../hooks/useDoctors'
 import MainLayout from '../../layouts/MainLayout'
 import SEOHead from '../../components/SEOHead'
-import DoctorAvatar from '../../components/DoctorAvatar'
+import ProviderAvatar from '../../components/ProviderAvatar'
 import { formatFee } from '../../utils/date'
 
 const HOME_JSON_LD = [

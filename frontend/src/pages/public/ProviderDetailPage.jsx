@@ -6,13 +6,13 @@ import Spinner from '../../components/Spinner'
 import ErrorMessage from '../../components/ErrorMessage'
 import DatePicker from '../../components/DatePicker'
 import SlotPicker from '../../components/SlotPicker'
-import DoctorAvatar from '../../components/DoctorAvatar'
+import ProviderAvatar from '../../components/ProviderAvatar'
 import { useProvider, useProviderSlots, useProviderServices, useProviderReviews } from '../../hooks/useDoctors'
 import { formatFee } from '../../utils/date'
 import { toJalali } from '../../utils/jalali'
 import { notify } from '../../utils/toast'
 
-export default function DoctorDetailPage() {
+export default function ProviderDetailPage() {
   const { id: paramId, slug: paramSlug } = useParams()
   const lookup = paramId || paramSlug
   const navigate = useNavigate()
@@ -141,7 +141,7 @@ export default function DoctorDetailPage() {
                 <img src={provider.logo} alt={providerName} className="w-full h-full object-cover" />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center opacity-30">
-                  <DoctorAvatar name={providerName} size={120} />
+                  <ProviderAvatar name={providerName} size={120} />
                 </div>
               )}
             </div>
@@ -168,7 +168,7 @@ export default function DoctorDetailPage() {
                     {provider.logo ? (
                       <img src={provider.logo} alt={providerName} className="w-full h-full object-cover" />
                     ) : (
-                      <DoctorAvatar name={providerName} size={64} />
+                      <ProviderAvatar name={providerName} size={64} />
                     )}
                   </div>
                   <div>

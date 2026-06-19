@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { formatFee } from '../utils/date'
-import DoctorAvatar from './DoctorAvatar'
+import ProviderAvatar from './ProviderAvatar'
 
 const COVER_GRADIENTS = [
   'linear-gradient(135deg,#0891B2,#06B6D4)',
@@ -15,7 +15,7 @@ function gradientFor(id) {
   return COVER_GRADIENTS[(id ?? 0) % COVER_GRADIENTS.length]
 }
 
-export default function DoctorCard({ doctor, provider }) {
+export default function ProviderCard({ doctor, provider }) {
   const p = provider ?? doctor
   const navigate = useNavigate()
   const hasRating = p.average_rating != null && p.reviews_count > 0
@@ -40,7 +40,7 @@ export default function DoctorCard({ doctor, provider }) {
           <img src={p.logo} alt={name} className="absolute inset-0 w-full h-full object-cover" />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center opacity-40">
-            <DoctorAvatar name={name} size={64} />
+            <ProviderAvatar name={name} size={64} />
           </div>
         )}
         {isActive && (

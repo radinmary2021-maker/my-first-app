@@ -3,13 +3,13 @@ import { useSearchParams, useNavigate } from 'react-router-dom'
 import SEOHead from '../../components/SEOHead'
 import MainLayout from '../../layouts/MainLayout'
 import ErrorMessage from '../../components/ErrorMessage'
-import DoctorCard from '../../components/DoctorCard'
+import ProviderCard from '../../components/ProviderCard'
 import SkeletonCard from '../../components/SkeletonCard'
 import { useProviders, useBusinessCategories } from '../../hooks/useDoctors'
 
 const ALL = 'همه'
 
-export default function DoctorListPage() {
+export default function ProviderListPage() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const { data: providers, isLoading, isError, error } = useProviders()
@@ -272,7 +272,7 @@ export default function DoctorListPage() {
                 ) : (
                   <div className="space-y-4">
                     {filtered.map((provider) => (
-                      <DoctorCard key={provider.id} provider={provider} />
+                      <ProviderCard key={provider.id} provider={provider} />
                     ))}
                   </div>
                 )}
