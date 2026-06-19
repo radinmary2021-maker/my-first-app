@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import MainLayout from '../../layouts/MainLayout'
+import OwnerLayout from '../../layouts/OwnerLayout'
 import Spinner from '../../components/Spinner'
 import ErrorMessage from '../../components/ErrorMessage'
 import Button from '../../components/Button'
@@ -281,43 +281,26 @@ export default function ReportsPage() {
   const hasData = data && data.appointments.total > 0
 
   return (
-    <MainLayout>
-      <div className="space-y-6 max-w-4xl" dir="rtl">
-
-        {/* Header */}
-        <div className="flex items-center gap-3">
-          <div
-            className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-            style={{ backgroundColor: 'var(--color-brand-light)' }}
-          >
-            <BarChart2Icon size={18} style={{ color: 'var(--color-brand)' }} />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold" style={{ color: 'var(--color-text-primary)' }}>
-              گزارش مالی
-            </h1>
-            {data && (
-              <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-tertiary)' }}>
-                {toJalali(data.from)} — {toJalali(data.to)}
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Period selector */}
-        <div className="flex flex-wrap gap-2">
+    <OwnerLayout
+      title="گزارش‌ها"
+      subtitle={data ? `${toJalali(data.from)} — ${toJalali(data.to)}` : 'عملکرد کسب‌وکار شما'}
+      headerAction={
+        <div className="flex bg-slate-50 rounded-xl p-1 border border-slate-100">
           {PERIODS.map(p => (
-            <Button
+            <button
               key={p.value}
-              size="sm"
-              variant={period === p.value ? 'primary' : 'ghost'}
-              className="rounded-full text-xs"
               onClick={() => setPeriod(p.value)}
+              className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors ${
+                period === p.value ? 'bg-white text-cyan-600 shadow-sm font-bold' : 'text-slate-500'
+              }`}
             >
               {p.label}
-            </Button>
+            </button>
           ))}
         </div>
+      }
+    >
+      <div className="space-y-6"  dir="rtl">
 
         {/* Custom date range inputs */}
         {period === 'custom' && (
@@ -456,6 +439,6 @@ export default function ReportsPage() {
           </>
         )}
       </div>
-    </MainLayout>
+    </OwnerLayout>
   )
 }

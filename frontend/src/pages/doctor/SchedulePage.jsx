@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import MainLayout from '../../layouts/MainLayout'
+import OwnerLayout from '../../layouts/OwnerLayout'
 import Button from '../../components/Button'
 import Badge from '../../components/Badge'
 import Spinner from '../../components/Spinner'
@@ -800,54 +800,16 @@ export default function SchedulePage() {
   const isLive = (services?.length ?? 0) > 0 && (hours?.length ?? 0) > 0
 
   return (
-    <MainLayout>
+    <OwnerLayout
+      title="برنامه نوبت‌ها"
+      subtitle={providerId ? `ویرایش برنامه ارائه‌دهنده #${providerId}` : 'مدیریت خدمات، ساعات کاری و مرخصی‌ها'}
+    >
       <div className="max-w-2xl space-y-10">
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="text-sm text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1"
-            aria-label="بازگشت به داشبورد"
-          >
-            <ChevronRightIcon size={14} />
-            داشبورد
-          </button>
-          <span className="text-gray-300">/</span>
-          {providerId && (
-            <>
-              <button
-                onClick={() => navigate('/dashboard/providers')}
-                className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                ارائه‌دهندگان
-              </button>
-              <span className="text-gray-300">/</span>
-            </>
-          )}
-          <h1 className="text-xl font-bold text-gray-800">مدیریت برنامه</h1>
-        </div>
-
-        {providerId && (
-          <div className="bg-cyan-50 border border-cyan-200 rounded-xl px-4 py-3 -mt-6 text-sm text-cyan-800 flex items-center gap-2">
-            <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-            </svg>
-            در حال ویرایش برنامه برای ارائه‌دهنده #{providerId}
-          </div>
-        )}
-
-        {!providerId && (
-          <p className="text-sm text-gray-500 -mt-6">
-            برنامه کاری و تنظیمات پذیرش نوبت خود را از اینجا مدیریت کنید.
-          </p>
-        )}
-
         {isLive && <GoLiveBanner navigate={navigate} />}
-
         <ServicesSection />
         <WorkingHoursSection providerId={providerId} />
         <TimeOffSection providerId={providerId} />
       </div>
-    </MainLayout>
+    </OwnerLayout>
   )
 }
