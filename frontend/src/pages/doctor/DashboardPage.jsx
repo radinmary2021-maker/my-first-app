@@ -1,21 +1,12 @@
 import { useState, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import MainLayout from '../../layouts/MainLayout'
+import OwnerLayout from '../../layouts/OwnerLayout'
 import Spinner from '../../components/Spinner'
 import ErrorMessage from '../../components/ErrorMessage'
 import OnboardingChecklist from '../../components/OnboardingChecklist'
 import Button from '../../components/Button'
 import Badge, { APPOINTMENT_STATUS_LABEL } from '../../components/Badge'
 import Input from '../../components/Input'
-import {
-  CalendarIcon,
-  ClockIcon,
-  CheckCircleIcon,
-  BarChart2Icon,
-  SearchIcon,
-  RefreshCwIcon,
-  UsersIcon,
-} from '../../components/Icon'
 import { notify } from '../../utils/toast'
 import { toJalali } from '../../utils/jalali'
 import { useAuthStore } from '../../store/authStore'
@@ -51,6 +42,22 @@ function countToday(list = [], statuses) {
   return list.filter((a) => a.date === today && statuses.includes(a.status)).length
 }
 
+function getInitials(name) {
+  if (!name) return '؟'
+  const parts = name.trim().split(' ')
+  if (parts.length >= 2) return parts[0][0] + '.' + parts[1][0]
+  return parts[0].slice(0, 2)
+}
+
+const STATUS_BADGE_COLORS = {
+  confirmed: 'bg-emerald-50 text-emerald-600',
+  pending:   'bg-amber-50 text-amber-600',
+  completed: 'bg-cyan-50 text-cyan-600',
+  cancelled: 'bg-slate-100 text-slate-500',
+  no_show:   'bg-rose-50 text-rose-600',
+  pending_payment: 'bg-amber-50 text-amber-600',
+}
+
 export default function DashboardPage() {
   const navigate = useNavigate()
   const user     = useAuthStore((s) => s.user)
@@ -75,11 +82,11 @@ export default function DashboardPage() {
   const actionPending = confirming || completing || markingNoShow || cancelling
 
   const metrics = useMemo(() => ({
-    todayActive:    isOwner ? countToday(appointments, ['confirmed', 'pending']) : 0,
-    todayPending:   isOwner ? countToday(appointments, ['pending'])   : 0,
-    todayConfirmed: isOwner ? countToday(appointments, ['confirmed']) : 0,
-    todayCompleted: isOwner ? countToday(appointments, ['completed']) : 0,
-  }), [appointments, isOwner])
+    todayActive:    countToday(appointments, ['confirmed', 'pending']),
+    todayPending:   countToday(appointments, ['pending']),
+    todayConfirmed: countToday(appointments, ['confirmed']),
+    todayCompleted: countToday(appointments, ['completed']),
+  }), [appointments])
 
   const providerTodayCount = !isOwner
     ? (appointments?.filter(
@@ -104,347 +111,198 @@ export default function DashboardPage() {
     else if (action === 'cancel')   cancel(id, handlers)
   }
 
+  const todayJalali = toJalali(todayStr())
+
   return (
-    <MainLayout>
-      <div className="space-y-5 max-w-3xl">
+    <OwnerLayout
+      title={isOwner ? 'داشبورد کسب‌وکار' : 'داشبورد ارائه‌دهنده'}
+      subtitle={todayJalali}
+      headerAction={
+        <button
+          onClick={() => navigate('/dashboard/schedule')}
+          className="text-white text-sm font-bold px-4 py-2.5 rounded-xl shadow-sm shadow-cyan-200 flex items-center gap-1.5 hover:opacity-90 transition-opacity"
+          style={{ background: 'linear-gradient(135deg, #0891B2 0%, #06B6D4 60%, #22D3EE 100%)' }}
+        >
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14" strokeLinecap="round" /></svg>
+          مدیریت برنامه
+        </button>
+      }
+    >
+      {isOwner && <OnboardingChecklist />}
 
-        {isOwner && <OnboardingChecklist />}
+      {/* Stats cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <StatCard icon={<><rect x="3" y="4" width="18" height="18" rx="3" /><path d="M3 9h18" /></>} iconBg="bg-cyan-50" iconColor="text-cyan-600" value={todayCount} label="نوبت امروز" />
+        <StatCard icon={<><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /></>} iconBg="bg-purple-50" iconColor="text-purple-600" value={appointments?.length ?? 0} label="کل نوبت‌ها" />
+        <StatCard icon={<path d="M18 20V10M12 20V4M6 20v-6" />} iconBg="bg-emerald-50" iconColor="text-emerald-600" value={metrics.todayCompleted} label="انجام شده امروز" />
+        <StatCard icon={<path d="M12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z" />} iconBg="bg-amber-50" iconColor="text-amber-600" value={metrics.todayPending} label="در انتظار تأیید" />
+      </div>
 
-        {/* Page header */}
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <h1 className="text-xl font-bold" style={{ color: 'var(--color-text-primary)' }}>
-              {isOwner ? 'داشبورد کسب‌وکار' : 'داشبورد ارائه‌دهنده'}
-            </h1>
-            {!isOwner && todayCount > 0 && (
-              <p className="text-sm mt-0.5" style={{ color: 'var(--color-brand)' }}>
-                {todayCount} نوبت فعال امروز
-              </p>
-            )}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        {/* Appointments list */}
+        <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-100 overflow-hidden">
+          <div className="flex items-center justify-between p-5 border-b border-slate-50">
+            <h2 className="text-sm font-bold text-slate-800">نوبت‌ها</h2>
+            <div className="flex items-center gap-2">
+              <Input
+                type="date"
+                value={filterDate}
+                onChange={(e) => setFilterDate(e.target.value)}
+                aria-label="فیلتر بر اساس تاریخ"
+                forceLtr
+                className="text-xs py-1"
+              />
+              {filterDate && (
+                <Button variant="ghost" size="sm" onClick={() => setFilterDate('')}>
+                  پاک کردن
+                </Button>
+              )}
+            </div>
           </div>
-          <div className="flex gap-2 shrink-0">
-            <Button variant="secondary" size="sm" onClick={() => navigate('/dashboard/schedule')}>
-              <CalendarIcon size={14} />
-              مدیریت برنامه
-            </Button>
-            {isOwner && (
-              <Button variant="ghost" size="sm" onClick={() => navigate('/dashboard/providers')}>
-                <UsersIcon size={14} />
-                ارائه‌دهندگان
-              </Button>
-            )}
-          </div>
-        </div>
 
-        {/* Owner metrics */}
-        {isOwner && !isLoading && !isError && (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3" data-testid="owner-metrics">
-            <MetricCard label="فعال امروز"  value={metrics.todayActive}    icon={<BarChart2Icon size={18} />}    colorVar="--color-brand"   bgVar="--color-brand-light" />
-            <MetricCard label="در انتظار"   value={metrics.todayPending}   icon={<ClockIcon size={18} />}        colorVar="--color-warning" bgVar="--color-warning-bg" />
-            <MetricCard label="تأیید شده"   value={metrics.todayConfirmed} icon={<CheckCircleIcon size={18} />} colorVar="--color-success" bgVar="--color-success-bg" />
-            <MetricCard label="انجام شده"   value={metrics.todayCompleted} icon={<CalendarIcon size={18} />}    colorVar="--color-text-secondary" bgVar="--color-surface" />
-          </div>
-        )}
-
-        {/* Filters */}
-        <div className="flex flex-wrap gap-2 items-center">
-          <div className="flex gap-1 flex-wrap">
+          {/* Status filter pills */}
+          <div className="flex gap-1 px-5 py-3 border-b border-slate-50 flex-wrap">
             {STATUS_FILTERS.map((f) => (
-              <Button
+              <button
                 key={f.value}
-                size="sm"
-                variant={filterStatus === f.value ? 'primary' : 'ghost'}
-                aria-pressed={filterStatus === f.value}
-                className="rounded-full text-xs"
                 onClick={() => setFilterStatus(f.value)}
+                aria-pressed={filterStatus === f.value}
+                className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors ${
+                  filterStatus === f.value
+                    ? 'bg-cyan-500 text-white border-cyan-500'
+                    : 'bg-white text-slate-500 border-slate-200 hover:border-cyan-300'
+                }`}
               >
                 {f.label}
-              </Button>
+              </button>
             ))}
           </div>
 
-          <div className="flex items-center gap-2 mr-auto">
-            <Input
-              type="date"
-              value={filterDate}
-              onChange={(e) => setFilterDate(e.target.value)}
-              aria-label="فیلتر بر اساس تاریخ"
-              forceLtr
-              className="text-sm py-1.5"
-            />
-            {filterDate && (
-              <Button variant="ghost" size="sm" onClick={() => setFilterDate('')}>
-                پاک کردن
-              </Button>
-            )}
-          </div>
-        </div>
+          {isLoading && <div className="py-16 flex justify-center"><Spinner /></div>}
+          {isError && <div className="p-5"><ErrorMessage message="مشکلی در دریافت نوبت‌ها پیش آمد." /></div>}
 
-        {isLoading && <Spinner className="py-20" />}
+          {!isLoading && !isError && appointments?.length === 0 && (
+            <div className="text-center py-16">
+              <p className="text-sm text-slate-400">نوبتی یافت نشد.</p>
+            </div>
+          )}
 
-        {isError && (
-          <div className="space-y-3">
-            <ErrorMessage message="مشکلی در دریافت نوبت‌ها پیش آمد." />
-            <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
-              ممکن است اتصال اینترنت قطع باشد یا سرور موقتاً در دسترس نباشد.
-            </p>
-            <Button variant="secondary" size="sm" onClick={() => refetch()}>
-              <RefreshCwIcon size={14} />
-              تلاش مجدد
-            </Button>
-          </div>
-        )}
-
-        {!isLoading && !isError && appointments?.length === 0 && (
-          <EmptyState isOwner={isOwner} hasFilter={!!filterStatus || !!filterDate} />
-        )}
-
-        {!isLoading && !isError && appointments?.length > 0 && (
-          <div className="space-y-3">
-            {appointments.map((appt) => (
-              <AppointmentRow
-                key={appt.id}
-                appt={appt}
-                showProvider={isOwner}
-                onAction={(action) => requestAction(appt.id, action)}
-                disabled={actionPending}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {confirmAction && (
-        <ConfirmDialog
-          action={confirmAction.action}
-          onConfirm={executeAction}
-          onCancel={() => setConfirmAction(null)}
-          isPending={actionPending}
-        />
-      )}
-    </MainLayout>
-  )
-}
-
-// ── Sub-components ──────────────────────────────────────────────────────────────
-
-function MetricCard({ label, value, icon, colorVar, bgVar }) {
-  return (
-    <div
-      className="card px-4 py-3 text-center"
-      style={{ backgroundColor: `var(${bgVar})`, borderColor: 'transparent' }}
-    >
-      <div
-        className="flex items-center justify-center mb-1"
-        style={{ color: `var(${colorVar})` }}
-      >
-        {icon}
-      </div>
-      <p className="text-2xl font-bold" style={{ color: `var(${colorVar})` }}>{value}</p>
-      <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-secondary)' }}>{label}</p>
-    </div>
-  )
-}
-
-function EmptyState({ isOwner, hasFilter }) {
-  if (hasFilter) {
-    return (
-      <div className="text-center py-16">
-        <div
-          className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-3"
-          style={{ backgroundColor: 'var(--color-surface)' }}
-        >
-          <SearchIcon size={28} style={{ color: 'var(--color-text-tertiary)' }} />
-        </div>
-        <p className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>
-          نوبتی با این فیلتر یافت نشد.
-        </p>
-        <p className="text-xs mt-1" style={{ color: 'var(--color-text-tertiary)' }}>
-          فیلتر را تغییر دهید یا پاک کنید.
-        </p>
-      </div>
-    )
-  }
-
-  return (
-    <div className="text-center py-16 space-y-3">
-      <div
-        className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto"
-        style={{ backgroundColor: 'var(--color-brand-light)' }}
-      >
-        <CalendarIcon size={28} style={{ color: 'var(--color-brand)' }} />
-      </div>
-      {isOwner ? (
-        <>
-          <p className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>
-            هنوز نوبتی ثبت نشده است.
-          </p>
-          <p className="text-xs max-w-xs mx-auto leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>
-            برای دریافت نوبت، لینک صفحه کسب‌وکار خود را با مشتریان به اشتراک بگذارید.
-          </p>
-          <Button variant="ghost" size="sm" as="a" href="/providers">
-            مشاهده صفحه عمومی کسب‌وکار
-          </Button>
-        </>
-      ) : (
-        <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-          نوبتی یافت نشد.
-        </p>
-      )}
-    </div>
-  )
-}
-
-function AppointmentRow({ appt, showProvider, onAction, disabled }) {
-  const isConfirmed = appt.status === 'confirmed'
-  const isPending   = appt.status === 'pending'
-  const isToday     = appt.date === todayStr()
-
-  return (
-    <div
-      data-testid="appointment-row"
-      className="card p-4 transition-colors"
-      style={isToday ? { borderColor: 'var(--color-brand)', boxShadow: '0 0 0 1px var(--color-brand-light)' } : {}}
-    >
-      {isToday && (
-        <div className="flex items-center gap-1 mb-2">
-          <span
-            className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full"
-            style={{ backgroundColor: 'var(--color-brand-light)', color: 'var(--color-brand-dark)' }}
-          >
-            <span
-              className="w-1.5 h-1.5 rounded-full inline-block"
-              style={{ backgroundColor: 'var(--color-brand)' }}
-            />
-            امروز
-          </span>
-        </div>
-      )}
-
-      <div className="flex items-start justify-between gap-2 mb-3">
-        <div className="min-w-0">
-          <p className="font-bold truncate" style={{ color: 'var(--color-text-primary)' }}>
-            {appt.customer_name || '—'}
-          </p>
-          <p className="text-xs mt-0.5 font-mono" style={{ color: 'var(--color-text-tertiary)' }}>
-            {appt.customer_phone}
-          </p>
-          {showProvider && appt.provider_name && (
-            <p className="text-xs mt-0.5" style={{ color: 'var(--color-brand)' }}>
-              ارائه‌دهنده: {appt.provider_name}
-            </p>
+          {!isLoading && !isError && appointments?.length > 0 && (
+            <div className="divide-y divide-slate-50">
+              {appointments.map((appt) => (
+                <div key={appt.id} data-testid="appointment-row" className="flex items-center gap-4 p-4 hover:bg-slate-50/50 transition-colors">
+                  <div className="text-center w-14 shrink-0">
+                    <div className="text-sm font-black text-slate-700">{appt.start_time?.slice(0, 5)}</div>
+                    <div className="text-[10px] text-slate-400">{toJalali(appt.date)}</div>
+                  </div>
+                  <div className="w-10 h-10 rounded-full bg-cyan-100 flex items-center justify-center text-xs font-bold text-cyan-700 shrink-0">
+                    {getInitials(appt.customer_name)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-bold text-slate-800">{appt.customer_name || '—'}</div>
+                    <div className="text-xs text-slate-400">
+                      {appt.service_name || appt.tracking_code}
+                      {isOwner && appt.provider_name && ` · با ${appt.provider_name}`}
+                    </div>
+                  </div>
+                  <span className={`text-xs font-bold px-2.5 py-1 rounded-full shrink-0 ${STATUS_BADGE_COLORS[appt.status] || 'bg-slate-100 text-slate-500'}`}>
+                    {APPOINTMENT_STATUS_LABEL[appt.status] ?? appt.status}
+                  </span>
+                  {(appt.status === 'confirmed' || appt.status === 'pending') && (
+                    <div className="flex gap-1 shrink-0">
+                      {appt.status === 'pending' && (
+                        <button onClick={() => requestAction(appt.id, 'confirm')} disabled={actionPending}
+                                className="text-xs font-bold text-cyan-600 bg-cyan-50 px-2 py-1 rounded-lg hover:bg-cyan-100 transition-colors disabled:opacity-50">تأیید</button>
+                      )}
+                      {appt.status === 'confirmed' && (
+                        <button onClick={() => requestAction(appt.id, 'complete')} disabled={actionPending}
+                                className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg hover:bg-emerald-100 transition-colors disabled:opacity-50">انجام شد</button>
+                      )}
+                      {appt.status === 'confirmed' && (
+                        <button onClick={() => requestAction(appt.id, 'no_show')} disabled={actionPending}
+                                className="text-xs font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-lg hover:bg-slate-100 transition-colors disabled:opacity-50">غیبت</button>
+                      )}
+                      <button onClick={() => requestAction(appt.id, 'cancel')} disabled={actionPending}
+                              className="text-xs font-bold text-rose-500 bg-rose-50 px-2 py-1 rounded-lg hover:bg-rose-100 transition-colors disabled:opacity-50">لغو</button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           )}
         </div>
-        <Badge variant={appt.status} className="shrink-0">
-          {APPOINTMENT_STATUS_LABEL[appt.status] ?? appt.status}
-        </Badge>
-      </div>
 
-      <div
-        className="grid grid-cols-3 gap-2 text-xs border-t pt-3 mb-3"
-        style={{ borderColor: 'var(--color-border)', color: 'var(--color-text-secondary)' }}
-      >
-        <div>
-          <span
-            className="flex items-center gap-1 mb-0.5"
-            style={{ color: 'var(--color-text-tertiary)' }}
-          >
-            <CalendarIcon size={10} />
-            تاریخ
-          </span>
-          <span className="font-medium" style={{ color: 'var(--color-text-primary)' }}>
-            {toJalali(appt.date)}
-          </span>
-        </div>
-        <div>
-          <span
-            className="flex items-center gap-1 mb-0.5"
-            style={{ color: 'var(--color-text-tertiary)' }}
-          >
-            <ClockIcon size={10} />
-            ساعت
-          </span>
-          <span className="font-mono font-medium" style={{ color: 'var(--color-text-primary)' }}>
-            {appt.start_time}–{appt.end_time}
-          </span>
-        </div>
-        <div>
-          <span className="block mb-0.5" style={{ color: 'var(--color-text-tertiary)' }}>
-            {appt.service_name ? 'سرویس' : 'کد پیگیری'}
-          </span>
-          <span className="font-mono truncate block" style={{ color: 'var(--color-text-primary)' }}>
-            {appt.service_name || appt.tracking_code}
-          </span>
+        {/* Side column */}
+        <div className="space-y-6">
+          {/* Quick actions */}
+          <div className="bg-white rounded-2xl border border-slate-100 p-5">
+            <h2 className="text-sm font-bold text-slate-800 mb-4">دسترسی سریع</h2>
+            <div className="grid grid-cols-2 gap-3">
+              <QuickCard label="برنامه نوبت" bg="#ECFEFF" grad="from-cyan-600 to-cyan-400" textColor="text-cyan-700"
+                         icon={<><rect x="3" y="4" width="18" height="18" rx="3" /><path d="M3 9h18" /><path d="M8 2v4M16 2v4" /></>}
+                         onClick={() => navigate('/dashboard/schedule')} />
+              <QuickCard label="افزودن متخصص" bg="#F5F3FF" grad="from-violet-600 to-violet-400" textColor="text-purple-700"
+                         icon={<><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /></>}
+                         onClick={() => navigate('/dashboard/providers')} />
+              <QuickCard label="مشاهده گزارش" bg="#ECFDF5" grad="from-emerald-600 to-emerald-400" textColor="text-emerald-700"
+                         icon={<path d="M18 20V10M12 20V4M6 20v-6" />}
+                         onClick={() => navigate('/dashboard/reports')} />
+              <QuickCard label="تنظیمات" bg="#FFF7ED" grad="from-orange-600 to-orange-400" textColor="text-orange-700"
+                         icon={<><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" /></>}
+                         onClick={() => navigate('/dashboard/settings')} />
+            </div>
+          </div>
         </div>
       </div>
 
-      {isPending && (
-        <div className="flex gap-2">
-          <Button variant="primary" size="sm" fullWidth disabled={disabled} onClick={() => onAction('confirm')}>
-            تأیید نوبت
-          </Button>
-          <Button variant="danger" size="sm" fullWidth disabled={disabled} onClick={() => onAction('cancel')}>
-            لغو
-          </Button>
+      {/* Confirm dialog */}
+      {confirmAction && (
+        <div
+          className="fixed inset-0 bg-black/40 flex items-end sm:items-center justify-center z-50 px-4 pb-4 sm:pb-0"
+          role="dialog" aria-modal="true" aria-label="تأیید عملیات"
+          onClick={(e) => e.target === e.currentTarget && !actionPending && setConfirmAction(null)}
+        >
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm space-y-4 border border-slate-100 shadow-xl" dir="rtl">
+            <h2 className="text-base font-bold text-slate-900">تأیید عملیات</h2>
+            <p className="text-sm text-slate-500">{DIALOG_COPY[confirmAction.action]?.question}</p>
+            <div className="flex gap-3">
+              <Button
+                variant={confirmAction.action === 'cancel' ? 'danger' : 'primary'}
+                fullWidth loading={actionPending} autoFocus onClick={executeAction}
+              >
+                تأیید
+              </Button>
+              <Button variant="ghost" fullWidth disabled={actionPending} onClick={() => setConfirmAction(null)}>
+                انصراف
+              </Button>
+            </div>
+          </div>
         </div>
       )}
+    </OwnerLayout>
+  )
+}
 
-      {isConfirmed && (
-        <div className="flex gap-2">
-          <Button variant="secondary" size="sm" fullWidth disabled={disabled} onClick={() => onAction('complete')}>
-            انجام شد
-          </Button>
-          <Button variant="ghost" size="sm" fullWidth disabled={disabled} onClick={() => onAction('no_show')}>
-            غیبت
-          </Button>
-          <Button variant="danger" size="sm" fullWidth disabled={disabled} onClick={() => onAction('cancel')}>
-            لغو
-          </Button>
-        </div>
-      )}
+function StatCard({ icon, iconBg, iconColor, value, label }) {
+  return (
+    <div className="bg-white rounded-2xl border border-slate-100 p-4 hover:shadow-lg transition-shadow">
+      <div className={`w-9 h-9 rounded-xl ${iconBg} flex items-center justify-center mb-2`}>
+        <svg className={`w-4 h-4 ${iconColor}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">{icon}</svg>
+      </div>
+      <div className="text-2xl font-black text-slate-900">{value}</div>
+      <div className="text-xs text-slate-400 mt-0.5">{label}</div>
     </div>
   )
 }
 
-function ConfirmDialog({ action, onConfirm, onCancel, isPending }) {
-  const copy = DIALOG_COPY[action] ?? { question: 'آیا مطمئن هستید؟' }
-  const isDanger = action === 'cancel'
-
+function QuickCard({ label, bg, grad, textColor, icon, onClick }) {
   return (
-    <div
-      className="fixed inset-0 bg-black/40 flex items-end sm:items-center justify-center z-50 px-4 pb-4 sm:pb-0"
-      role="dialog"
-      aria-modal="true"
-      aria-label="تأیید عملیات"
-      onClick={(e) => e.target === e.currentTarget && !isPending && onCancel()}
-    >
-      <div className="card p-6 w-full max-w-sm space-y-4" dir="rtl">
-        <h2 className="text-base font-bold" style={{ color: 'var(--color-text-primary)' }}>
-          تأیید عملیات
-        </h2>
-        <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-          {copy.question}
-        </p>
-        <div className="flex gap-3">
-          <Button
-            variant={isDanger ? 'danger' : 'primary'}
-            fullWidth
-            loading={isPending}
-            autoFocus
-            onClick={onConfirm}
-          >
-            تأیید
-          </Button>
-          <Button
-            variant="ghost"
-            fullWidth
-            disabled={isPending}
-            onClick={onCancel}
-          >
-            انصراف
-          </Button>
-        </div>
+    <button onClick={onClick} className="flex flex-col items-center gap-2 p-4 rounded-xl transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98]" style={{ background: bg }}>
+      <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${grad} flex items-center justify-center transition-transform duration-200 hover:scale-110 hover:-rotate-6`}>
+        <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">{icon}</svg>
       </div>
-    </div>
+      <span className={`text-xs font-bold ${textColor}`}>{label}</span>
+    </button>
   )
 }
