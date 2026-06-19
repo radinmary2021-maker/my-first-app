@@ -29,7 +29,7 @@ describe('Toast', () => {
   it('applies error variant class', () => {
     render(<ToastContainer />)
     act(() => notify('خطا', 'error'))
-    const el = screen.getByText('خطا')
+    const el = screen.getByText('خطا').closest('div')
     expect(el).toHaveClass('bg-red-600')
   })
 

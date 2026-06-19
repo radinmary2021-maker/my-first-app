@@ -26,7 +26,7 @@ afterEach(() => {
 describe('SetupProfilePage', () => {
   it('renders the form with name input and submit button', () => {
     renderWithProviders(<SetupProfilePage />)
-    expect(screen.getByLabelText('نام و نام خانوادگی')).toBeInTheDocument()
+    expect(screen.getByLabelText(/نام و نام خانوادگی/)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'ذخیره و ادامه' })).toBeInTheDocument()
   })
 
@@ -42,13 +42,13 @@ describe('SetupProfilePage', () => {
 
   it('submit button enables when name is typed', () => {
     renderWithProviders(<SetupProfilePage />)
-    fireEvent.change(screen.getByLabelText('نام و نام خانوادگی'), { target: { value: 'علی رضایی' } })
+    fireEvent.change(screen.getByLabelText(/نام و نام خانوادگی/), { target: { value: 'علی رضایی' } })
     expect(screen.getByRole('button', { name: 'ذخیره و ادامه' })).not.toBeDisabled()
   })
 
   it('shows client-side error when name is too short', async () => {
     renderWithProviders(<SetupProfilePage />)
-    fireEvent.change(screen.getByLabelText('نام و نام خانوادگی'), { target: { value: 'ع' } })
+    fireEvent.change(screen.getByLabelText(/نام و نام خانوادگی/), { target: { value: 'ع' } })
     fireEvent.submit(screen.getByRole('button', { name: 'ذخیره و ادامه' }).closest('form'))
     await waitFor(() => {
       expect(screen.getByText('نام باید حداقل ۲ کاراکتر باشد.')).toBeInTheDocument()
@@ -60,7 +60,7 @@ describe('SetupProfilePage', () => {
     vi.spyOn(authApi, 'updateProfile').mockResolvedValue(updatedUser)
 
     renderWithProviders(<SetupProfilePage />, { route: '/setup-profile' })
-    fireEvent.change(screen.getByLabelText('نام و نام خانوادگی'), { target: { value: 'علی رضایی' } })
+    fireEvent.change(screen.getByLabelText(/نام و نام خانوادگی/), { target: { value: 'علی رضایی' } })
     fireEvent.click(screen.getByRole('button', { name: 'ذخیره و ادامه' }))
 
     await waitFor(() => {
@@ -73,7 +73,7 @@ describe('SetupProfilePage', () => {
     vi.spyOn(authApi, 'updateProfile').mockResolvedValue(updatedUser)
 
     renderWithProviders(<SetupProfilePage />)
-    fireEvent.change(screen.getByLabelText('نام و نام خانوادگی'), { target: { value: 'مریم صادقی' } })
+    fireEvent.change(screen.getByLabelText(/نام و نام خانوادگی/), { target: { value: 'مریم صادقی' } })
 
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'ذخیره و ادامه' }))
@@ -87,7 +87,7 @@ describe('SetupProfilePage', () => {
     vi.spyOn(authApi, 'updateProfile').mockResolvedValue({ id: 1, phone: '09121234567', full_name: 'علی', role: 'patient' })
 
     renderWithProviders(<SetupProfilePage />)
-    fireEvent.change(screen.getByLabelText('نام و نام خانوادگی'), { target: { value: '  علی  ' } })
+    fireEvent.change(screen.getByLabelText(/نام و نام خانوادگی/), { target: { value: '  علی  ' } })
     fireEvent.click(screen.getByRole('button', { name: 'ذخیره و ادامه' }))
 
     await waitFor(() => {
@@ -101,7 +101,7 @@ describe('SetupProfilePage', () => {
     })
 
     renderWithProviders(<SetupProfilePage />)
-    fireEvent.change(screen.getByLabelText('نام و نام خانوادگی'), { target: { value: 'علی رضایی' } })
+    fireEvent.change(screen.getByLabelText(/نام و نام خانوادگی/), { target: { value: 'علی رضایی' } })
     fireEvent.click(screen.getByRole('button', { name: 'ذخیره و ادامه' }))
 
     await waitFor(() => {
@@ -113,7 +113,7 @@ describe('SetupProfilePage', () => {
     vi.spyOn(authApi, 'updateProfile').mockRejectedValue({})
 
     renderWithProviders(<SetupProfilePage />)
-    fireEvent.change(screen.getByLabelText('نام و نام خانوادگی'), { target: { value: 'علی رضایی' } })
+    fireEvent.change(screen.getByLabelText(/نام و نام خانوادگی/), { target: { value: 'علی رضایی' } })
     fireEvent.click(screen.getByRole('button', { name: 'ذخیره و ادامه' }))
 
     await waitFor(() => {
@@ -126,10 +126,11 @@ describe('SetupProfilePage', () => {
     vi.spyOn(authApi, 'updateProfile').mockReturnValue(new Promise((r) => { resolve = r }))
 
     renderWithProviders(<SetupProfilePage />)
-    fireEvent.change(screen.getByLabelText('نام و نام خانوادگی'), { target: { value: 'علی رضایی' } })
+    fireEvent.change(screen.getByLabelText(/نام و نام خانوادگی/), { target: { value: 'علی رضایی' } })
     fireEvent.click(screen.getByRole('button', { name: 'ذخیره و ادامه' }))
 
-    expect(await screen.findByText('در حال ذخیره...')).toBeInTheDocument()
+    const btn = screen.getByRole('button', { name: /ذخیره و ادامه/ })
+    expect(btn).toHaveAttribute('aria-busy', 'true')
     resolve({ id: 1, phone: '09121234567', full_name: 'علی رضایی', role: 'patient' })
   })
 })
