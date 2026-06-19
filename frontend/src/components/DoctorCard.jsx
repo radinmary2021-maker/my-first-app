@@ -1,131 +1,91 @@
 import { useNavigate } from 'react-router-dom'
 import { formatFee } from '../utils/date'
 import DoctorAvatar from './DoctorAvatar'
-import Badge from './Badge'
-import { CATEGORY_ICON, BriefcaseIcon } from './Icon'
 
-const WEEKDAY_NAMES = ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج']
+const COVER_GRADIENTS = [
+  'linear-gradient(135deg,#0891B2,#06B6D4)',
+  'linear-gradient(135deg,#7C3AED,#A78BFA)',
+  'linear-gradient(135deg,#DB2777,#F472B6)',
+  'linear-gradient(135deg,#0F766E,#2DD4BF)',
+  'linear-gradient(135deg,#059669,#34D399)',
+  'linear-gradient(135deg,#B45309,#FCD34D)',
+]
 
-const STAR_PATH = 'M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z'
-
-function StarRating({ value, count }) {
-  const full = Math.floor(value)
-  return (
-    <div className="flex items-center gap-1">
-      <div className="flex gap-px">
-        {[...Array(5)].map((_, i) => (
-          <svg key={i} viewBox="0 0 20 20" fill="currentColor"
-               className={`w-3 h-3 ${i < full ? 'text-amber-400' : 'text-gray-200'}`}>
-            <path d={STAR_PATH} />
-          </svg>
-        ))}
-      </div>
-      <span className="text-xs text-gray-400 font-medium">
-        {value}{count != null ? ` (${count})` : ''}
-      </span>
-    </div>
-  )
+function gradientFor(id) {
+  return COVER_GRADIENTS[(id ?? 0) % COVER_GRADIENTS.length]
 }
 
-/** Accepts both `doctor` (legacy) and `provider` prop names */
 export default function DoctorCard({ doctor, provider }) {
-  const p = provider ?? doctor   // support both prop names
+  const p = provider ?? doctor
   const navigate = useNavigate()
   const hasRating = p.average_rating != null && p.reviews_count > 0
-
-  const CategoryIcon = CATEGORY_ICON[p.category] ?? BriefcaseIcon
+  const isActive  = (p.available_weekdays ?? []).length > 0
+  const name      = p.business_name || p.full_name
+  const category  = p.category_display || p.specialty
+  const duration  = p.slot_duration ?? p.visit_duration
+  const fee       = p.service_fee ?? p.consultation_fee
 
   return (
     <div
       onClick={() => navigate(`/providers/${p.id}`)}
-      className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden
-                 hover:shadow-xl hover:-translate-y-0.5 hover:border-cyan-100
-                 transition-all duration-200 cursor-pointer group flex flex-col"
+      className="bg-white rounded-2xl border border-slate-100 overflow-hidden cursor-pointer flex
+                 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 group"
     >
-      {/* Gradient accent bar */}
-      <div className="h-1 bg-gradient-to-r from-cyan-500 to-cyan-400 shrink-0" />
-
-      <div className="p-5 flex flex-col gap-4 flex-1">
-        {/* Header: avatar + name + badge */}
-        <div className="flex items-start gap-3">
-          <div className="shrink-0 ring-2 ring-cyan-50 rounded-full">
-            <DoctorAvatar name={p.business_name || p.full_name} size={58} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-1 mb-0.5">
-              <h2 className="text-sm font-bold text-gray-800 group-hover:text-cyan-700
-                             transition-colors leading-snug truncate">
-                {p.business_name || p.full_name}
-              </h2>
-              {p.available_weekdays?.length > 0
-                ? <Badge variant="success">فعال</Badge>
-                : <Badge variant="neutral">هنوز فعال نشده</Badge>
-              }
-            </div>
-
-            {/* Category with icon */}
-            <div className="flex items-center gap-1 text-xs font-semibold mb-1.5"
-                 style={{ color: 'var(--color-brand)' }}>
-              <CategoryIcon size={12} />
-              <span>{p.category_display || p.specialty}</span>
-            </div>
-
-            {hasRating && (
-              <StarRating value={p.average_rating} count={p.reviews_count} />
-            )}
-          </div>
-        </div>
-
-        {/* Divider */}
-        <div className="h-px bg-gray-50" />
-
-        {/* Info row */}
-        <div className="flex items-center justify-between text-xs">
-          <div className="flex items-center gap-1.5 text-gray-500">
-            <svg className="w-3.5 h-3.5 text-cyan-400" fill="none" viewBox="0 0 24 24"
-                 stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round"
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span>{p.slot_duration ?? p.visit_duration} دقیقه</span>
-          </div>
-          <span className="font-bold text-gray-700 text-sm">
-            {formatFee(p.service_fee ?? p.consultation_fee)}
-          </span>
-        </div>
-
-        {/* Weekday chips */}
-        {p.available_weekdays?.length > 0 && (
-          <div className="flex gap-1">
-            {WEEKDAY_NAMES.map((name, idx) => (
-              <span
-                key={idx}
-                className={`w-7 h-7 flex items-center justify-center rounded-lg text-xs font-bold transition-colors ${
-                  p.available_weekdays.includes(idx)
-                    ? 'bg-cyan-500 text-white shadow-sm shadow-cyan-100'
-                    : 'bg-gray-50 text-gray-300'
-                }`}
-              >
-                {name}
-              </span>
-            ))}
+      {/* Cover */}
+      <div
+        className="w-36 sm:w-48 shrink-0 relative"
+        style={{ background: gradientFor(p.id) }}
+      >
+        {p.logo ? (
+          <img src={p.logo} alt={name} className="absolute inset-0 w-full h-full object-cover" />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center opacity-40">
+            <DoctorAvatar name={name} size={64} />
           </div>
         )}
+        {isActive && (
+          <div className="absolute top-2 right-2 bg-cyan-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+            فعال
+          </div>
+        )}
+      </div>
 
-        {/* CTA */}
-        <button
-          onClick={(e) => { e.stopPropagation(); navigate(`/providers/${p.id}`) }}
-          className="mt-auto w-full bg-cyan-500 text-white py-2.5 rounded-xl text-sm font-bold
-                     hover:bg-cyan-600 active:scale-[.98]
-                     group-hover:shadow-lg group-hover:shadow-cyan-100/60
-                     transition-all duration-200 flex items-center justify-center gap-2"
-        >
-          <span>رزرو نوبت</span>
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24"
-               stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-        </button>
+      {/* Info */}
+      <div className="flex-1 p-4 flex flex-col justify-between min-w-0">
+        <div>
+          <h2 className="font-bold text-slate-900 text-base group-hover:text-cyan-700 transition-colors truncate">
+            {name}
+          </h2>
+          <p className="text-slate-400 text-xs mt-0.5 mb-2">{category}</p>
+
+          {hasRating && (
+            <div className="flex items-center gap-1 mb-3">
+              <span className="text-amber-400 text-sm">★</span>
+              <span className="text-sm font-bold text-slate-700">{p.average_rating}</span>
+              <span className="text-xs text-slate-400">({p.reviews_count} نظر)</span>
+            </div>
+          )}
+        </div>
+
+        <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-50">
+          <div className="flex items-center gap-3 text-xs text-slate-400">
+            <span className="flex items-center gap-1">
+              <svg className="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
+              </svg>
+              {duration} دقیقه
+            </span>
+            <span className="w-1 h-1 bg-slate-300 rounded-full" />
+            <span className="text-cyan-600 font-semibold">{formatFee(fee)}</span>
+          </div>
+          <button
+            onClick={(e) => { e.stopPropagation(); navigate(`/providers/${p.id}`) }}
+            className="bg-cyan-50 hover:bg-cyan-500 hover:text-white text-cyan-600 font-bold text-xs px-4 py-2 rounded-xl
+                       transition-colors border border-cyan-100 hover:border-cyan-500"
+          >
+            رزرو نوبت
+          </button>
+        </div>
       </div>
     </div>
   )
