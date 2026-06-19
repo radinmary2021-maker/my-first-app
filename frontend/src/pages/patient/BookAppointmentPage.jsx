@@ -111,7 +111,7 @@ export default function BookAppointmentPage() {
             {/* Booking details */}
             <div className="space-y-3 mb-6">
               {serviceName && (
-                <DetailRow icon={<path d="m9 11 3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />}
+                <DetailRow icon={<><path d="m9 11 3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" /></>}
                            iconColor="text-cyan-500" bg="bg-cyan-50/50 border-cyan-100"
                            label="خدمت" value={serviceName} />
               )}
