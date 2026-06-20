@@ -2,158 +2,129 @@ import { useNavigate } from 'react-router-dom'
 import MainLayout from '../../layouts/MainLayout'
 import SEOHead from '../../components/SEOHead'
 
-const FEATURES = [
+const VALUES = [
   {
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="w-6 h-6">
-        <rect x="3" y="4" width="18" height="18" rx="3" />
-        <path d="M3 9h18M8 2v4M16 2v4" strokeLinecap="round" />
-      </svg>
-    ),
-    title: 'رزرو آنلاین ۲۴/۷',
-    desc: 'مشتریان در هر ساعتی از شبانه‌روز بدون تماس تلفنی نوبت می‌گیرند.',
+    title: 'سرعت و سادگی', desc: 'رزرو نوبت در کمتر از یک دقیقه، بدون تلفن و انتظار.',
+    grad: 'from-cyan-600 to-cyan-400',
+    icon: <><path d="m13 2-3 7h6l-3 13M5 7l3-5M16 7l3-5" /></>,
   },
   {
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="w-6 h-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
-    title: 'تأیید فوری نوبت',
-    desc: 'پیامک تأیید بلافاصله پس از رزرو ارسال می‌شود — بدون انتظار.',
+    title: 'امنیت اطلاعات', desc: 'اطلاعات شما با بالاترین استانداردهای امنیتی محافظت می‌شود.',
+    grad: 'from-violet-600 to-violet-400',
+    icon: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />,
   },
   {
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="w-6 h-6">
-        <rect x="2" y="5" width="20" height="14" rx="2" />
-        <path d="M2 10h20" strokeLinecap="round" />
-      </svg>
-    ),
-    title: 'پرداخت آنلاین امن',
-    desc: 'دریافت پیش‌پرداخت از مشتریان پیش از مراجعه — کاهش غیبت‌ها.',
+    title: 'اعتماد و شفافیت', desc: 'نظرات واقعی کاربران، قیمت‌های شفاف، بدون هزینه پنهان.',
+    grad: 'from-emerald-600 to-emerald-400',
+    icon: <><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="m22 21-3-3 3-3" /></>,
   },
   {
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" className="w-6 h-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-      </svg>
-    ),
-    title: 'راه‌اندازی سریع',
-    desc: 'در کمتر از ۱۰ دقیقه کسب‌وکار خود را آنلاین کنید.',
+    title: 'دسترسی همیشگی', desc: 'از هر دستگاه و هر مکان به خدمات نوبتیک دسترسی داشته باشید.',
+    grad: 'from-orange-600 to-orange-400',
+    icon: <><rect x="5" y="2" width="14" height="20" rx="2" /><path d="M12 18h.01" /></>,
   },
 ]
 
-const CATEGORIES = [
-  'آرایش و زیبایی', 'ورزش و تناسب اندام', 'آموزش و تدریس',
-  'مشاوره تخصصی', 'عکاسی و فیلم', 'حیوانات خانگی',
-  'آشپزی و شیرینی', 'خدمات تخصصی',
+const STATS = [
+  { value: '۱,۰۰۰+', label: 'کسب‌وکار فعال', color: 'text-cyan-500' },
+  { value: '۵۰,۰۰۰+', label: 'نوبت موفق', color: 'text-purple-500' },
+  { value: '۹۸٪', label: 'رضایت مشتری', color: 'text-emerald-500' },
+  { value: '۲۴/۷', label: 'پشتیبانی', color: 'text-orange-500' },
 ]
 
 export default function AboutPage() {
   const navigate = useNavigate()
 
   return (
-    <MainLayout>
+    <MainLayout fullWidth>
       <SEOHead
         title="درباره نوبتیک"
-        description="نوبتیک پلتفرم رزرو آنلاین نوبت برای هر کسب‌وکاری است — از آرایشگاه و باشگاه تا مشاوره و آموزشگاه. با ما کسب‌وکار خود را آنلاین کنید."
+        description="نوبتیک پلتفرم رزرو آنلاین نوبت برای هر کسب‌وکاری است — از آرایشگاه و باشگاه تا مشاوره و آموزشگاه."
         canonical="/about"
       />
 
-      <div className="max-w-3xl mx-auto space-y-16" dir="rtl">
-
-        {/* ── Hero ── */}
-        <section className="text-center space-y-4 pt-4">
-          <span className="inline-block bg-cyan-50 text-cyan-700 text-xs font-bold px-4 py-1.5 rounded-full border border-cyan-100">
-            درباره ما
+      {/* Hero */}
+      <section className="pt-12 pb-16 px-4 text-center"
+               style={{ background: 'linear-gradient(135deg, #DDE4FF 0%, #C7D2FE 30%, #CFFAFE 65%, #F8FAFC 100%)' }}>
+        <div className="inline-block bg-white border border-cyan-100 rounded-full px-4 py-1.5 text-xs font-semibold text-cyan-700 mb-5 shadow-sm">
+          درباره نوبتیک
+        </div>
+        <h1 className="text-3xl sm:text-4xl font-black text-slate-900 mb-4">
+          رزرو آنلاین نوبت،
+          <br />
+          <span style={{ background: 'linear-gradient(135deg,#0891B2,#06B6D4)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            برای هر کسب‌وکاری
           </span>
-          <h1 className="text-3xl sm:text-4xl font-black text-gray-900 leading-snug">
-            نوبتیک — رزرو آنلاین نوبت
-            <br />
-            <span className="text-cyan-600">برای هر کسب‌وکاری</span>
-          </h1>
-          <p className="text-gray-500 text-base leading-relaxed max-w-xl mx-auto">
-            نوبتیک یک پلتفرم ایرانی است که به کسب‌وکارها کمک می‌کند سیستم نوبت‌دهی آنلاین
-            حرفه‌ای داشته باشند — و به مشتریان اجازه می‌دهد بدون تماس تلفنی، در هر زمانی نوبت بگیرند.
-          </p>
+        </h1>
+        <p className="text-slate-500 leading-8 max-w-xl mx-auto">
+          نوبتیک یک پلتفرم رزرو آنلاین نوبت است که کسب‌وکارها و مشتریان را به هم متصل می‌کند.
+        </p>
+      </section>
+
+      {/* Stats */}
+      <section className="bg-white border-y border-slate-100 py-6">
+        <div className="max-w-3xl mx-auto px-4 grid grid-cols-4 gap-4 text-center">
+          {STATS.map((s) => (
+            <div key={s.label}>
+              <div className={`text-xl sm:text-2xl font-black ${s.color}`}>{s.value}</div>
+              <div className="text-[11px] text-slate-400 mt-1">{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <div className="max-w-4xl mx-auto px-4 py-14 space-y-14">
+
+        {/* Story */}
+        <section>
+          <h2 className="text-xl font-black text-slate-900 mb-4 text-center">داستان ما</h2>
+          <div className="bg-white rounded-2xl border border-slate-100 p-6 sm:p-8 leading-8 text-slate-500 text-sm">
+            <p className="mb-4">
+              ما در نوبتیک باور داریم که وقت شما ارزشمندترین دارایی شماست. به همین دلیل پلتفرمی ساختیم که
+              رزرو نوبت را به یک تجربه سریع، ساده و قابل اعتماد تبدیل کند.
+            </p>
+            <p>
+              با نوبتیک، کسب‌وکارها می‌توانند نوبت‌های خود را مدیریت کنند و به مشتریان بیشتری دسترسی داشته باشند.
+            </p>
+          </div>
         </section>
 
-        {/* ── Mission ── */}
-        <section className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 space-y-4">
-          <h2 className="text-xl font-bold text-gray-900">مأموریت ما</h2>
-          <p className="text-gray-600 leading-relaxed">
-            ما باور داریم که هر کسب‌وکاری — چه یک آرایشگاه کوچک، چه یک باشگاه ورزشی یا یک مشاور تخصصی —
-            می‌تواند از مزایای نوبت‌دهی دیجیتال بهره‌مند شود. هدف ما ساده است:
-            <strong className="text-gray-800"> کاهش زمان تلف‌شده برای هر دو طرف</strong>؛
-            مشتری وقتش را با انتظار پشت تلفن از دست ندهد و کسب‌وکار بتواند ظرفیتش را بهتر مدیریت کند.
-          </p>
-          <p className="text-gray-600 leading-relaxed">
-            نوبتیک با تمرکز بر سادگی و تجربه کاربری فارسی ساخته شده — بدون پیچیدگی‌های غیرضروری،
-            بدون نیاز به دانش فنی برای راه‌اندازی.
-          </p>
-        </section>
-
-        {/* ── Features ── */}
-        <section className="space-y-6">
-          <h2 className="text-xl font-bold text-gray-900">چرا نوبتیک؟</h2>
+        {/* Values */}
+        <section>
+          <h2 className="text-xl font-black text-slate-900 mb-8 text-center">ارزش‌های ما</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {FEATURES.map((f) => (
-              <div
-                key={f.title}
-                className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex gap-4 items-start"
-              >
-                <div className="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center flex-shrink-0">
-                  {f.icon}
+            {VALUES.map((v) => (
+              <div key={v.title} className="bg-white rounded-2xl border border-slate-100 p-5 flex gap-4
+                          hover:-translate-y-1 hover:shadow-lg transition-all duration-200 group">
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${v.grad} flex items-center justify-center shrink-0
+                                transition-transform duration-200 group-hover:scale-110 group-hover:-rotate-6`}>
+                  <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">{v.icon}</svg>
                 </div>
                 <div>
-                  <p className="font-bold text-gray-900 text-sm mb-1">{f.title}</p>
-                  <p className="text-gray-500 text-xs leading-relaxed">{f.desc}</p>
+                  <h3 className="text-sm font-bold text-slate-800 mb-1">{v.title}</h3>
+                  <p className="text-xs text-slate-400 leading-6">{v.desc}</p>
                 </div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* ── Categories ── */}
-        <section className="space-y-4">
-          <h2 className="text-xl font-bold text-gray-900">حوزه‌های پشتیبانی‌شده</h2>
-          <p className="text-gray-500 text-sm">
-            نوبتیک برای طیف گسترده‌ای از کسب‌وکارهای خدماتی طراحی شده است:
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {CATEGORIES.map((c) => (
-              <span
-                key={c}
-                className="bg-cyan-50 text-cyan-700 text-xs font-semibold px-3 py-1.5 rounded-full border border-cyan-100"
-              >
-                {c}
-              </span>
-            ))}
-          </div>
-        </section>
-
-        {/* ── CTA ── */}
-        <section className="bg-gradient-to-l from-cyan-600 to-cyan-500 rounded-2xl p-8 text-center text-white space-y-4">
-          <h2 className="text-xl font-bold">آماده‌اید شروع کنید؟</h2>
-          <p className="text-cyan-100 text-sm">
-            همین الان کسب‌وکار خود را ثبت کنید و اولین نوبت آنلاین را دریافت کنید.
-          </p>
-          <div className="flex justify-center gap-3 flex-wrap">
-            <button
-              onClick={() => navigate('/login')}
-              className="bg-white text-cyan-600 font-bold text-sm px-6 py-2.5 rounded-xl shadow hover:shadow-md transition-all"
-            >
-              ثبت کسب‌وکار — رایگان
+        {/* CTA */}
+        <section className="rounded-3xl p-8 sm:p-12 text-center"
+                 style={{ background: 'linear-gradient(135deg, #0891B2 0%, #06B6D4 40%, #818CF8 80%, #FFFFFF 100%)' }}>
+          <h2 className="text-2xl font-black text-white mb-3">آماده‌اید شروع کنید؟</h2>
+          <p className="text-cyan-50 mb-6">همین حالا کسب‌وکار خود را در نوبتیک ثبت کنید</p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <button onClick={() => navigate('/login')}
+                    className="bg-white text-cyan-700 font-bold px-6 py-3 rounded-xl text-sm shadow-lg hover:bg-cyan-50 transition-colors">
+              شروع رایگان
             </button>
-            <button
-              onClick={() => navigate('/providers')}
-              className="border border-white/40 text-white font-semibold text-sm px-6 py-2.5 rounded-xl hover:bg-white/10 transition-all"
-            >
-              مشاهده کسب‌وکارها
+            <button onClick={() => navigate('/')}
+                    className="bg-white/10 border border-white/30 text-white font-bold px-6 py-3 rounded-xl text-sm hover:bg-white/20 transition-colors">
+              بازگشت به خانه
             </button>
           </div>
         </section>
-
       </div>
     </MainLayout>
   )
