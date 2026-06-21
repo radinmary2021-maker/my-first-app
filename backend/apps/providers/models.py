@@ -58,6 +58,12 @@ class Provider(models.Model):
     slot_duration = models.PositiveSmallIntegerField(default=30, verbose_name='مدت هر نوبت (دقیقه)')
     service_fee   = models.DecimalField(max_digits=10, decimal_places=0, verbose_name='هزینه خدمت (تومان)')
     is_active     = models.BooleanField(default=True)
+    avatar        = models.FileField(
+        upload_to='provider_avatars/',
+        blank=True,
+        null=True,
+        verbose_name='عکس پروفایل',
+    )
 
     class Meta:
         db_table = 'providers'

@@ -102,7 +102,16 @@ export default function HomePage() {
   const user     = useAuthStore((s) => s.user)
   const [search, setSearch] = useState('')
   const { data: providers }  = useProviders()
-  const featured = providers?.slice(0, 3) ?? []
+  const featured = (() => {
+    if (!providers) return []
+    const seen = new Set()
+    return providers.filter((p) => {
+      const key = p.business_id || p.id
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    }).slice(0, 3)
+  })()
 
   function go(e) {
     e.preventDefault()

@@ -14,16 +14,28 @@ class ProviderSerializer(serializers.ModelSerializer):
     business_slug      = serializers.SerializerMethodField()
     latin_slug         = serializers.SerializerMethodField()
 
+    business_id = serializers.IntegerField(source='business.id', read_only=True, default=None)
+    logo        = serializers.SerializerMethodField()
+
     class Meta:
         model  = Provider
         fields = [
-            'id', 'full_name', 'business_name', 'category', 'category_display',
+            'id', 'business_id', 'full_name', 'business_name', 'category', 'category_display',
             'specialty', 'bio', 'address',
             'slot_duration', 'service_fee', 'is_active',
             'available_weekdays',
             'average_rating', 'reviews_count',
             'business_slug', 'latin_slug',
+            'logo',
         ]
+
+    def get_logo(self, obj):
+        if obj.business and obj.business.logo:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.business.logo.url)
+            return obj.business.logo.url
+        return None
 
     def get_average_rating(self, obj) -> float | None:
         reviews = list(obj.reviews.all())  # uses prefetch cache when available
@@ -94,6 +106,7 @@ class BusinessProviderSerializer(serializers.ModelSerializer):
             'service_fee', 'slot_duration',
             'category', 'category_display',
             'is_active',
+            'avatar',
         ]
 
 
@@ -143,6 +156,7 @@ class UpdateProviderSerializer(serializers.Serializer):
     slot_duration = serializers.IntegerField(min_value=5, required=False)
     category      = serializers.CharField(max_length=30, required=False, allow_blank=True)
     is_active     = serializers.BooleanField(required=False)
+    avatar        = serializers.FileField(required=False)
 
     def validate_category(self, value: str) -> str:
         if value and value not in dict(BusinessCategory.choices):
