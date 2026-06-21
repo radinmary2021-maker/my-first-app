@@ -57,7 +57,7 @@ export default function ProviderListPage() {
 
   const filtered = useMemo(() => {
     if (!providers) return []
-    return providers.filter((p) => {
+    const matched = providers.filter((p) => {
       const catDisplay = p.category_display || p.specialty || ''
       const catValue   = p.category || ''
       const name       = p.business_name || p.full_name || ''
@@ -71,6 +71,13 @@ export default function ProviderListPage() {
         catDisplay.includes(search.trim())
       const matchActive = !showActiveOnly || (p.available_weekdays ?? []).length > 0
       return matchCategory && matchSearch && matchActive
+    })
+    const seen = new Set()
+    return matched.filter((p) => {
+      const key = p.business_id || p.id
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
     })
   }, [providers, selectedCategory, search, categoryValueMap, categoryParam, showActiveOnly])
 

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import OwnerLayout from '../../layouts/OwnerLayout'
 import Button from '../../components/Button'
@@ -6,6 +6,10 @@ import Spinner from '../../components/Spinner'
 import ErrorMessage from '../../components/ErrorMessage'
 import { notify } from '../../utils/toast'
 import { useAuthStore } from '../../store/authStore'
+import client from '../../api/client'
+
+const AVATAR_ACCEPT = '.jpg,.jpeg,.png,.webp'
+const AVATAR_MAX_SIZE = 2 * 1024 * 1024
 import {
   useBusinessProviders,
   useCreateBusinessProvider,
@@ -121,8 +125,16 @@ export default function ProvidersPage() {
               <div key={p.id} className="bg-white rounded-2xl border border-slate-100 overflow-hidden hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200">
                 <div className="h-20 relative" style={{ background: grad }} />
                 <div className="p-4 -mt-8">
-                  <div className={`w-16 h-16 rounded-2xl ${avatarBg} border-4 border-white flex items-center justify-center text-lg font-bold ${avatarText} shadow-sm mb-3`}>
-                    {getInitials(p.full_name)}
+                  <div className="relative w-16 h-16 mb-3">
+                    <div className={`w-16 h-16 rounded-2xl ${avatarBg} border-4 border-white flex items-center justify-center text-lg font-bold ${avatarText} shadow-sm overflow-hidden`}>
+                      {p.avatar
+                        ? <img src={p.avatar} alt={p.full_name} className="w-full h-full object-cover" />
+                        : getInitials(p.full_name)
+                      }
+                    </div>
+                    {isOwner && (
+                      <AvatarUploadBtn providerId={p.id} onSuccess={() => refetch()} />
+                    )}
                   </div>
                   <h3 className="font-bold text-slate-900 text-sm mb-0.5">{p.full_name || '—'}</h3>
                   <p className="text-xs text-slate-400 font-mono mb-0.5">{p.phone}</p>
@@ -287,5 +299,51 @@ function ProviderFormModal({ title, initialValues = {}, editMode = false, onClos
         </form>
       </div>
     </div>
+  )
+}
+
+function AvatarUploadBtn({ providerId, onSuccess }) {
+  const inputRef = useRef(null)
+  const [uploading, setUploading] = useState(false)
+
+  async function handleFile(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      notify('فقط JPG، PNG و WebP مجاز است.', 'error'); return
+    }
+    if (file.size > AVATAR_MAX_SIZE) {
+      notify('حجم فایل نباید بیشتر از ۲ مگابایت باشد.', 'error'); return
+    }
+    setUploading(true)
+    try {
+      const fd = new FormData()
+      fd.append('avatar', file)
+      await client.patch(`/api/v1/businesses/me/providers/${providerId}/`, fd)
+      notify('عکس متخصص بروزرسانی شد.', 'success')
+      onSuccess?.()
+    } catch {
+      notify('خطا در آپلود عکس.', 'error')
+    } finally {
+      setUploading(false)
+      if (inputRef.current) inputRef.current.value = ''
+    }
+  }
+
+  return (
+    <>
+      <input ref={inputRef} type="file" accept={AVATAR_ACCEPT} onChange={handleFile} className="hidden" />
+      <button
+        onClick={() => inputRef.current?.click()}
+        disabled={uploading}
+        className="absolute -bottom-1 -left-1 w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-cyan-600 hover:border-cyan-300 transition-colors shadow-sm disabled:opacity-50"
+        title="تغییر عکس"
+      >
+        {uploading
+          ? <Spinner size="xs" />
+          : <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" /><circle cx="12" cy="13" r="4" /></svg>
+        }
+      </button>
+    </>
   )
 }
