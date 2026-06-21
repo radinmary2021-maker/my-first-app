@@ -53,7 +53,7 @@ class ProviderListView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        qs = Provider.objects.filter(is_active=True).select_related('user', 'business').prefetch_related('reviews')
+        qs = Provider.objects.filter(is_active=True).select_related('user', 'business').prefetch_related('reviews', 'business__services')
         category = request.query_params.get('category')
         if category:
             qs = qs.filter(category=category)
@@ -67,7 +67,7 @@ class ProviderListView(APIView):
                 if q_norm != q_raw:
                     search_q |= Q(**{f'{f}__icontains': q_norm})
             qs = qs.filter(search_q)
-        return Response(ProviderSerializer(qs, many=True).data)
+        return Response(ProviderSerializer(qs, many=True, context={'request': request}).data)
 
 
 class ProviderDetailView(APIView):

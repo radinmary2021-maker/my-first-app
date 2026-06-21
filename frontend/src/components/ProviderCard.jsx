@@ -58,6 +58,14 @@ export default function ProviderCard({ doctor, provider }) {
           </h2>
           <p className="text-slate-400 text-xs mt-0.5 mb-2">{category}</p>
 
+          {p.services_preview?.length > 0 && (
+            <div className="flex flex-wrap gap-1 mb-2">
+              {p.services_preview.map((s) => (
+                <span key={s} className="bg-slate-50 border border-slate-100 text-slate-600 text-xs px-2 py-0.5 rounded-lg">{s}</span>
+              ))}
+            </div>
+          )}
+
           {hasRating && (
             <div className="flex items-center gap-1 mb-3">
               <span className="text-amber-400 text-sm">★</span>
