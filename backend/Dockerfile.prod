@@ -37,8 +37,8 @@ RUN python manage.py collectstatic --noinput
 
 # Non-root user for security
 RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser \
-    && mkdir -p /app/celerybeat-data \
-    && chown appuser:appgroup /app/celerybeat-data
+    && mkdir -p /app/celerybeat-data /app/media \
+    && chown -R appuser:appgroup /app/celerybeat-data /app/media
 
 USER appuser
 
