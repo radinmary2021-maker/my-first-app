@@ -94,7 +94,7 @@ class MyBusinessView(BusinessContextMixin, APIView):
     permission_classes = [IsAuthenticated, IsBusinessMember]
 
     def get(self, request):
-        return Response(BusinessSerializer(self.business).data)
+        return Response(BusinessSerializer(self.business, context={'request': request}).data)
 
     def patch(self, request):
         # Inline ownership check (write operation)
@@ -109,7 +109,7 @@ class MyBusinessView(BusinessContextMixin, APIView):
         )
         serializer.is_valid(raise_exception=True)
         business = serializer.save()
-        return Response(BusinessSerializer(business).data)
+        return Response(BusinessSerializer(business, context={'request': request}).data)
 
 
 # ──────────────────────────────────────────────────────────────────────────────
