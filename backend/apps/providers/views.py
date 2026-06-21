@@ -63,6 +63,7 @@ class ProviderListView(APIView):
                 Q(user__full_name__icontains=q) |
                 Q(specialty__icontains=q) |
                 Q(business_name__icontains=q) |
+                Q(business__name__icontains=q) |
                 Q(category__icontains=q)
             )
         return Response(ProviderSerializer(qs, many=True).data)
