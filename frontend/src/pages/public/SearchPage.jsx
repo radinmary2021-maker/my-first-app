@@ -201,6 +201,13 @@ export default function SearchPage() {
                             {p.full_name}
                           </span>
                         )}
+                        {p.services_preview?.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {p.services_preview.map((s) => (
+                              <span key={s} className="bg-slate-50 border border-slate-100 text-slate-500 text-[10px] px-1.5 py-0.5 rounded">{s}</span>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                     <span className="text-sm shrink-0 mr-2" style={{ color: 'var(--color-brand)' }}>

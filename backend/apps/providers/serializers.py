@@ -26,7 +26,7 @@ class ProviderSerializer(serializers.ModelSerializer):
             'available_weekdays',
             'average_rating', 'reviews_count',
             'business_slug', 'latin_slug',
-            'logo',
+            'logo', 'services_preview',
         ]
 
     def get_logo(self, obj):
@@ -36,6 +36,15 @@ class ProviderSerializer(serializers.ModelSerializer):
                 return request.build_absolute_uri(obj.business.logo.url)
             return obj.business.logo.url
         return None
+
+    services_preview = serializers.SerializerMethodField()
+
+    def get_services_preview(self, obj):
+        if not obj.business:
+            return []
+        from apps.scheduling.models import Service
+        services = Service.objects.filter(business=obj.business, is_active=True).values_list('name', flat=True)[:5]
+        return list(services)
 
     def get_average_rating(self, obj) -> float | None:
         reviews = list(obj.reviews.all())  # uses prefetch cache when available
