@@ -46,7 +46,7 @@ class BusinessUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model  = Business
-        fields = ['name', 'category', 'description', 'phone', 'address', 'timezone', 'latin_slug']
+        fields = ['name', 'category', 'description', 'phone', 'address', 'timezone', 'latin_slug', 'logo']
 
     def validate_latin_slug(self, value):
         if not value:
