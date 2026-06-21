@@ -57,15 +57,16 @@ class ProviderListView(APIView):
         category = request.query_params.get('category')
         if category:
             qs = qs.filter(category=category)
-        q = _normalize_persian(request.query_params.get('q', '').strip())
-        if q:
-            qs = qs.filter(
-                Q(user__full_name__icontains=q) |
-                Q(specialty__icontains=q) |
-                Q(business_name__icontains=q) |
-                Q(business__name__icontains=q) |
-                Q(category__icontains=q)
-            )
+        q_raw = request.query_params.get('q', '').strip()
+        q_norm = _normalize_persian(q_raw)
+        if q_raw:
+            fields = ['user__full_name', 'specialty', 'business_name', 'business__name', 'category']
+            search_q = Q()
+            for f in fields:
+                search_q |= Q(**{f'{f}__icontains': q_raw})
+                if q_norm != q_raw:
+                    search_q |= Q(**{f'{f}__icontains': q_norm})
+            qs = qs.filter(search_q)
         return Response(ProviderSerializer(qs, many=True).data)
 
 
