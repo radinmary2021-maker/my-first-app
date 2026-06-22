@@ -6,10 +6,13 @@ const client = axios.create({
   headers: { 'Content-Type': 'application/json' },
 })
 
-// Attach access token to every request
+// Attach access token; let axios set Content-Type for FormData
 client.interceptors.request.use((config) => {
   const token = useAuthStore.getState().accessToken
   if (token) config.headers.Authorization = `Bearer ${token}`
+  if (config.data instanceof FormData) {
+    delete config.headers['Content-Type']
+  }
   return config
 })
 
