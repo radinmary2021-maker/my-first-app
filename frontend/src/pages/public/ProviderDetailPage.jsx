@@ -132,23 +132,17 @@ export default function ProviderDetailPage() {
         </div>
       </div>
 
-      {/* Cover gallery */}
+      {/* Cover */}
       <div className="bg-white">
         <div className="max-w-7xl mx-auto px-4 py-5">
-          <div className="grid grid-cols-4 gap-2 rounded-2xl overflow-hidden h-48 sm:h-72">
-            <div className="col-span-2 row-span-2 relative bg-gradient-to-br from-cyan-500 to-cyan-400">
-              {provider.logo ? (
-                <img src={provider.logo} alt={providerName} className="w-full h-full object-cover" />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center opacity-30">
-                  <ProviderAvatar name={providerName} size={120} />
-                </div>
-              )}
-            </div>
-            <div className="relative bg-gradient-to-br from-violet-500 to-violet-400" />
-            <div className="relative bg-gradient-to-br from-pink-500 to-pink-400" />
-            <div className="relative bg-gradient-to-br from-teal-500 to-teal-400" />
-            <div className="relative bg-gradient-to-br from-amber-500 to-amber-300" />
+          <div className="rounded-2xl overflow-hidden h-48 sm:h-72 bg-gradient-to-br from-cyan-500 to-cyan-400">
+            {provider.logo ? (
+              <img src={provider.logo} alt={providerName} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center opacity-30">
+                <ProviderAvatar name={providerName} size={120} />
+              </div>
+            )}
           </div>
         </div>
       </div>
