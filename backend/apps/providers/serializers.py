@@ -31,9 +31,6 @@ class ProviderSerializer(serializers.ModelSerializer):
 
     def get_logo(self, obj):
         if obj.business and obj.business.logo:
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri(obj.business.logo.url)
             return obj.business.logo.url
         return None
 

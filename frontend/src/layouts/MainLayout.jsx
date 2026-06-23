@@ -9,18 +9,9 @@ export default function MainLayout({ children, fullWidth = false }) {
   const logout   = useAuthStore((s) => s.logout)
   const navigate = useNavigate()
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [headerSearch, setHeaderSearch] = useState('')
-
   function handleLogout() {
     logout()
     navigate('/login')
-  }
-
-  function handleHeaderSearch(e) {
-    e.preventDefault()
-    const q = headerSearch.trim()
-    if (q) navigate(`/search?q=${encodeURIComponent(q)}`)
-    else navigate('/providers')
   }
 
   const navLinkCls = ({ isActive }) =>
@@ -106,23 +97,6 @@ export default function MainLayout({ children, fullWidth = false }) {
             </span>
           </button>
 
-          {/* Search bar — desktop */}
-          <form onSubmit={handleHeaderSearch} className="hidden md:flex flex-1 max-w-xl">
-            <div className="flex items-center w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 gap-2
-                            hover:border-slate-300 focus-within:border-cyan-400 focus-within:bg-white transition-colors">
-              <svg className="w-4 h-4 text-slate-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" strokeLinecap="round" />
-              </svg>
-              <input
-                type="text"
-                value={headerSearch}
-                onChange={(e) => setHeaderSearch(e.target.value)}
-                placeholder="جستجوی خدمت یا کسب‌وکار..."
-                className="bg-transparent outline-none text-sm text-slate-700 placeholder:text-slate-400 w-full"
-              />
-            </div>
-          </form>
-
           {/* Desktop nav */}
           <nav className="hidden lg:flex items-center gap-1 shrink-0" aria-label="منوی اصلی">
             {navLinks}
@@ -187,21 +161,6 @@ export default function MainLayout({ children, fullWidth = false }) {
           </div>
         </div>
 
-        {/* Mobile search */}
-        <form onSubmit={handleHeaderSearch} className="md:hidden px-4 pb-3">
-          <div className="flex items-center w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 gap-2">
-            <svg className="w-4 h-4 text-slate-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" strokeLinecap="round" />
-            </svg>
-            <input
-              type="text"
-              value={headerSearch}
-              onChange={(e) => setHeaderSearch(e.target.value)}
-              placeholder="جستجوی خدمت یا کسب‌وکار..."
-              className="bg-transparent outline-none text-sm text-slate-700 placeholder:text-slate-400 w-full"
-            />
-          </div>
-        </form>
       </header>
 
       {/* ── Mobile dropdown nav ── */}
