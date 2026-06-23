@@ -5,6 +5,7 @@ import { useProviders } from '../../hooks/useDoctors'
 import MainLayout from '../../layouts/MainLayout'
 import SEOHead from '../../components/SEOHead'
 import ImageAvatar from '../../components/ImageAvatar'
+import { BeautyIcon, FitnessIcon, EducationIcon, CounselingIcon, VeterinaryIcon, AutomotiveIcon } from '../../components/CategoryIcons'
 import { formatFee } from '../../utils/date'
 
 const HOME_JSON_LD = [
@@ -29,12 +30,12 @@ const HOME_JSON_LD = [
 ]
 
 const CATEGORIES = [
-  { emoji: '💇‍♀️', label: 'آرایش و زیبایی', slug: 'beauty',        bg: 'bg-gradient-to-br from-pink-50 to-pink-100' },
-  { emoji: '💪',   label: 'ورزش و فیتنس',  slug: 'fitness',       bg: 'bg-gradient-to-br from-blue-50 to-blue-100' },
-  { emoji: '📚',   label: 'آموزش',          slug: 'education',     bg: 'bg-gradient-to-br from-green-50 to-green-100' },
-  { emoji: '🧠',   label: 'مشاوره',         slug: 'psychological', bg: 'bg-gradient-to-br from-purple-50 to-purple-100' },
-  { emoji: '🐾',   label: 'دامپزشکی',       slug: 'veterinary',    bg: 'bg-gradient-to-br from-amber-50 to-amber-100' },
-  { emoji: '🚗',   label: 'خودرو',          slug: 'automotive',    bg: 'bg-gradient-to-br from-cyan-50 to-cyan-100' },
+  { label: 'آرایش و زیبایی', slug: 'beauty',    bg: 'from-pink-50 to-rose-100',   Icon: BeautyIcon },
+  { label: 'ورزش و فیتنس',  slug: 'fitness',    bg: 'from-blue-50 to-indigo-100', Icon: FitnessIcon },
+  { label: 'آموزش',          slug: 'education',  bg: 'from-emerald-50 to-green-100', Icon: EducationIcon },
+  { label: 'مشاوره',         slug: 'psychological', bg: 'from-purple-50 to-violet-100', Icon: CounselingIcon },
+  { label: 'دامپزشکی',       slug: 'veterinary', bg: 'from-amber-50 to-orange-100', Icon: VeterinaryIcon },
+  { label: 'خودرو',          slug: 'automotive', bg: 'from-cyan-50 to-teal-100',  Icon: AutomotiveIcon },
 ]
 
 const QUICK_SEARCHES = ['آرایشگاه', 'کلینیک زیبایی', 'مشاوره', 'باشگاه ورزشی', 'دامپزشکی']
@@ -215,18 +216,21 @@ export default function HomePage() {
               <svg className="w-4 h-4 rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6" strokeLinecap="round" /></svg>
             </button>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-            {CATEGORIES.map(({ emoji, label, slug, bg }) => (
+          <div className="scroll-strip">
+            {CATEGORIES.map(({ Icon, label, slug, bg }, i) => (
               <button
                 key={slug}
                 onClick={() => navigate(`/providers?category=${slug}`)}
-                className="bg-white rounded-2xl border border-slate-100 p-4 flex flex-col items-center gap-3 text-center cursor-pointer
-                           hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200"
+                className="bg-white rounded-2xl border border-slate-100 p-5 flex flex-col items-center gap-3 text-center cursor-pointer
+                           hover:-translate-y-1 hover:shadow-xl transition-all duration-300 group w-36 min-w-[9rem]"
               >
-                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl ${bg}`}>
-                  {emoji}
+                <div
+                  className={`cat-icon w-20 h-20 rounded-2xl flex items-center justify-center bg-gradient-to-br ${bg} group-hover:scale-110 transition-transform duration-300`}
+                  style={{ animationDelay: `${i * 0.5}s` }}
+                >
+                  <Icon />
                 </div>
-                <span className="text-sm font-semibold text-slate-700">{label}</span>
+                <span className="text-sm font-semibold text-slate-700 group-hover:text-cyan-600 transition-colors">{label}</span>
               </button>
             ))}
           </div>
@@ -250,16 +254,16 @@ export default function HomePage() {
                 <svg className="w-4 h-4 rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6" strokeLinecap="round" /></svg>
               </button>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="scroll-strip">
               {featured.map((p, i) => (
                 <div
                   key={p.id}
                   onClick={() => navigate(`/providers/${p.id}`)}
                   className="bg-white rounded-2xl border border-slate-100 overflow-hidden cursor-pointer
-                             hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200"
+                             hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 w-72 min-w-[18rem]"
                 >
                   <div className="h-44 relative">
-                    <ImageAvatar src={p.logo} alt={p.business_name || p.full_name} fallbackText={p.business_name || p.full_name} size="w-full h-full" shape="rounded-none" />
+                    <ImageAvatar src={p.logo} alt={p.business_name || p.full_name} fallbackText={p.business_name || p.full_name} size="w-full h-full" shape="rounded-none" blurBg />
                     {p.average_rating != null && p.reviews_count > 0 && (
                       <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-xs font-bold text-amber-600 px-2 py-1 rounded-full flex items-center gap-1">
                         ★ {p.average_rating}

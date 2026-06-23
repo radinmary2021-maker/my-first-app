@@ -87,6 +87,39 @@ body { background-color: var(--color-surface); color: var(--color-text-primary);
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+/* Category icon animations */
+@keyframes catFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+@keyframes catPulse {
+  0%, 100% { box-shadow: 0 4px 14px rgba(0,0,0,.15); }
+  50%      { box-shadow: 0 8px 28px rgba(0,0,0,.22); }
+}
+.cat-icon {
+  animation: catFloat 3s ease-in-out infinite, catPulse 3s ease-in-out infinite;
+}
+.cat-icon:nth-child(1) { animation-delay: 0s; }
+.cat-icon:nth-child(2) { animation-delay: .5s; }
+.cat-icon:nth-child(3) { animation-delay: 1s; }
+.cat-icon:nth-child(4) { animation-delay: 1.5s; }
+.cat-icon:nth-child(5) { animation-delay: 2s; }
+.cat-icon:nth-child(6) { animation-delay: 2.5s; }
+
+/* Horizontal scroll strip */
+.scroll-strip {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: .75rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: .5rem;
+}
+.scroll-strip::-webkit-scrollbar { display: none; }
+.scroll-strip { -ms-overflow-style: none; scrollbar-width: none; }
+.scroll-strip > * { scroll-snap-align: start; flex-shrink: 0; }
+
 /* Toast enter animation */
 @keyframes toastIn {
   from { opacity: 0; transform: translateY(8px) scale(.96); }

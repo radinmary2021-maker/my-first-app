@@ -135,7 +135,7 @@ export default function ProviderDetailPage() {
       {/* Cover */}
       <div className="bg-white">
         <div className="max-w-7xl mx-auto px-4 py-5">
-          <ImageAvatar src={provider.logo} alt={providerName} fallbackText={providerName} size="w-full h-48 sm:h-72" shape="rounded-2xl" />
+          <ImageAvatar src={provider.logo} alt={providerName} fallbackText={providerName} size="w-full h-48 sm:h-72" shape="rounded-2xl" blurBg />
         </div>
       </div>
 
