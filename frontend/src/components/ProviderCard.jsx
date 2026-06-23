@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { formatFee } from '../utils/date'
-import ProviderAvatar from './ProviderAvatar'
+import ImageAvatar from './ImageAvatar'
 
 const COVER_GRADIENTS = [
   'linear-gradient(135deg,#0891B2,#06B6D4)',
@@ -32,17 +32,8 @@ export default function ProviderCard({ doctor, provider }) {
                  hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 group"
     >
       {/* Cover */}
-      <div
-        className="w-36 sm:w-48 shrink-0 relative"
-        style={{ background: gradientFor(p.id) }}
-      >
-        {p.logo ? (
-          <img src={p.logo} alt={name} className="absolute inset-0 w-full h-full object-cover" />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center opacity-40">
-            <ProviderAvatar name={name} size={64} />
-          </div>
-        )}
+      <div className="w-36 sm:w-48 shrink-0 relative">
+        <ImageAvatar src={p.logo} alt={name} fallbackText={name} size="w-full h-full" shape="rounded-none" />
         {isActive && (
           <div className="absolute top-2 right-2 bg-cyan-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
             فعال

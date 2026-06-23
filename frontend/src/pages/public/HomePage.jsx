@@ -4,7 +4,7 @@ import { useAuthStore } from '../../store/authStore'
 import { useProviders } from '../../hooks/useDoctors'
 import MainLayout from '../../layouts/MainLayout'
 import SEOHead from '../../components/SEOHead'
-import ProviderAvatar from '../../components/ProviderAvatar'
+import ImageAvatar from '../../components/ImageAvatar'
 import { formatFee } from '../../utils/date'
 
 const HOME_JSON_LD = [
@@ -258,7 +258,8 @@ export default function HomePage() {
                   className="bg-white rounded-2xl border border-slate-100 overflow-hidden cursor-pointer
                              hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200"
                 >
-                  <div className={`h-44 relative bg-gradient-to-br ${PROVIDER_GRADIENTS[i % PROVIDER_GRADIENTS.length]}`}>
+                  <div className="h-44 relative">
+                    <ImageAvatar src={p.logo} alt={p.business_name || p.full_name} fallbackText={p.business_name || p.full_name} size="w-full h-full" shape="rounded-none" />
                     {p.average_rating != null && p.reviews_count > 0 && (
                       <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-xs font-bold text-amber-600 px-2 py-1 rounded-full flex items-center gap-1">
                         ★ {p.average_rating}

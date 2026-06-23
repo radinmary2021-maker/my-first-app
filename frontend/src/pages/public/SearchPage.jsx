@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom'
 import SEOHead from '../../components/SEOHead'
 import MainLayout from '../../layouts/MainLayout'
 import Spinner from '../../components/Spinner'
+import ImageAvatar from '../../components/ImageAvatar'
 import { getProviders } from '../../api/providers'
 
 export default function SearchPage() {
@@ -130,11 +131,7 @@ export default function SearchPage() {
                     className="bg-white rounded-2xl border border-slate-100 overflow-hidden cursor-pointer
                                hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 group"
                   >
-                    <div className={`h-24 relative bg-gradient-to-br ${gradients[i % gradients.length]}`}>
-                      {p.logo && (
-                        <img src={p.logo} alt={p.business_name} className="absolute inset-0 w-full h-full object-cover" />
-                      )}
-                    </div>
+                    <ImageAvatar src={p.logo} alt={p.business_name} fallbackText={p.business_name || p.full_name} size="w-full h-24" shape="rounded-none" />
                     <div className="p-4">
                       <h3 className="font-bold text-slate-900 text-sm group-hover:text-cyan-700 transition-colors mb-1">
                         {p.business_name || p.full_name}

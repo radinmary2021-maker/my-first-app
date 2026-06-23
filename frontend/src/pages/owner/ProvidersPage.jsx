@@ -6,6 +6,7 @@ import Spinner from '../../components/Spinner'
 import ErrorMessage from '../../components/ErrorMessage'
 import { notify } from '../../utils/toast'
 import { useAuthStore } from '../../store/authStore'
+import ImageAvatar from '../../components/ImageAvatar'
 import client from '../../api/client'
 
 const AVATAR_ACCEPT = '.jpg,.jpeg,.png,.webp'
@@ -126,12 +127,7 @@ export default function ProvidersPage() {
                 <div className="h-20 relative" style={{ background: grad }} />
                 <div className="p-4 -mt-8">
                   <div className="relative w-16 h-16 mb-3">
-                    <div className={`w-16 h-16 rounded-2xl ${avatarBg} border-4 border-white flex items-center justify-center text-lg font-bold ${avatarText} shadow-sm overflow-hidden`}>
-                      {p.avatar
-                        ? <img src={p.avatar} alt={p.full_name} className="w-full h-full object-cover" />
-                        : getInitials(p.full_name)
-                      }
-                    </div>
+                    <ImageAvatar src={p.avatar} alt={p.full_name} fallbackText={p.full_name} size="w-16 h-16" shape="rounded-2xl" className="border-4 border-white shadow-sm" />
                     {isOwner && (
                       <AvatarUploadBtn providerId={p.id} onSuccess={() => refetch()} />
                     )}
