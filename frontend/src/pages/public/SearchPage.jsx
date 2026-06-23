@@ -131,7 +131,7 @@ export default function SearchPage() {
                     className="bg-white rounded-2xl border border-slate-100 overflow-hidden cursor-pointer
                                hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 group"
                   >
-                    <ImageAvatar src={p.logo} alt={p.business_name} fallbackText={p.business_name || p.full_name} size="w-full h-24" shape="rounded-none" />
+                    <ImageAvatar src={p.logo} alt={p.business_name} fallbackText={p.business_name || p.full_name} size="w-full h-24" shape="rounded-none" blurBg />
                     <div className="p-4">
                       <h3 className="font-bold text-slate-900 text-sm group-hover:text-cyan-700 transition-colors mb-1">
                         {p.business_name || p.full_name}
