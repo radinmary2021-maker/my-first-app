@@ -6,7 +6,7 @@ import Spinner from '../../components/Spinner'
 import ErrorMessage from '../../components/ErrorMessage'
 import DatePicker from '../../components/DatePicker'
 import SlotPicker from '../../components/SlotPicker'
-import ProviderAvatar from '../../components/ProviderAvatar'
+import ImageAvatar from '../../components/ImageAvatar'
 import { useProvider, useProviderSlots, useProviderServices, useProviderReviews } from '../../hooks/useDoctors'
 import { formatFee } from '../../utils/date'
 import { toJalali } from '../../utils/jalali'
@@ -135,15 +135,7 @@ export default function ProviderDetailPage() {
       {/* Cover */}
       <div className="bg-white">
         <div className="max-w-7xl mx-auto px-4 py-5">
-          <div className="rounded-2xl overflow-hidden h-48 sm:h-72 bg-gradient-to-br from-cyan-500 to-cyan-400">
-            {provider.logo ? (
-              <img src={provider.logo} alt={providerName} className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center opacity-30">
-                <ProviderAvatar name={providerName} size={120} />
-              </div>
-            )}
-          </div>
+          <ImageAvatar src={provider.logo} alt={providerName} fallbackText={providerName} size="w-full h-48 sm:h-72" shape="rounded-2xl" />
         </div>
       </div>
 
@@ -158,13 +150,7 @@ export default function ProviderDetailPage() {
             <div className="bg-white rounded-2xl border border-slate-100 p-5">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-4">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-cyan-400 flex items-center justify-center text-white shrink-0 shadow-md shadow-cyan-200 overflow-hidden">
-                    {provider.logo ? (
-                      <img src={provider.logo} alt={providerName} className="w-full h-full object-cover" />
-                    ) : (
-                      <ProviderAvatar name={providerName} size={64} />
-                    )}
-                  </div>
+                  <ImageAvatar src={provider.logo} alt={providerName} fallbackText={providerName} size="w-16 h-16" shape="rounded-2xl" className="shadow-md shadow-cyan-200" />
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <h1 className="text-xl font-black text-slate-900">{providerName}</h1>

@@ -5,6 +5,7 @@ import Spinner from '../../components/Spinner'
 import ErrorMessage from '../../components/ErrorMessage'
 import { notify } from '../../utils/toast'
 import { getMyBusiness, updateMyBusiness, getBusinessCategories } from '../../api/providers'
+import ImageAvatar from '../../components/ImageAvatar'
 import client from '../../api/client'
 
 const LOGO_ACCEPT = '.jpg,.jpeg,.png,.webp'
@@ -153,16 +154,7 @@ export default function SettingsPage() {
           <h2 className="text-sm font-bold text-slate-800 mb-1">لوگوی کسب‌وکار</h2>
           <p className="text-xs text-slate-400 mb-4">JPG، PNG یا WebP — حداکثر ۲ مگابایت</p>
           <div className="flex items-center gap-4">
-            <div className="w-20 h-20 rounded-2xl flex items-center justify-center shrink-0 shadow-md shadow-cyan-200 overflow-hidden"
-                 style={{ background: 'linear-gradient(135deg, #0891B2 0%, #06B6D4 60%, #22D3EE 100%)' }}>
-              {logoPreview ? (
-                <img src={logoPreview} alt="پیش‌نمایش" className="w-full h-full object-cover" />
-              ) : business?.logo ? (
-                <img src={business.logo} alt="لوگو" className="w-full h-full object-cover" />
-              ) : (
-                <span className="text-white text-3xl">📋</span>
-              )}
-            </div>
+            <ImageAvatar src={logoPreview || business?.logo} alt="لوگو" fallbackText={business?.name} size="w-20 h-20" shape="rounded-2xl" className="shadow-md shadow-cyan-200" />
             <div className="flex flex-col gap-2">
               <input ref={logoInputRef} type="file" accept={LOGO_ACCEPT} onChange={handleLogoSelect} className="hidden" />
               {!logoFile ? (
