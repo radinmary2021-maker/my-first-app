@@ -5,6 +5,7 @@ import { useProviders } from '../../hooks/useDoctors'
 import MainLayout from '../../layouts/MainLayout'
 import SEOHead from '../../components/SEOHead'
 import ImageAvatar from '../../components/ImageAvatar'
+import { BeautyIcon, FitnessIcon, EducationIcon, CounselingIcon, VeterinaryIcon, AutomotiveIcon } from '../../components/CategoryIcons'
 import { formatFee } from '../../utils/date'
 
 const HOME_JSON_LD = [
@@ -29,36 +30,12 @@ const HOME_JSON_LD = [
 ]
 
 const CATEGORIES = [
-  {
-    label: 'آرایش و زیبایی', slug: 'beauty',
-    gradient: 'from-pink-500 to-rose-400',
-    icon: <><circle cx="6" cy="6" r="3" /><circle cx="6" cy="18" r="3" /><path d="M20 4 8.12 15.88" /><path d="M14.47 14.48 20 20" /><path d="M8.12 8.12 12 12" /></>,
-  },
-  {
-    label: 'ورزش و فیتنس', slug: 'fitness',
-    gradient: 'from-blue-500 to-indigo-400',
-    icon: <><path d="M6.5 6.5L17.5 17.5" /><path d="M7 2l-5 5" /><path d="M22 17l-5 5" /><path d="M2 7l5-5" /><path d="M17 22l5-5" /><path d="M20.5 6.5L9.5 17.5" /><path d="M22 7l-5-5" /><path d="M7 22l-5-5" /></>,
-  },
-  {
-    label: 'آموزش', slug: 'education',
-    gradient: 'from-emerald-500 to-green-400',
-    icon: <><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></>,
-  },
-  {
-    label: 'مشاوره', slug: 'psychological',
-    gradient: 'from-purple-500 to-violet-400',
-    icon: <><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V3c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2z" /><path d="M18 9h2a2 2 0 0 1 2 2v8l-4-4h-6a2 2 0 0 1-2-2v-1" /></>,
-  },
-  {
-    label: 'دامپزشکی', slug: 'veterinary',
-    gradient: 'from-amber-500 to-orange-400',
-    icon: <><circle cx="11" cy="4" r="2" /><circle cx="18" cy="8" r="2" /><circle cx="20" cy="16" r="2" /><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-7 0V15a5 5 0 0 1 5-5z" fill="none" /><circle cx="4" cy="8" r="2" /></>,
-  },
-  {
-    label: 'خودرو', slug: 'automotive',
-    gradient: 'from-cyan-500 to-teal-400',
-    icon: <><path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M5 17H3v-6l2-5h9l4 5h1a2 2 0 0 1 2 2v4h-2" /><path d="M9 17h6" /><path d="M5 12h14" /></>,
-  },
+  { label: 'آرایش و زیبایی', slug: 'beauty',    bg: 'from-pink-50 to-rose-100',   Icon: BeautyIcon },
+  { label: 'ورزش و فیتنس',  slug: 'fitness',    bg: 'from-blue-50 to-indigo-100', Icon: FitnessIcon },
+  { label: 'آموزش',          slug: 'education',  bg: 'from-emerald-50 to-green-100', Icon: EducationIcon },
+  { label: 'مشاوره',         slug: 'psychological', bg: 'from-purple-50 to-violet-100', Icon: CounselingIcon },
+  { label: 'دامپزشکی',       slug: 'veterinary', bg: 'from-amber-50 to-orange-100', Icon: VeterinaryIcon },
+  { label: 'خودرو',          slug: 'automotive', bg: 'from-cyan-50 to-teal-100',  Icon: AutomotiveIcon },
 ]
 
 const QUICK_SEARCHES = ['آرایشگاه', 'کلینیک زیبایی', 'مشاوره', 'باشگاه ورزشی', 'دامپزشکی']
@@ -240,7 +217,7 @@ export default function HomePage() {
             </button>
           </div>
           <div className="scroll-strip">
-            {CATEGORIES.map(({ icon, label, slug, gradient }, i) => (
+            {CATEGORIES.map(({ Icon, label, slug, bg }, i) => (
               <button
                 key={slug}
                 onClick={() => navigate(`/providers?category=${slug}`)}
@@ -248,12 +225,10 @@ export default function HomePage() {
                            hover:-translate-y-1 hover:shadow-xl transition-all duration-300 group w-36 min-w-[9rem]"
               >
                 <div
-                  className={`cat-icon w-16 h-16 rounded-2xl flex items-center justify-center bg-gradient-to-br ${gradient} group-hover:scale-110 transition-transform duration-300`}
+                  className={`cat-icon w-20 h-20 rounded-2xl flex items-center justify-center bg-gradient-to-br ${bg} group-hover:scale-110 transition-transform duration-300`}
                   style={{ animationDelay: `${i * 0.5}s` }}
                 >
-                  <svg className="w-8 h-8 text-white drop-shadow-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    {icon}
-                  </svg>
+                  <Icon />
                 </div>
                 <span className="text-sm font-semibold text-slate-700 group-hover:text-cyan-600 transition-colors">{label}</span>
               </button>
