@@ -22,22 +22,42 @@ function getInitials(name) {
   return parts[0].slice(0, 2)
 }
 
-export default function ImageAvatar({ src, alt, fallbackText, size = 'w-16 h-16', shape = 'rounded-xl', className = '' }) {
+export default function ImageAvatar({ src, alt, fallbackText, size = 'w-16 h-16', shape = 'rounded-xl', fit = 'cover', blurBg = false, className = '' }) {
   const [failed, setFailed] = useState(false)
   const [bg, fg] = getColor(fallbackText || alt || '')
   const initials = getInitials(fallbackText || alt || '')
   const showImage = src && !failed
+  const fitClass = fit === 'contain' ? 'object-contain' : 'object-cover'
 
   return (
-    <div className={`${size} ${shape} overflow-hidden shrink-0 flex items-center justify-center ${className}`}
-         style={showImage ? undefined : { background: bg, color: fg }}>
+    <div className={`${size} ${shape} overflow-hidden shrink-0 flex items-center justify-center relative ${className}`}
+         style={showImage && !blurBg ? { background: '#f1f5f9' } : !showImage ? { background: bg, color: fg } : undefined}>
       {showImage ? (
-        <img
-          src={src}
-          alt={alt || ''}
-          onError={() => setFailed(true)}
-          className="w-full h-full object-cover object-center"
-        />
+        blurBg ? (
+          <>
+            <img
+              src={src}
+              alt=""
+              aria-hidden="true"
+              onError={() => setFailed(true)}
+              className="absolute inset-0 w-full h-full object-cover scale-110 blur-xl opacity-60"
+            />
+            <div className="absolute inset-0 bg-slate-100/40" />
+            <img
+              src={src}
+              alt={alt || ''}
+              onError={() => setFailed(true)}
+              className="relative w-full h-full object-contain object-center"
+            />
+          </>
+        ) : (
+          <img
+            src={src}
+            alt={alt || ''}
+            onError={() => setFailed(true)}
+            className={`w-full h-full ${fitClass} object-center`}
+          />
+        )
       ) : (
         <span style={{ fontSize: 'clamp(12px, 38%, 32px)', fontWeight: 700 }}>{initials}</span>
       )}

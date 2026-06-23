@@ -33,7 +33,7 @@ export default function ProviderCard({ doctor, provider }) {
     >
       {/* Cover */}
       <div className="w-36 sm:w-48 shrink-0 relative">
-        <ImageAvatar src={p.logo} alt={name} fallbackText={name} size="w-full h-full" shape="rounded-none" />
+        <ImageAvatar src={p.logo} alt={name} fallbackText={name} size="w-full h-full" shape="rounded-none" blurBg />
         {isActive && (
           <div className="absolute top-2 right-2 bg-cyan-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
             فعال

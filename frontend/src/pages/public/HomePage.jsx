@@ -29,12 +29,36 @@ const HOME_JSON_LD = [
 ]
 
 const CATEGORIES = [
-  { emoji: '💇‍♀️', label: 'آرایش و زیبایی', slug: 'beauty',        bg: 'bg-gradient-to-br from-pink-50 to-pink-100' },
-  { emoji: '💪',   label: 'ورزش و فیتنس',  slug: 'fitness',       bg: 'bg-gradient-to-br from-blue-50 to-blue-100' },
-  { emoji: '📚',   label: 'آموزش',          slug: 'education',     bg: 'bg-gradient-to-br from-green-50 to-green-100' },
-  { emoji: '🧠',   label: 'مشاوره',         slug: 'psychological', bg: 'bg-gradient-to-br from-purple-50 to-purple-100' },
-  { emoji: '🐾',   label: 'دامپزشکی',       slug: 'veterinary',    bg: 'bg-gradient-to-br from-amber-50 to-amber-100' },
-  { emoji: '🚗',   label: 'خودرو',          slug: 'automotive',    bg: 'bg-gradient-to-br from-cyan-50 to-cyan-100' },
+  {
+    label: 'آرایش و زیبایی', slug: 'beauty',
+    gradient: 'from-pink-500 to-rose-400',
+    icon: <><circle cx="6" cy="6" r="3" /><circle cx="6" cy="18" r="3" /><path d="M20 4 8.12 15.88" /><path d="M14.47 14.48 20 20" /><path d="M8.12 8.12 12 12" /></>,
+  },
+  {
+    label: 'ورزش و فیتنس', slug: 'fitness',
+    gradient: 'from-blue-500 to-indigo-400',
+    icon: <><path d="M6.5 6.5L17.5 17.5" /><path d="M7 2l-5 5" /><path d="M22 17l-5 5" /><path d="M2 7l5-5" /><path d="M17 22l5-5" /><path d="M20.5 6.5L9.5 17.5" /><path d="M22 7l-5-5" /><path d="M7 22l-5-5" /></>,
+  },
+  {
+    label: 'آموزش', slug: 'education',
+    gradient: 'from-emerald-500 to-green-400',
+    icon: <><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></>,
+  },
+  {
+    label: 'مشاوره', slug: 'psychological',
+    gradient: 'from-purple-500 to-violet-400',
+    icon: <><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V3c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2z" /><path d="M18 9h2a2 2 0 0 1 2 2v8l-4-4h-6a2 2 0 0 1-2-2v-1" /></>,
+  },
+  {
+    label: 'دامپزشکی', slug: 'veterinary',
+    gradient: 'from-amber-500 to-orange-400',
+    icon: <><circle cx="11" cy="4" r="2" /><circle cx="18" cy="8" r="2" /><circle cx="20" cy="16" r="2" /><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-7 0V15a5 5 0 0 1 5-5z" fill="none" /><circle cx="4" cy="8" r="2" /></>,
+  },
+  {
+    label: 'خودرو', slug: 'automotive',
+    gradient: 'from-cyan-500 to-teal-400',
+    icon: <><path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M5 17H3v-6l2-5h9l4 5h1a2 2 0 0 1 2 2v4h-2" /><path d="M9 17h6" /><path d="M5 12h14" /></>,
+  },
 ]
 
 const QUICK_SEARCHES = ['آرایشگاه', 'کلینیک زیبایی', 'مشاوره', 'باشگاه ورزشی', 'دامپزشکی']
@@ -215,18 +239,23 @@ export default function HomePage() {
               <svg className="w-4 h-4 rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6" strokeLinecap="round" /></svg>
             </button>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-            {CATEGORIES.map(({ emoji, label, slug, bg }) => (
+          <div className="scroll-strip">
+            {CATEGORIES.map(({ icon, label, slug, gradient }, i) => (
               <button
                 key={slug}
                 onClick={() => navigate(`/providers?category=${slug}`)}
-                className="bg-white rounded-2xl border border-slate-100 p-4 flex flex-col items-center gap-3 text-center cursor-pointer
-                           hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200"
+                className="bg-white rounded-2xl border border-slate-100 p-5 flex flex-col items-center gap-3 text-center cursor-pointer
+                           hover:-translate-y-1 hover:shadow-xl transition-all duration-300 group w-36 min-w-[9rem]"
               >
-                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl ${bg}`}>
-                  {emoji}
+                <div
+                  className={`cat-icon w-16 h-16 rounded-2xl flex items-center justify-center bg-gradient-to-br ${gradient} group-hover:scale-110 transition-transform duration-300`}
+                  style={{ animationDelay: `${i * 0.5}s` }}
+                >
+                  <svg className="w-8 h-8 text-white drop-shadow-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    {icon}
+                  </svg>
                 </div>
-                <span className="text-sm font-semibold text-slate-700">{label}</span>
+                <span className="text-sm font-semibold text-slate-700 group-hover:text-cyan-600 transition-colors">{label}</span>
               </button>
             ))}
           </div>
@@ -250,16 +279,16 @@ export default function HomePage() {
                 <svg className="w-4 h-4 rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6" strokeLinecap="round" /></svg>
               </button>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="scroll-strip">
               {featured.map((p, i) => (
                 <div
                   key={p.id}
                   onClick={() => navigate(`/providers/${p.id}`)}
                   className="bg-white rounded-2xl border border-slate-100 overflow-hidden cursor-pointer
-                             hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200"
+                             hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 w-72 min-w-[18rem]"
                 >
                   <div className="h-44 relative">
-                    <ImageAvatar src={p.logo} alt={p.business_name || p.full_name} fallbackText={p.business_name || p.full_name} size="w-full h-full" shape="rounded-none" />
+                    <ImageAvatar src={p.logo} alt={p.business_name || p.full_name} fallbackText={p.business_name || p.full_name} size="w-full h-full" shape="rounded-none" blurBg />
                     {p.average_rating != null && p.reviews_count > 0 && (
                       <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-xs font-bold text-amber-600 px-2 py-1 rounded-full flex items-center gap-1">
                         ★ {p.average_rating}
