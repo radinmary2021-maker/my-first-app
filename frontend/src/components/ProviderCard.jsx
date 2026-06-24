@@ -49,7 +49,7 @@ export default function ProviderCard({ doctor, provider }) {
             {name}
           </h2>
           {staffName && (
-            <p className="text-cyan-700 text-xs font-semibold mt-0.5">{staffName} — {p.specialty}</p>
+            <p className="text-slate-500 text-xs mt-0.5">با مدیریت: <span className="font-semibold text-slate-600">{staffName}</span></p>
           )}
           <p className="text-slate-400 text-xs mt-0.5 mb-2">{category}</p>
 
