@@ -235,10 +235,10 @@ export default function ProviderDetailPage() {
                         : <span className="bg-slate-100 text-slate-500 text-xs font-bold px-2.5 py-1 rounded-full">غیرفعال</span>
                       }
                     </div>
+                    <p className="text-slate-500 text-sm">{category}</p>
                     {staffName && (
-                      <p className="text-sm font-semibold text-cyan-700 mb-0.5">{staffName} — {provider.specialty}</p>
+                      <p className="text-sm text-slate-600 mt-1">با مدیریت: <span className="font-semibold text-slate-700">{staffName}</span></p>
                     )}
-                    <p className="text-slate-500 text-sm mb-2">{category}</p>
                     <div className="flex items-center gap-3 flex-wrap">
                       {hasRating && (
                         <div className="flex items-center gap-1">

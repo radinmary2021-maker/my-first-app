@@ -61,12 +61,15 @@ class ProviderListView(APIView):
         q_norm = _normalize_persian(q_raw)
         if q_raw:
             fields = ['user__full_name', 'specialty', 'business_name', 'business__name', 'category']
-            search_q = Q()
-            for f in fields:
-                search_q |= Q(**{f'{f}__icontains': q_raw})
-                if q_norm != q_raw:
-                    search_q |= Q(**{f'{f}__icontains': q_norm})
-            qs = qs.filter(search_q)
+            words = q_raw.split()
+            for word in words:
+                word_norm = _normalize_persian(word)
+                word_q = Q()
+                for f in fields:
+                    word_q |= Q(**{f'{f}__icontains': word})
+                    if word_norm != word:
+                        word_q |= Q(**{f'{f}__icontains': word_norm})
+                qs = qs.filter(word_q)
         return Response(ProviderSerializer(qs, many=True, context={'request': request}).data)
 
 
