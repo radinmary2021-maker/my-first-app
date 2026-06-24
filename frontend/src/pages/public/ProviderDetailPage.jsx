@@ -7,7 +7,7 @@ import ErrorMessage from '../../components/ErrorMessage'
 import DatePicker from '../../components/DatePicker'
 import SlotPicker from '../../components/SlotPicker'
 import ImageAvatar from '../../components/ImageAvatar'
-import { useProvider, useProviderSlots, useProviderServices, useProviderReviews } from '../../hooks/useDoctors'
+import { useProvider, useProviders, useProviderSlots, useProviderServices, useProviderReviews } from '../../hooks/useDoctors'
 import { formatFee } from '../../utils/date'
 import { toJalali } from '../../utils/jalali'
 import { notify } from '../../utils/toast'
@@ -19,14 +19,20 @@ export default function ProviderDetailPage() {
   const { state: locationState } = useLocation()
   const preselectedServiceId = locationState?.preselectedServiceId ?? null
 
-  const [selectedService, setSelectedService] = useState(null)
-  const [selectedDate, setSelectedDate]       = useState(null)
-  const [selectedSlot, setSelectedSlot]       = useState(null)
-  const [reviewPage, setReviewPage]           = useState(1)
-  const [activeTab, setActiveTab]             = useState('services')
+  const [selectedProvider, setSelectedProvider] = useState(null)
+  const [selectedService, setSelectedService]   = useState(null)
+  const [selectedDate, setSelectedDate]         = useState(null)
+  const [selectedSlot, setSelectedSlot]         = useState(null)
+  const [reviewPage, setReviewPage]             = useState(1)
+  const [activeTab, setActiveTab]               = useState('services')
 
   const { data: provider,  isLoading: providerLoading,  isError: providerError  } = useProvider(lookup)
-  const providerId = provider?.id
+  const { data: allProviders } = useProviders()
+
+  const siblings = (allProviders ?? []).filter((p) => provider && p.business_id === provider.business_id)
+  const hasMultipleProviders = siblings.length > 1
+  const activeProvider = selectedProvider ?? provider
+  const providerId = activeProvider?.id
 
   const { data: services,  isLoading: servicesLoading } = useProviderServices(providerId)
 
@@ -35,6 +41,13 @@ export default function ProviderDetailPage() {
     const match = services.find((s) => s.id === preselectedServiceId)
     if (match) setSelectedService(match)
   }, [services, preselectedServiceId])
+
+  function handleSelectProvider(p) {
+    setSelectedProvider(p)
+    setSelectedService(null)
+    setSelectedDate(null)
+    setSelectedSlot(null)
+  }
 
   const { data: slotsData, isLoading: slotsLoading, isError: slotsError, refetch: refetchSlots } = useProviderSlots(providerId, selectedDate, selectedService?.id)
   const { data: reviewsData } = useProviderReviews(providerId, reviewPage)
@@ -58,9 +71,9 @@ export default function ProviderDetailPage() {
   }
 
   function handleProceed() {
-    navigate(`/booking/${provider.id}`, {
+    navigate(`/booking/${activeProvider.id}`, {
       state: {
-        providerId:   provider.id,
+        providerId:   activeProvider.id,
         date:         selectedDate,
         slot:         selectedSlot,
         serviceId:    selectedService?.id    ?? null,
@@ -93,6 +106,7 @@ export default function ProviderDetailPage() {
   const serviceRequired = hasServices
   const canPickDate     = !serviceRequired || selectedService !== null
   const providerName    = provider.business_name || provider.full_name
+  const staffName       = provider.full_name && provider.full_name !== provider.business_name ? provider.full_name : null
   const providerSlug    = provider.latin_slug || provider.business_slug
   const category        = provider.category_display || provider.specialty
   const hasRating       = provider.average_rating != null && provider.reviews_count > 0
@@ -159,6 +173,9 @@ export default function ProviderDetailPage() {
                         : <span className="bg-slate-100 text-slate-500 text-xs font-bold px-2.5 py-1 rounded-full">غیرفعال</span>
                       }
                     </div>
+                    {staffName && (
+                      <p className="text-sm font-semibold text-cyan-700 mb-0.5">{staffName} — {provider.specialty}</p>
+                    )}
                     <p className="text-slate-500 text-sm mb-2">{category}</p>
                     <div className="flex items-center gap-3 flex-wrap">
                       {hasRating && (
@@ -200,6 +217,45 @@ export default function ProviderDetailPage() {
                 <p className="text-sm text-slate-500 leading-7 mt-3">{provider.bio}</p>
               )}
             </div>
+
+            {/* Provider picker (multi-provider businesses) */}
+            {hasMultipleProviders && (
+              <div className="bg-white rounded-2xl border border-slate-100 p-5">
+                <h3 className="text-sm font-black text-slate-900 mb-3">ارائه‌دهنده را انتخاب کنید</h3>
+                <div className="space-y-2">
+                  {siblings.map((sib) => {
+                    const isActive = activeProvider?.id === sib.id
+                    return (
+                      <div
+                        key={sib.id}
+                        onClick={() => handleSelectProvider(sib)}
+                        className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors ${
+                          isActive ? 'bg-cyan-50 border border-cyan-200' : 'hover:bg-slate-50 border border-transparent'
+                        }`}
+                      >
+                        <ImageAvatar src={sib.logo} alt={sib.full_name} fallbackText={sib.full_name} size="w-11 h-11" shape="rounded-xl" />
+                        <div className="flex-1 min-w-0">
+                          <div className={`text-sm font-bold ${isActive ? 'text-cyan-700' : 'text-slate-800'}`}>{sib.full_name}</div>
+                          <div className="text-xs text-slate-400">{sib.specialty}</div>
+                        </div>
+                        {sib.services_preview?.length > 0 && (
+                          <div className="hidden sm:flex flex-wrap gap-1">
+                            {sib.services_preview.slice(0, 2).map((s) => (
+                              <span key={s} className="bg-slate-50 text-slate-500 text-xs px-2 py-0.5 rounded-lg">{s}</span>
+                            ))}
+                          </div>
+                        )}
+                        <div className={`text-xs font-bold px-3 py-1.5 rounded-lg shrink-0 ${
+                          isActive ? 'bg-cyan-500 text-white' : 'bg-slate-100 text-slate-500'
+                        }`}>
+                          {isActive ? '✓ انتخاب شد' : 'انتخاب'}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* Tabs */}
             <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
