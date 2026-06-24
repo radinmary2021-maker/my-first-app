@@ -140,7 +140,14 @@ class ProviderServicesView(APIView):
         services = Service.objects.filter(
             business=provider.business,
             is_active=True,
+            provider=provider,
         ).order_by('name')
+        if not services.exists():
+            services = Service.objects.filter(
+                business=provider.business,
+                is_active=True,
+                provider__isnull=True,
+            ).order_by('name')
         return Response(ServiceSerializer(services, many=True).data)
 
 
