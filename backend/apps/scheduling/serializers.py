@@ -29,10 +29,13 @@ class ServiceSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'description',
             'duration_minutes', 'buffer_minutes', 'total_minutes',
-            'price', 'color', 'is_active',
+            'price', 'color', 'is_active', 'provider',
             'created_at', 'updated_at',
         ]
         read_only_fields = ['id', 'total_minutes', 'created_at', 'updated_at']
+        extra_kwargs = {
+            'provider': {'required': False, 'allow_null': True, 'default': None},
+        }
 
     def get_total_minutes(self, obj: Service) -> int:
         return obj.total_minutes

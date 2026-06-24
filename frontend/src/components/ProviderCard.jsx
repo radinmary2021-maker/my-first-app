@@ -21,6 +21,7 @@ export default function ProviderCard({ doctor, provider }) {
   const hasRating = p.average_rating != null && p.reviews_count > 0
   const isActive  = (p.available_weekdays ?? []).length > 0
   const name      = p.business_name || p.full_name
+  const staffName = p.full_name && p.full_name !== p.business_name ? p.full_name : null
   const category  = p.category_display || p.specialty
   const duration  = p.slot_duration ?? p.visit_duration
   const fee       = p.service_fee ?? p.consultation_fee
@@ -47,6 +48,9 @@ export default function ProviderCard({ doctor, provider }) {
           <h2 className="font-bold text-slate-900 text-base group-hover:text-cyan-700 transition-colors truncate">
             {name}
           </h2>
+          {staffName && (
+            <p className="text-cyan-700 text-xs font-semibold mt-0.5">{staffName} — {p.specialty}</p>
+          )}
           <p className="text-slate-400 text-xs mt-0.5 mb-2">{category}</p>
 
           {p.services_preview?.length > 0 && (

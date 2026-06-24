@@ -7,10 +7,72 @@ import ErrorMessage from '../../components/ErrorMessage'
 import DatePicker from '../../components/DatePicker'
 import SlotPicker from '../../components/SlotPicker'
 import ImageAvatar from '../../components/ImageAvatar'
-import { useProvider, useProviderSlots, useProviderServices, useProviderReviews } from '../../hooks/useDoctors'
+import { useProvider, useProviders, useProviderSlots, useProviderServices, useProviderReviews } from '../../hooks/useDoctors'
 import { formatFee } from '../../utils/date'
 import { toJalali } from '../../utils/jalali'
 import { notify } from '../../utils/toast'
+
+function ServiceRow({ svc, active, onSelect }) {
+  return (
+    <div
+      onClick={onSelect}
+      className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-colors group ${
+        active ? 'bg-cyan-50 border border-cyan-200' : 'hover:bg-slate-50'
+      }`}
+    >
+      <div className="flex items-start gap-3">
+        <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0 ${
+          active ? 'bg-cyan-100' : 'bg-slate-50'
+        }`}>
+          ✂️
+        </div>
+        <div>
+          <div className={`text-sm font-semibold ${active ? 'text-cyan-700' : 'text-slate-800'}`}>{svc.name}</div>
+          <div className="text-xs text-slate-400 mt-0.5">{svc.duration_minutes} دقیقه</div>
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        {Number(svc.price) > 0 && (
+          <span className="text-sm font-bold text-slate-700">{Number(svc.price).toLocaleString('fa-IR')}ت</span>
+        )}
+        <button className={`text-xs font-bold px-3 py-1.5 rounded-lg transition-all ${
+          active ? 'bg-cyan-500 text-white' : 'opacity-0 group-hover:opacity-100 bg-cyan-500 text-white'
+        }`}>
+          {active ? '✓ انتخاب شد' : 'انتخاب'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function ProviderServiceGroup({ provider: sib, selectedProviderId, selectedServiceId, onSelectService }) {
+  const { data: svcList, isLoading } = useProviderServices(sib.id)
+  const isThisProvider = selectedProviderId === sib.id
+
+  return (
+    <div className={`rounded-2xl border p-4 transition-colors ${isThisProvider ? 'border-cyan-200 bg-cyan-50/30' : 'border-slate-100'}`}>
+      <div className="flex items-center gap-3 mb-3">
+        <ImageAvatar src={sib.logo} alt={sib.full_name} fallbackText={sib.full_name} size="w-11 h-11" shape="rounded-xl" />
+        <div>
+          <div className={`text-sm font-bold ${isThisProvider ? 'text-cyan-700' : 'text-slate-800'}`}>{sib.full_name}</div>
+          <div className="text-xs text-slate-400">{sib.specialty}</div>
+        </div>
+      </div>
+      {isLoading && <Spinner />}
+      {svcList && svcList.length > 0 && (
+        <div className="space-y-1.5">
+          {svcList.map((svc) => {
+            const active = isThisProvider && selectedServiceId === svc.id
+            return <ServiceRow key={svc.id} svc={svc} active={active} onSelect={() => onSelectService(svc)} />
+          })}
+        </div>
+      )}
+      {svcList && svcList.length === 0 && (
+        <p className="text-xs text-slate-400 text-center py-3">خدمتی تعریف نشده.</p>
+      )}
+    </div>
+  )
+}
 
 export default function ProviderDetailPage() {
   const { id: paramId, slug: paramSlug } = useParams()
@@ -19,14 +81,20 @@ export default function ProviderDetailPage() {
   const { state: locationState } = useLocation()
   const preselectedServiceId = locationState?.preselectedServiceId ?? null
 
-  const [selectedService, setSelectedService] = useState(null)
-  const [selectedDate, setSelectedDate]       = useState(null)
-  const [selectedSlot, setSelectedSlot]       = useState(null)
-  const [reviewPage, setReviewPage]           = useState(1)
-  const [activeTab, setActiveTab]             = useState('services')
+  const [selectedProvider, setSelectedProvider] = useState(null)
+  const [selectedService, setSelectedService]   = useState(null)
+  const [selectedDate, setSelectedDate]         = useState(null)
+  const [selectedSlot, setSelectedSlot]         = useState(null)
+  const [reviewPage, setReviewPage]             = useState(1)
+  const [activeTab, setActiveTab]               = useState('services')
 
   const { data: provider,  isLoading: providerLoading,  isError: providerError  } = useProvider(lookup)
-  const providerId = provider?.id
+  const { data: allProviders } = useProviders()
+
+  const siblings = (allProviders ?? []).filter((p) => provider && p.business_id === provider.business_id)
+  const hasMultipleProviders = siblings.length > 1
+  const activeProvider = selectedProvider ?? provider
+  const providerId = activeProvider?.id
 
   const { data: services,  isLoading: servicesLoading } = useProviderServices(providerId)
 
@@ -35,6 +103,13 @@ export default function ProviderDetailPage() {
     const match = services.find((s) => s.id === preselectedServiceId)
     if (match) setSelectedService(match)
   }, [services, preselectedServiceId])
+
+  function handleSelectProvider(p) {
+    setSelectedProvider(p)
+    setSelectedService(null)
+    setSelectedDate(null)
+    setSelectedSlot(null)
+  }
 
   const { data: slotsData, isLoading: slotsLoading, isError: slotsError, refetch: refetchSlots } = useProviderSlots(providerId, selectedDate, selectedService?.id)
   const { data: reviewsData } = useProviderReviews(providerId, reviewPage)
@@ -58,9 +133,9 @@ export default function ProviderDetailPage() {
   }
 
   function handleProceed() {
-    navigate(`/booking/${provider.id}`, {
+    navigate(`/booking/${activeProvider.id}`, {
       state: {
-        providerId:   provider.id,
+        providerId:   activeProvider.id,
         date:         selectedDate,
         slot:         selectedSlot,
         serviceId:    selectedService?.id    ?? null,
@@ -93,6 +168,7 @@ export default function ProviderDetailPage() {
   const serviceRequired = hasServices
   const canPickDate     = !serviceRequired || selectedService !== null
   const providerName    = provider.business_name || provider.full_name
+  const staffName       = provider.full_name && provider.full_name !== provider.business_name ? provider.full_name : null
   const providerSlug    = provider.latin_slug || provider.business_slug
   const category        = provider.category_display || provider.specialty
   const hasRating       = provider.average_rating != null && provider.reviews_count > 0
@@ -159,6 +235,9 @@ export default function ProviderDetailPage() {
                         : <span className="bg-slate-100 text-slate-500 text-xs font-bold px-2.5 py-1 rounded-full">غیرفعال</span>
                       }
                     </div>
+                    {staffName && (
+                      <p className="text-sm font-semibold text-cyan-700 mb-0.5">{staffName} — {provider.specialty}</p>
+                    )}
                     <p className="text-slate-500 text-sm mb-2">{category}</p>
                     <div className="flex items-center gap-3 flex-wrap">
                       {hasRating && (
@@ -201,7 +280,7 @@ export default function ProviderDetailPage() {
               )}
             </div>
 
-            {/* Tabs */}
+            {/* Unified provider + services section */}
             <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
               <div className="flex border-b border-slate-100 px-1">
                 <button
@@ -210,7 +289,7 @@ export default function ProviderDetailPage() {
                     activeTab === 'services' ? 'text-cyan-600 border-cyan-500 font-semibold' : 'text-slate-500 border-transparent hover:text-slate-700'
                   }`}
                 >
-                  خدمات
+                  {hasMultipleProviders ? 'ارائه‌دهندگان و خدمات' : 'خدمات'}
                 </button>
                 <button
                   onClick={() => setActiveTab('reviews')}
@@ -226,53 +305,40 @@ export default function ProviderDetailPage() {
                 {/* Services tab */}
                 {activeTab === 'services' && (
                   <>
-                    {servicesLoading && <Spinner />}
-                    {!hasServices && !servicesLoading && (
-                      <p className="text-sm text-slate-400 text-center py-8">خدمتی تعریف نشده است.</p>
-                    )}
-                    {hasServices && (
-                      <div className="space-y-2">
-                        {services.map((svc) => {
-                          const active = selectedService?.id === svc.id
-                          return (
-                            <div
-                              key={svc.id}
-                              onClick={() => { setSelectedService(svc); setSelectedDate(null); setSelectedSlot(null) }}
-                              className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-colors group ${
-                                active ? 'bg-cyan-50 border border-cyan-200' : 'hover:bg-slate-50'
-                              }`}
-                            >
-                              <div className="flex items-start gap-3">
-                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0 ${
-                                  active ? 'bg-cyan-100' : 'bg-slate-50'
-                                }`}>
-                                  ✂️
-                                </div>
-                                <div>
-                                  <div className={`text-sm font-semibold ${active ? 'text-cyan-700' : 'text-slate-800'}`}>
-                                    {svc.name}
-                                  </div>
-                                  <div className="text-xs text-slate-400 mt-0.5">{svc.duration_minutes} دقیقه</div>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-3">
-                                {Number(svc.price) > 0 && (
-                                  <span className="text-sm font-bold text-slate-700">
-                                    {Number(svc.price).toLocaleString('fa-IR')}ت
-                                  </span>
-                                )}
-                                <button className={`text-xs font-bold px-3 py-1.5 rounded-lg transition-all ${
-                                  active
-                                    ? 'bg-cyan-500 text-white'
-                                    : 'opacity-0 group-hover:opacity-100 bg-cyan-500 text-white'
-                                }`}>
-                                  {active ? '✓ انتخاب شد' : 'انتخاب'}
-                                </button>
-                              </div>
-                            </div>
-                          )
-                        })}
+                    {hasMultipleProviders ? (
+                      <div className="space-y-4">
+                        {siblings.map((sib) => (
+                          <ProviderServiceGroup
+                            key={sib.id}
+                            provider={sib}
+                            selectedProviderId={activeProvider?.id}
+                            selectedServiceId={selectedService?.id}
+                            onSelectService={(svc) => {
+                              handleSelectProvider(sib)
+                              setSelectedService(svc)
+                              setSelectedDate(null)
+                              setSelectedSlot(null)
+                            }}
+                          />
+                        ))}
                       </div>
+                    ) : (
+                      <>
+                        {servicesLoading && <Spinner />}
+                        {!hasServices && !servicesLoading && (
+                          <p className="text-sm text-slate-400 text-center py-8">خدمتی تعریف نشده است.</p>
+                        )}
+                        {hasServices && (
+                          <div className="space-y-2">
+                            {services.map((svc) => {
+                              const active = selectedService?.id === svc.id
+                              return (
+                                <ServiceRow key={svc.id} svc={svc} active={active} onSelect={() => { setSelectedService(svc); setSelectedDate(null); setSelectedSlot(null) }} />
+                              )
+                            })}
+                          </div>
+                        )}
+                      </>
                     )}
                   </>
                 )}
@@ -335,7 +401,7 @@ export default function ProviderDetailPage() {
                 {isAvailable && serviceRequired && !canPickDate && (
                   <div className="bg-cyan-50 border border-cyan-100 rounded-xl p-3">
                     <p className="text-xs text-cyan-700 leading-5">
-                      ابتدا از تب «خدمات» یک خدمت انتخاب کنید.
+                      {hasMultipleProviders ? 'ابتدا یک ارائه‌دهنده و خدمت انتخاب کنید.' : 'ابتدا از تب «خدمات» یک خدمت انتخاب کنید.'}
                     </p>
                   </div>
                 )}
@@ -426,3 +492,4 @@ export default function ProviderDetailPage() {
     </MainLayout>
   )
 }
+

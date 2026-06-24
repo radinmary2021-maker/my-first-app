@@ -62,6 +62,14 @@ class Service(TimeStampedModel):
         related_name='services',
         verbose_name='کسب‌وکار',
     )
+    provider         = models.ForeignKey(
+        'providers.Provider',
+        on_delete=models.CASCADE,
+        related_name='services',
+        verbose_name='ارائه‌دهنده',
+        null=True,
+        blank=True,
+    )
     name             = models.CharField(max_length=150, verbose_name='نام خدمت')
     description      = models.TextField(blank=True, verbose_name='توضیحات')
     duration_minutes = models.PositiveSmallIntegerField(
