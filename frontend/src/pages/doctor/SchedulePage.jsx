@@ -7,6 +7,7 @@ import Spinner from '../../components/Spinner'
 import ErrorMessage from '../../components/ErrorMessage'
 import { CalendarCheckIcon, CalendarXIcon, ChevronRightIcon } from '../../components/Icon'
 import { notify } from '../../utils/toast'
+import { toJalali } from '../../utils/jalali'
 import {
   useMyWorkingHours,
   useBulkUpdateWorkingHours,
@@ -18,6 +19,7 @@ import {
   useUpdateService,
   useDeleteService,
 } from '../../hooks/useDoctorSchedule'
+import { useBusinessProviders } from '../../hooks/useBusinessProviders'
 
 const WEEKDAYS = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه']
 
@@ -72,7 +74,7 @@ const inputCls = 'w-full text-sm border border-gray-200 rounded-lg px-3 py-2.5 f
 
 // ── Services section ──────────────────────────────────────────────────────────
 
-const EMPTY_FORM = { name: '', duration_minutes: '30', buffer_minutes: '0', price: '0', description: '' }
+const EMPTY_FORM = { name: '', duration_minutes: '30', buffer_minutes: '0', price: '0', description: '', provider: '' }
 
 function serviceToForm(svc) {
   return {
@@ -88,6 +90,8 @@ function ServicesSection() {
   const [showInactive, setShowInactive] = useState(false)
 
   const { data: services, isLoading, isError, refetch } = useMyServicesList(showInactive)
+  const { data: providers } = useBusinessProviders()
+  const hasMultipleProviders = (providers?.length ?? 0) > 1
   const { mutate: addService,  isPending: adding  } = useCreateService()
   const { mutate: saveService, isPending: saving  } = useUpdateService()
   const { mutate: removeService                   } = useDeleteService()
@@ -670,7 +674,7 @@ function TimeOffSection({ providerId }) {
         return (
           <Card key={t.id}>
             <div className="flex items-center gap-3 text-sm flex-wrap">
-              <span className="font-mono font-medium text-gray-800" dir="ltr">{t.date}</span>
+              <span className="font-medium text-gray-800">{toJalali(t.date)}</span>
               <Badge variant={isFullDay ? 'danger' : 'warning'}>
                 {isFullDay ? 'تمام روز' : 'جزئی'}
               </Badge>

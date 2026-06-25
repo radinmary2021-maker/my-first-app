@@ -52,7 +52,7 @@ function ProviderServiceGroup({ provider: sib, selectedProviderId, selectedServi
   return (
     <div className={`rounded-2xl border p-4 transition-all ${isThisProvider ? 'border-cyan-200 bg-cyan-50/30' : 'border-slate-100'}`}>
       <div className="flex items-center gap-3 mb-3">
-        <ImageAvatar src={sib.avatar || sib.logo} alt={sib.full_name} fallbackText={sib.full_name} size="w-12 h-12" shape="rounded-xl" />
+        <ImageAvatar src={sib.avatar} alt={sib.full_name} fallbackText={sib.full_name} size="w-12 h-12" shape="rounded-xl" />
         <div className="flex-1 min-w-0">
           <div className={`text-sm font-bold ${isThisProvider ? 'text-cyan-700' : 'text-slate-800'}`}>{sib.full_name}</div>
           {sib.specialty && <div className="text-xs text-slate-400">{sib.specialty}</div>}
@@ -455,7 +455,7 @@ export default function ProviderDetailPage() {
                     {selectedDate && (
                       <div className="flex items-center justify-between text-xs">
                         <span className="text-slate-500">تاریخ</span>
-                        <span className="font-semibold text-slate-700" dir="ltr">{selectedDate}</span>
+                        <span className="font-semibold text-slate-700">{toJalali(selectedDate)}</span>
                       </div>
                     )}
                     {selectedSlot && (

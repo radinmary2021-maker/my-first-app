@@ -16,6 +16,7 @@ class ProviderSerializer(serializers.ModelSerializer):
 
     business_id = serializers.IntegerField(source='business.id', read_only=True, default=None)
     logo        = serializers.SerializerMethodField()
+    avatar      = serializers.SerializerMethodField()
 
     class Meta:
         model  = Provider
@@ -26,12 +27,17 @@ class ProviderSerializer(serializers.ModelSerializer):
             'available_weekdays',
             'average_rating', 'reviews_count',
             'business_slug', 'latin_slug',
-            'logo', 'services_preview',
+            'logo', 'avatar', 'services_preview',
         ]
 
     def get_logo(self, obj):
         if obj.business and obj.business.logo:
             return obj.business.logo.url
+        return None
+
+    def get_avatar(self, obj):
+        if obj.avatar:
+            return obj.avatar.url
         return None
 
     services_preview = serializers.SerializerMethodField()
