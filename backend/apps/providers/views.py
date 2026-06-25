@@ -52,18 +52,39 @@ def _normalize_persian(text: str) -> str:
     )
 
 
+_CATEGORY_KEYWORDS = {
+    'beauty':        ['آرایش', 'زیبایی', 'آرایشگاه', 'سالن'],
+    'fitness':       ['ورزش', 'باشگاه', 'فیتنس', 'بدنسازی', 'تناسب'],
+    'education':     ['آموزش', 'آموزشگاه', 'کلاس', 'تدریس'],
+    'psychological': ['مشاوره', 'روانشناس', 'روان'],
+    'veterinary':    ['دامپزشک', 'دامپزشکی', 'حیوان'],
+    'automotive':    ['خودرو', 'ماشین', 'مکانیک', 'تعمیرگاه'],
+    'medical':       ['پزشک', 'کلینیک', 'دکتر', 'درمانگاه'],
+}
+
+
+def _keyword_to_categories(word):
+    word_norm = _normalize_persian(word)
+    matched = []
+    for cat, keywords in _CATEGORY_KEYWORDS.items():
+        for kw in keywords:
+            if word_norm in _normalize_persian(kw) or _normalize_persian(kw) in word_norm:
+                matched.append(cat)
+                break
+    return matched
+
+
 class ProviderListView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        qs = Provider.objects.filter(is_active=True).select_related('user', 'business').prefetch_related('reviews', 'business__services')
+        qs = Provider.objects.filter(is_active=True).select_related('user', 'business').prefetch_related('reviews', 'business__services', 'provider_services')
         category = request.query_params.get('category')
         if category:
             qs = qs.filter(category=category)
         q_raw = request.query_params.get('q', '').strip()
-        q_norm = _normalize_persian(q_raw)
         if q_raw:
-            fields = ['user__full_name', 'specialty', 'business_name', 'business__name', 'category']
+            fields = ['user__full_name', 'specialty', 'business_name', 'business__name', 'bio']
             words = q_raw.split()
             for word in words:
                 word_norm = _normalize_persian(word)
@@ -72,6 +93,9 @@ class ProviderListView(APIView):
                     word_q |= Q(**{f'{f}__icontains': word})
                     if word_norm != word:
                         word_q |= Q(**{f'{f}__icontains': word_norm})
+                cat_matches = _keyword_to_categories(word)
+                for cat in cat_matches:
+                    word_q |= Q(category=cat)
                 qs = qs.filter(word_q)
         return Response(ProviderSerializer(qs, many=True, context={'request': request}).data)
 
@@ -144,13 +168,7 @@ class ProviderServicesView(APIView):
             return Response({'error': 'ارائه‌دهنده یافت نشد.'}, status=status.HTTP_404_NOT_FOUND)
 
         own_services = ProviderServiceModel.objects.filter(provider=provider, is_active=True)
-        if own_services.exists():
-            return Response(ProviderServiceSerializer(own_services, many=True).data)
-
-        services = Service.objects.filter(
-            business=provider.business, is_active=True,
-        ).order_by('name')
-        return Response(ServiceSerializer(services, many=True).data)
+        return Response(ProviderServiceSerializer(own_services, many=True).data)
 
 
 class ProviderAvailableSlotsView(APIView):
