@@ -45,30 +45,44 @@ function ServiceRow({ svc, active, onSelect }) {
   )
 }
 
-function ProviderServiceGroup({ provider: sib, selectedProviderId, selectedServiceId, onSelectService }) {
-  const { data: svcList, isLoading } = useProviderServices(sib.id)
+function ProviderServiceGroup({ provider: sib, selectedProviderId, selectedServiceId, onSelectProvider, onSelectService }) {
   const isThisProvider = selectedProviderId === sib.id
+  const { data: svcList, isLoading } = useProviderServices(isThisProvider ? sib.id : null)
+  const description = sib.bio || sib.specialty || (sib.services_preview?.length > 0 ? sib.services_preview.join('، ') : '')
 
   return (
-    <div className={`rounded-2xl border p-4 transition-colors ${isThisProvider ? 'border-cyan-200 bg-cyan-50/30' : 'border-slate-100'}`}>
-      <div className="flex items-center gap-3 mb-3">
-        <ImageAvatar src={sib.logo} alt={sib.full_name} fallbackText={sib.full_name} size="w-11 h-11" shape="rounded-xl" />
-        <div>
+    <div className={`rounded-2xl border transition-all ${isThisProvider ? 'border-cyan-200 bg-cyan-50/30' : 'border-slate-100'}`}>
+      <div
+        onClick={() => onSelectProvider(sib)}
+        className="flex items-center gap-3 p-4 cursor-pointer"
+      >
+        <ImageAvatar src={sib.avatar || sib.logo} alt={sib.full_name} fallbackText={sib.full_name} size="w-14 h-14" shape="rounded-xl" />
+        <div className="flex-1 min-w-0">
           <div className={`text-sm font-bold ${isThisProvider ? 'text-cyan-700' : 'text-slate-800'}`}>{sib.full_name}</div>
-          <div className="text-xs text-slate-400">{sib.specialty}</div>
+          {description && <div className="text-xs text-slate-500 mt-0.5 line-clamp-2">{description}</div>}
+        </div>
+        <div className={`text-xs font-bold px-4 py-2 rounded-xl shrink-0 transition-colors ${
+          isThisProvider ? 'bg-cyan-500 text-white' : 'bg-slate-100 text-slate-500 hover:bg-cyan-50 hover:text-cyan-600'
+        }`}>
+          {isThisProvider ? '✓ انتخاب شد' : 'انتخاب'}
         </div>
       </div>
-      {isLoading && <Spinner />}
-      {svcList && svcList.length > 0 && (
-        <div className="space-y-1.5">
-          {svcList.map((svc) => {
-            const active = isThisProvider && selectedServiceId === svc.id
-            return <ServiceRow key={svc.id} svc={svc} active={active} onSelect={() => onSelectService(svc)} />
-          })}
+
+      {isThisProvider && (
+        <div className="px-4 pb-4 pt-1 border-t border-cyan-100">
+          <p className="text-xs font-bold text-slate-600 mb-2">خدمات:</p>
+          {isLoading && <Spinner />}
+          {svcList && svcList.length > 0 && (
+            <div className="space-y-1.5">
+              {svcList.map((svc) => (
+                <ServiceRow key={svc.id} svc={svc} active={selectedServiceId === svc.id} onSelect={() => onSelectService(svc)} />
+              ))}
+            </div>
+          )}
+          {svcList && svcList.length === 0 && (
+            <p className="text-xs text-slate-400 py-2">خدمتی تعریف نشده.</p>
+          )}
         </div>
-      )}
-      {svcList && svcList.length === 0 && (
-        <p className="text-xs text-slate-400 text-center py-3">خدمتی تعریف نشده.</p>
       )}
     </div>
   )
@@ -313,8 +327,13 @@ export default function ProviderDetailPage() {
                             provider={sib}
                             selectedProviderId={activeProvider?.id}
                             selectedServiceId={selectedService?.id}
+                            onSelectProvider={(p) => {
+                              handleSelectProvider(p)
+                              setSelectedService(null)
+                              setSelectedDate(null)
+                              setSelectedSlot(null)
+                            }}
                             onSelectService={(svc) => {
-                              handleSelectProvider(sib)
                               setSelectedService(svc)
                               setSelectedDate(null)
                               setSelectedSlot(null)
