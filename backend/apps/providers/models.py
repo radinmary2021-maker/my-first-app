@@ -72,6 +72,21 @@ class Provider(models.Model):
         return f'{self.business_name} ({self.get_category_display()})'
 
 
+class ProviderService(models.Model):
+    provider         = models.ForeignKey(Provider, on_delete=models.CASCADE, related_name='provider_services')
+    name             = models.CharField(max_length=100, verbose_name='نام خدمت')
+    price            = models.PositiveIntegerField(default=0, verbose_name='قیمت (تومان)')
+    duration_minutes = models.PositiveSmallIntegerField(default=30, verbose_name='مدت (دقیقه)')
+    is_active        = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = 'provider_services'
+        ordering = ['name']
+
+    def __str__(self):
+        return f'{self.name} — {self.provider.user.full_name}'
+
+
 # WeeklySchedule and ScheduleException have been replaced by:
 #   apps.scheduling.WorkingHours  (weekly availability grid)
 #   apps.scheduling.TimeOff       (date-specific exceptions)

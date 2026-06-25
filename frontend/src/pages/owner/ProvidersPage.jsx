@@ -219,7 +219,39 @@ function ProviderFormModal({ title, initialValues = {}, editMode = false, onClos
   const [fullName,  setFullName]  = useState(initialValues.full_name || '')
   const [specialty, setSpecialty] = useState(initialValues.specialty || '')
   const [bio,       setBio]       = useState(initialValues.bio       || '')
+  const [services,  setServices]  = useState([])
   const [errors,    setErrors]    = useState({})
+  const [savingServices, setSavingServices] = useState(false)
+
+  const providerId = initialValues.id
+
+  useState(() => {
+    if (editMode && providerId) {
+      import('../../api/providers').then(({ getProviderOwnServices }) => {
+        getProviderOwnServices(providerId)
+          .then((data) => setServices(data.map((s) => ({ ...s, _saved: true }))))
+          .catch(() => {})
+      })
+    }
+  }, [editMode, providerId])
+
+  function addServiceRow() {
+    setServices((prev) => [...prev, { name: '', price: '', duration_minutes: 30, _saved: false }])
+  }
+
+  function updateServiceRow(idx, field, value) {
+    setServices((prev) => prev.map((s, i) => i === idx ? { ...s, [field]: value, _saved: false } : s))
+  }
+
+  function removeServiceRow(idx) {
+    const svc = services[idx]
+    if (svc.id && providerId) {
+      import('../../api/providers').then(({ deleteProviderOwnService }) => {
+        deleteProviderOwnService(providerId, svc.id).catch(() => {})
+      })
+    }
+    setServices((prev) => prev.filter((_, i) => i !== idx))
+  }
 
   function validate() {
     if (editMode) return {}
@@ -233,6 +265,19 @@ function ProviderFormModal({ title, initialValues = {}, editMode = false, onClos
     return errs
   }
 
+  async function saveServices(pid) {
+    const { createProviderOwnService, updateProviderOwnService } = await import('../../api/providers')
+    for (const svc of services) {
+      if (!svc.name?.trim()) continue
+      const data = { name: svc.name.trim(), price: Number(svc.price) || 0, duration_minutes: Number(svc.duration_minutes) || 30 }
+      if (svc.id) {
+        await updateProviderOwnService(pid, svc.id, data).catch(() => {})
+      } else {
+        await createProviderOwnService(pid, data).catch(() => {})
+      }
+    }
+  }
+
   function handleSubmit(e) {
     e.preventDefault()
     const errs = validate()
@@ -242,7 +287,15 @@ function ProviderFormModal({ title, initialValues = {}, editMode = false, onClos
       ? { specialty: specialty.trim(), bio: bio.trim() }
       : { phone: phone.trim(), full_name: fullName.trim(), specialty: specialty.trim(), bio: bio.trim() }
     mutate(payload, {
-      onSuccess: () => onSuccess?.(),
+      onSuccess: async (result) => {
+        const pid = result?.id || providerId
+        if (pid && services.length > 0) {
+          setSavingServices(true)
+          await saveServices(pid)
+          setSavingServices(false)
+        }
+        onSuccess?.()
+      },
       onError: (err) => {
         const data = err?.response?.data
         const fieldErrors = {}
@@ -258,8 +311,8 @@ function ProviderFormModal({ title, initialValues = {}, editMode = false, onClos
   const inputCls = "w-full border-2 border-cyan-100 rounded-xl px-4 py-3 text-sm text-slate-700 outline-none focus:border-cyan-400 focus:bg-white transition-colors"
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4" role="dialog" aria-modal="true" aria-label={title}>
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 space-y-5" dir="rtl">
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4 overflow-y-auto" role="dialog" aria-modal="true" aria-label={title}>
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-5 my-8" dir="rtl">
         <div className="flex items-center justify-between">
           <h2 className="text-base font-bold text-slate-800">{title}</h2>
           <button type="button" onClick={onClose} aria-label="بستن" className="text-slate-400 hover:text-slate-600 text-2xl leading-none">×</button>
@@ -281,16 +334,57 @@ function ProviderFormModal({ title, initialValues = {}, editMode = false, onClos
           )}
           <div>
             <label htmlFor="provider-specialty" className="block text-xs font-bold text-slate-600 mb-2">تخصص</label>
-            <input id="provider-specialty" type="text" value={specialty} onChange={(e) => setSpecialty(e.target.value)} placeholder="مثال: آرایشگر، مربی" className={inputCls} style={{ background: '#F0FDFF' }} />
+            <input id="provider-specialty" type="text" value={specialty} onChange={(e) => setSpecialty(e.target.value)} placeholder="مثال: ناخن‌کار، مربی بدنسازی" className={inputCls} style={{ background: '#F0FDFF' }} />
           </div>
           <div>
-            <label htmlFor="provider-bio" className="block text-xs font-bold text-slate-600 mb-2">بیوگرافی</label>
-            <textarea id="provider-bio" value={bio} onChange={(e) => setBio(e.target.value)} rows={3} placeholder="معرفی کوتاه..." className={`${inputCls} resize-none`} style={{ background: '#F0FDFF' }} />
+            <label htmlFor="provider-bio" className="block text-xs font-bold text-slate-600 mb-2">توضیحات</label>
+            <textarea id="provider-bio" value={bio} onChange={(e) => setBio(e.target.value)} rows={2} placeholder="معرفی کوتاه..." className={`${inputCls} resize-none`} style={{ background: '#F0FDFF' }} />
           </div>
+
+          {/* Services section */}
+          <div className="border-t border-slate-100 pt-4">
+            <div className="flex items-center justify-between mb-3">
+              <label className="text-xs font-bold text-slate-600">خدمات</label>
+              <button type="button" onClick={addServiceRow}
+                      className="text-xs font-bold text-cyan-600 hover:text-cyan-700 flex items-center gap-1">
+                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14" strokeLinecap="round" /></svg>
+                افزودن خدمت
+              </button>
+            </div>
+            {services.length === 0 && (
+              <p className="text-xs text-slate-400 text-center py-3">هنوز خدمتی تعریف نشده. دکمه «افزودن خدمت» را بزنید.</p>
+            )}
+            <div className="space-y-3">
+              {services.map((svc, idx) => (
+                <div key={svc.id || `new-${idx}`} className="bg-slate-50 rounded-xl p-3 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <input type="text" value={svc.name} onChange={(e) => updateServiceRow(idx, 'name', e.target.value)}
+                           placeholder="نام خدمت" className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-cyan-400" />
+                    <button type="button" onClick={() => removeServiceRow(idx)} className="text-slate-400 hover:text-red-500 shrink-0">
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
+                    </button>
+                  </div>
+                  <div className="flex gap-2">
+                    <div className="flex-1">
+                      <label className="text-xs text-slate-400 mb-1 block">قیمت (تومان)</label>
+                      <input type="number" value={svc.price} onChange={(e) => updateServiceRow(idx, 'price', e.target.value)}
+                             placeholder="0" dir="ltr" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-left outline-none focus:border-cyan-400" />
+                    </div>
+                    <div className="w-24">
+                      <label className="text-xs text-slate-400 mb-1 block">مدت (دقیقه)</label>
+                      <input type="number" value={svc.duration_minutes} onChange={(e) => updateServiceRow(idx, 'duration_minutes', e.target.value)}
+                             placeholder="30" dir="ltr" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-left outline-none focus:border-cyan-400" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {errors.general && <ErrorMessage message={errors.general} />}
           <div className="flex gap-3 pt-1">
-            <Button type="submit" variant="primary" fullWidth loading={isPending}>ذخیره</Button>
-            <Button type="button" variant="ghost" fullWidth disabled={isPending} onClick={onClose}>انصراف</Button>
+            <Button type="submit" variant="primary" fullWidth loading={isPending || savingServices}>ذخیره</Button>
+            <Button type="button" variant="ghost" fullWidth disabled={isPending || savingServices} onClick={onClose}>انصراف</Button>
           </div>
         </form>
       </div>

@@ -13,6 +13,9 @@ from common.exceptions import ProviderAlreadyExistsError
 from common.mixins import BusinessContextMixin
 from common.permissions import IsBusinessMember, IsBusinessOwner
 
+from .models import ProviderService as ProviderServiceModel
+from .serializers import ProviderServiceSerializer
+
 from .models import BusinessCategory, Provider
 from .serializers import (
     AvailableSlotsSerializer,
@@ -140,17 +143,13 @@ class ProviderServicesView(APIView):
         except Provider.DoesNotExist:
             return Response({'error': 'ارائه‌دهنده یافت نشد.'}, status=status.HTTP_404_NOT_FOUND)
 
+        own_services = ProviderServiceModel.objects.filter(provider=provider, is_active=True)
+        if own_services.exists():
+            return Response(ProviderServiceSerializer(own_services, many=True).data)
+
         services = Service.objects.filter(
-            business=provider.business,
-            is_active=True,
-            provider=provider,
+            business=provider.business, is_active=True,
         ).order_by('name')
-        if not services.exists():
-            services = Service.objects.filter(
-                business=provider.business,
-                is_active=True,
-                provider__isnull=True,
-            ).order_by('name')
         return Response(ServiceSerializer(services, many=True).data)
 
 
@@ -297,4 +296,59 @@ class BusinessProviderDetailView(BusinessContextMixin, APIView):
             )
 
         ProviderService.deactivate_provider(provider)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ProviderServiceListCreateView(BusinessContextMixin, APIView):
+    permission_classes = [IsAuthenticated, IsBusinessOwner]
+
+    def _get_provider(self, provider_id):
+        try:
+            return Provider.objects.get(pk=provider_id, business=self.business)
+        except Provider.DoesNotExist:
+            return None
+
+    def get(self, request, provider_id):
+        provider = self._get_provider(provider_id)
+        if not provider:
+            return Response({'error': 'ارائه‌دهنده یافت نشد.'}, status=status.HTTP_404_NOT_FOUND)
+        services = ProviderServiceModel.objects.filter(provider=provider, is_active=True)
+        return Response(ProviderServiceSerializer(services, many=True).data)
+
+    def post(self, request, provider_id):
+        provider = self._get_provider(provider_id)
+        if not provider:
+            return Response({'error': 'ارائه‌دهنده یافت نشد.'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = ProviderServiceSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(provider=provider)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class ProviderServiceDetailView(BusinessContextMixin, APIView):
+    permission_classes = [IsAuthenticated, IsBusinessOwner]
+
+    def _get_service(self, provider_id, service_id):
+        try:
+            return ProviderServiceModel.objects.select_related('provider').get(
+                pk=service_id, provider_id=provider_id, provider__business=self.business,
+            )
+        except ProviderServiceModel.DoesNotExist:
+            return None
+
+    def patch(self, request, provider_id, service_id):
+        svc = self._get_service(provider_id, service_id)
+        if not svc:
+            return Response({'error': 'خدمت یافت نشد.'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = ProviderServiceSerializer(svc, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    def delete(self, request, provider_id, service_id):
+        svc = self._get_service(provider_id, service_id)
+        if not svc:
+            return Response({'error': 'خدمت یافت نشد.'}, status=status.HTTP_404_NOT_FOUND)
+        svc.is_active = False
+        svc.save(update_fields=['is_active'])
         return Response(status=status.HTTP_204_NO_CONTENT)
