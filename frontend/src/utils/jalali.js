@@ -57,3 +57,25 @@ export function toJalali(gregorianDateStr) {
   const [jy, jm, jd] = _g2j(gy, gm, gd)
   return `${toFa(jd)} ${JALALI_MONTH_NAMES[jm - 1]} ${toFa(jy)}`
 }
+
+const WEEKDAY_NAMES = ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه']
+
+/**
+ * Convert "YYYY-MM-DD" to Jalali with optional weekday.
+ * { withWeekday: true }  → "یکشنبه ۳۰ فروردین"
+ * { withYear: true }     → "۳۰ فروردین ۱۴۰۴"  (default)
+ */
+export function formatJalaliDate(gregorianDateStr, { withWeekday = false, withYear = true } = {}) {
+  if (!gregorianDateStr) return ''
+  const [gy, gm, gd] = gregorianDateStr.split('-').map(Number)
+  const [jy, jm, jd] = _g2j(gy, gm, gd)
+  const dayMonth = `${toFa(jd)} ${JALALI_MONTH_NAMES[jm - 1]}`
+  const parts = []
+  if (withWeekday) {
+    const dt = new Date(gy, gm - 1, gd)
+    parts.push(WEEKDAY_NAMES[dt.getDay()])
+  }
+  parts.push(dayMonth)
+  if (withYear) parts.push(toFa(jy))
+  return parts.join(' ')
+}
