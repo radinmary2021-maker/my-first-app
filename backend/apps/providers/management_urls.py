@@ -10,7 +10,12 @@ Mounted at /api/v1/businesses/ in config/urls.py — so the full paths are:
 
 from django.urls import path
 
-from .views import BusinessProviderListView, BusinessProviderDetailView
+from .views import (
+    BusinessProviderListView,
+    BusinessProviderDetailView,
+    ProviderServiceListCreateView,
+    ProviderServiceDetailView,
+)
 
 urlpatterns = [
     path(
@@ -22,5 +27,15 @@ urlpatterns = [
         'me/providers/<int:provider_id>/',
         BusinessProviderDetailView.as_view(),
         name='business-provider-detail',
+    ),
+    path(
+        'me/providers/<int:provider_id>/services/',
+        ProviderServiceListCreateView.as_view(),
+        name='provider-service-list',
+    ),
+    path(
+        'me/providers/<int:provider_id>/services/<int:service_id>/',
+        ProviderServiceDetailView.as_view(),
+        name='provider-service-detail',
     ),
 ]

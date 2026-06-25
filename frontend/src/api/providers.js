@@ -138,6 +138,24 @@ export function deactivateBusinessProvider(providerId) {
   return client.delete(`/api/v1/businesses/me/providers/${providerId}/`)
 }
 
+// ── Provider services (per-provider) ─────────────────────────────────────────
+
+export function getProviderOwnServices(providerId) {
+  return client.get(`/api/v1/businesses/me/providers/${providerId}/services/`).then((r) => r.data)
+}
+
+export function createProviderOwnService(providerId, data) {
+  return client.post(`/api/v1/businesses/me/providers/${providerId}/services/`, data).then((r) => r.data)
+}
+
+export function updateProviderOwnService(providerId, serviceId, data) {
+  return client.patch(`/api/v1/businesses/me/providers/${providerId}/services/${serviceId}/`, data).then((r) => r.data)
+}
+
+export function deleteProviderOwnService(providerId, serviceId) {
+  return client.delete(`/api/v1/businesses/me/providers/${providerId}/services/${serviceId}/`)
+}
+
 // ── Business CRUD (owner only) ────────────────────────────────────────────────
 
 /**

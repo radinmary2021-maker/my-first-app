@@ -2,7 +2,7 @@ import re
 
 from rest_framework import serializers
 
-from .models import BusinessCategory, Provider
+from .models import BusinessCategory, Provider, ProviderService
 
 
 class ProviderSerializer(serializers.ModelSerializer):
@@ -37,11 +37,13 @@ class ProviderSerializer(serializers.ModelSerializer):
     services_preview = serializers.SerializerMethodField()
 
     def get_services_preview(self, obj):
+        own = list(obj.provider_services.filter(is_active=True).values_list('name', flat=True)[:5])
+        if own:
+            return own
         if not obj.business:
             return []
         from apps.scheduling.models import Service
-        services = Service.objects.filter(business=obj.business, is_active=True).values_list('name', flat=True)[:5]
-        return list(services)
+        return list(Service.objects.filter(business=obj.business, is_active=True).values_list('name', flat=True)[:5])
 
     def get_average_rating(self, obj) -> float | None:
         reviews = list(obj.reviews.all())  # uses prefetch cache when available
@@ -67,6 +69,13 @@ class ProviderSerializer(serializers.ModelSerializer):
                 business=obj.business, provider__isnull=True, is_active=True
             )
         return list(qs.order_by('weekday').values_list('weekday', flat=True))
+
+
+class ProviderServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = ProviderService
+        fields = ['id', 'name', 'price', 'duration_minutes', 'is_active']
+        read_only_fields = ['id']
 
 
 class UpdateProviderProfileSerializer(serializers.ModelSerializer):
