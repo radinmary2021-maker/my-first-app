@@ -17,8 +17,8 @@ export default function MainLayout({ children, fullWidth = false }) {
   const navLinkCls = ({ isActive }) =>
     `px-3 py-2 rounded-lg font-medium transition-colors text-sm ${
       isActive
-        ? 'bg-cyan-50 text-cyan-700'
-        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+        ? 'text-[#00D4C8]'
+        : 'text-[#4A6E8A] hover:text-[#00D4C8]'
     }`
 
   const isBiz = user && isBusinessUser(user.role)
@@ -65,52 +65,49 @@ export default function MainLayout({ children, fullWidth = false }) {
   const navLinks = isBiz ? bizNavLinks : publicNavLinks
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col" dir="rtl">
+    <div className="min-h-screen flex flex-col" style={{ background: '#070D14', color: '#DCF0F5' }} dir="rtl">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:right-2 focus:z-50
-                   focus:bg-white focus:text-cyan-700 focus:px-4 focus:py-2 focus:rounded-lg
-                   focus:shadow-lg focus:font-medium focus:text-sm"
+                   focus:px-4 focus:py-2 focus:rounded-lg focus:font-medium focus:text-sm"
+        style={{ background: '#0C1520', color: '#00D4C8' }}
       >
         رفتن به محتوا
       </a>
 
       {/* ── Header ── */}
-      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-30" style={{ background: 'rgba(7,13,20,0.9)', backdropFilter: 'blur(24px)', borderBottom: '1px solid rgba(0,212,200,0.09)' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4" style={{ height: '66px' }}>
 
           {/* Logo */}
-          <button onClick={() => navigate('/')} className="flex items-center gap-2 shrink-0 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-600 to-cyan-400
-                            flex items-center justify-center shadow-sm shadow-cyan-200
-                            group-hover:shadow-cyan-300/60 transition-shadow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="w-5 h-5">
+          <button onClick={() => navigate('/')} className="flex items-center gap-2.5 shrink-0 group">
+            <div className="w-[38px] h-[38px] rounded-[11px] flex items-center justify-center"
+                 style={{ background: 'linear-gradient(135deg,#00D4C8,#00A8FF)', boxShadow: '0 0 20px rgba(0,212,200,0.35)' }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" className="w-[19px] h-[19px]">
                 <rect x="3" y="4" width="18" height="18" rx="3" />
-                <path d="M3 9h18" />
-                <path d="M8 2v4M16 2v4" strokeLinecap="round" />
-                <path d="M8 13h2M14 13h2M8 17h2M14 17h2" strokeLinecap="round" />
+                <path d="M3 9h18" /><path d="M8 2v4M16 2v4" strokeLinecap="round" />
+                <path d="M8 13h2M14 13h2M8 17h2" strokeLinecap="round" />
               </svg>
             </div>
-            <span className="text-lg font-extrabold tracking-tight"
-                  style={{ background: 'linear-gradient(135deg,#0891B2,#06B6D4)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            <span className="text-[19px] font-black" style={{ letterSpacing: '-0.02em', background: 'linear-gradient(135deg,#00D4C8,#00A8FF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               Nobatic
             </span>
           </button>
 
           {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-1 shrink-0" aria-label="منوی اصلی">
+          <nav className="hidden lg:flex items-center gap-0.5 shrink-0" aria-label="منوی اصلی">
             {navLinks}
           </nav>
 
           {/* Right side */}
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-2.5 shrink-0">
             {user ? (
               <div className="hidden sm:flex items-center gap-2 text-sm">
                 <NavLink
                   to="/profile"
                   className={({ isActive }) =>
                     `px-3 py-2 rounded-lg font-semibold transition-all ${
-                      isActive ? 'text-cyan-700 bg-cyan-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                      isActive ? 'text-[#00D4C8]' : 'text-[#4A6E8A] hover:text-[#00D4C8]'
                     }`
                   }
                 >
@@ -118,7 +115,8 @@ export default function MainLayout({ children, fullWidth = false }) {
                 </NavLink>
                 <button
                   onClick={handleLogout}
-                  className="px-3 py-2 rounded-lg text-red-500 hover:text-red-700 hover:bg-red-50 transition-all font-medium text-sm"
+                  className="px-3 py-2 rounded-lg text-red-400 hover:text-red-300 transition-all font-medium text-sm"
+                  style={{ background: 'rgba(239,68,68,0.08)' }}
                 >
                   خروج
                 </button>
@@ -127,14 +125,19 @@ export default function MainLayout({ children, fullWidth = false }) {
               <>
                 <button
                   onClick={() => navigate('/create-business')}
-                  className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-slate-700 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
+                  className="hidden sm:flex items-center gap-1.5 text-sm font-bold px-5 py-2.5 rounded-xl cursor-pointer transition-all"
+                  style={{ color: '#00D4C8', border: '1px solid rgba(0,212,200,0.3)', background: 'transparent' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(0,212,200,0.08)'; e.currentTarget.style.borderColor = 'rgba(0,212,200,0.6)' }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(0,212,200,0.3)' }}
                 >
                   ثبت کسب‌وکار
                 </button>
                 <button
                   onClick={() => navigate('/login')}
-                  className="bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-semibold px-4 py-2.5 rounded-xl
-                             shadow-sm shadow-cyan-200 transition-colors"
+                  className="text-white text-sm font-extrabold px-5 py-2.5 rounded-xl cursor-pointer transition-all"
+                  style={{ background: 'linear-gradient(135deg,#FF6B2B,#FF4500)', boxShadow: '0 0 24px rgba(255,107,43,0.35)' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 0 36px rgba(255,107,43,0.5)' }}
+                  onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 0 24px rgba(255,107,43,0.35)' }}
                 >
                   ورود / ثبت‌نام
                 </button>
@@ -143,7 +146,8 @@ export default function MainLayout({ children, fullWidth = false }) {
 
             {/* Mobile hamburger */}
             <button
-              className="lg:hidden p-2 rounded-lg text-slate-500 hover:bg-slate-100 transition-colors"
+              className="lg:hidden p-2 rounded-lg transition-colors"
+              style={{ color: '#4A6E8A' }}
               onClick={() => setMobileOpen((v) => !v)}
               aria-label={mobileOpen ? 'بستن منو' : 'باز کردن منو'}
               aria-expanded={mobileOpen}
@@ -165,33 +169,35 @@ export default function MainLayout({ children, fullWidth = false }) {
 
       {/* ── Mobile dropdown nav ── */}
       {mobileOpen && (
-        <div className="lg:hidden bg-white border-b border-slate-100 shadow-sm px-4 py-3 space-y-1 z-20 relative">
+        <div className="lg:hidden px-4 py-3 space-y-1 z-20 relative" style={{ background: '#0C1520', borderBottom: '1px solid rgba(0,212,200,0.09)' }}>
           <nav className="flex flex-col gap-1 text-sm" aria-label="منوی موبایل">
             {navLinks}
           </nav>
           {user ? (
-            <div className="pt-2 border-t border-slate-100 mt-2 flex flex-col gap-1 text-sm">
+            <div className="pt-2 mt-2 flex flex-col gap-1 text-sm" style={{ borderTop: '1px solid rgba(0,212,200,0.07)' }}>
               <NavLink to="/profile" className={navLinkCls} onClick={() => setMobileOpen(false)}>
                 {user.full_name || user.phone}
               </NavLink>
               <button
                 onClick={() => { handleLogout(); setMobileOpen(false) }}
-                className="px-3 py-2 rounded-lg text-right text-red-500 hover:bg-red-50 transition-all font-medium"
+                className="px-3 py-2 rounded-lg text-right text-red-400 hover:text-red-300 transition-all font-medium"
               >
                 خروج
               </button>
             </div>
           ) : (
-            <div className="pt-2 border-t border-slate-100 mt-2 space-y-2">
+            <div className="pt-2 mt-2 space-y-2" style={{ borderTop: '1px solid rgba(0,212,200,0.07)' }}>
               <button
                 onClick={() => { navigate('/create-business'); setMobileOpen(false) }}
-                className="w-full text-sm font-semibold text-slate-700 px-4 py-2.5 rounded-xl hover:bg-slate-50 transition-colors border border-slate-200"
+                className="w-full text-sm font-bold px-4 py-2.5 rounded-xl transition-colors"
+                style={{ color: '#00D4C8', border: '1px solid rgba(0,212,200,0.3)', background: 'transparent' }}
               >
                 ثبت کسب‌وکار
               </button>
               <button
                 onClick={() => { navigate('/login'); setMobileOpen(false) }}
-                className="w-full bg-cyan-500 text-white text-sm font-semibold px-4 py-2.5 rounded-xl hover:bg-cyan-600 transition-all"
+                className="w-full text-white text-sm font-extrabold px-4 py-2.5 rounded-xl transition-all"
+                style={{ background: 'linear-gradient(135deg,#FF6B2B,#FF4500)', boxShadow: '0 0 24px rgba(255,107,43,0.35)' }}
               >
                 ورود / ثبت‌نام
               </button>
@@ -206,60 +212,61 @@ export default function MainLayout({ children, fullWidth = false }) {
       </main>
 
       {/* ── Footer ── */}
-      <footer className="bg-slate-900 text-slate-300">
+      <footer style={{ background: '#0C1520', borderTop: '1px solid rgba(0,212,200,0.08)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
 
             {/* Brand */}
             <div className="lg:col-span-1">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-600 to-cyan-400 flex items-center justify-center">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="w-4 h-4">
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="w-8 h-8 rounded-[9px] flex items-center justify-center"
+                     style={{ background: 'linear-gradient(135deg,#00D4C8,#00A8FF)', boxShadow: '0 0 14px rgba(0,212,200,0.3)' }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" className="w-4 h-4">
                     <rect x="3" y="4" width="18" height="18" rx="3" />
                     <path d="M3 9h18" /><path d="M8 2v4M16 2v4" strokeLinecap="round" />
                   </svg>
                 </div>
-                <span className="text-base font-extrabold tracking-tight"
-                      style={{ background: 'linear-gradient(135deg,#0891B2,#06B6D4)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                <span className="text-base font-black"
+                      style={{ background: 'linear-gradient(135deg,#00D4C8,#00A8FF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                   Nobatic
                 </span>
               </div>
-              <p className="text-sm leading-7 text-slate-400">
-                رزرو آنلاین نوبت برای هر کسب‌وکاری — سریع، ساده و بدون تماس تلفنی.
+              <p className="text-sm leading-7" style={{ color: '#4A6E8A' }}>
+                رزرو آنلاین نوبت برای هر کسب‌وکاری
               </p>
             </div>
 
             {/* شرکت */}
             <div>
-              <h4 className="text-white text-sm font-bold mb-4">شرکت</h4>
+              <h4 className="text-xs font-extrabold mb-4 tracking-wider uppercase" style={{ color: '#DCF0F5' }}>شرکت</h4>
               <ul className="space-y-3 text-sm">
-                <li><Link to="/about" className="hover:text-cyan-400 transition-colors">درباره ما</Link></li>
-                <li><Link to="/contact" className="hover:text-cyan-400 transition-colors">تماس با ما</Link></li>
+                <li><Link to="/about" className="transition-colors" style={{ color: '#4A6E8A' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#4A6E8A'}>درباره ما</Link></li>
+                <li><Link to="/contact" className="transition-colors" style={{ color: '#4A6E8A' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#4A6E8A'}>تماس با ما</Link></li>
               </ul>
             </div>
 
             {/* کسب‌وکارها */}
             <div>
-              <h4 className="text-white text-sm font-bold mb-4">کسب‌وکارها</h4>
+              <h4 className="text-xs font-extrabold mb-4 tracking-wider uppercase" style={{ color: '#DCF0F5' }}>کسب‌وکارها</h4>
               <ul className="space-y-3 text-sm">
-                <li><Link to="/create-business" className="hover:text-cyan-400 transition-colors">ثبت کسب‌وکار</Link></li>
-                <li><Link to="/providers" className="hover:text-cyan-400 transition-colors">لیست کسب‌وکارها</Link></li>
+                <li><Link to="/create-business" className="transition-colors" style={{ color: '#4A6E8A' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#4A6E8A'}>ثبت کسب‌وکار</Link></li>
+                <li><Link to="/providers" className="transition-colors" style={{ color: '#4A6E8A' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#4A6E8A'}>پنل مدیریت</Link></li>
               </ul>
             </div>
 
             {/* پشتیبانی */}
             <div>
-              <h4 className="text-white text-sm font-bold mb-4">پشتیبانی</h4>
+              <h4 className="text-xs font-extrabold mb-4 tracking-wider uppercase" style={{ color: '#DCF0F5' }}>پشتیبانی</h4>
               <ul className="space-y-3 text-sm">
-                <li><Link to="/contact" className="hover:text-cyan-400 transition-colors">سوالات متداول</Link></li>
-                <li><Link to="/terms" className="hover:text-cyan-400 transition-colors">قوانین و مقررات</Link></li>
+                <li><Link to="/terms" className="transition-colors" style={{ color: '#4A6E8A' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#4A6E8A'}>قوانین</Link></li>
+                <li><Link to="/contact" className="transition-colors" style={{ color: '#4A6E8A' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#4A6E8A'}>سوالات متداول</Link></li>
               </ul>
             </div>
           </div>
 
-          <div className="border-t border-slate-800 mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-slate-500">© ۱۴۰۴ نوبتیک — تمامی حقوق محفوظ است</p>
-            <span className="text-xs text-slate-500">پرداخت امن با زرین‌پال</span>
+          <div className="mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4" style={{ borderTop: '1px solid rgba(0,212,200,0.07)' }}>
+            <p className="text-xs" style={{ color: '#4A6E8A' }}>© ۱۴۰۴ Nobatic — تمامی حقوق محفوظ است</p>
+            <span className="text-xs" style={{ color: '#4A6E8A' }}>پرداخت امن با زرین‌پال</span>
           </div>
         </div>
       </footer>

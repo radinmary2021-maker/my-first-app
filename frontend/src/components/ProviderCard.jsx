@@ -2,19 +2,6 @@ import { useNavigate } from 'react-router-dom'
 import { formatFee } from '../utils/date'
 import ImageAvatar from './ImageAvatar'
 
-const COVER_GRADIENTS = [
-  'linear-gradient(135deg,#0891B2,#06B6D4)',
-  'linear-gradient(135deg,#7C3AED,#A78BFA)',
-  'linear-gradient(135deg,#DB2777,#F472B6)',
-  'linear-gradient(135deg,#0F766E,#2DD4BF)',
-  'linear-gradient(135deg,#059669,#34D399)',
-  'linear-gradient(135deg,#B45309,#FCD34D)',
-]
-
-function gradientFor(id) {
-  return COVER_GRADIENTS[(id ?? 0) % COVER_GRADIENTS.length]
-}
-
 export default function ProviderCard({ doctor, provider }) {
   const p = provider ?? doctor
   const navigate = useNavigate()
@@ -29,62 +16,67 @@ export default function ProviderCard({ doctor, provider }) {
   return (
     <div
       onClick={() => navigate(`/providers/${p.id}`)}
-      className="bg-white rounded-2xl border border-slate-100 overflow-hidden cursor-pointer flex
-                 hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 group"
+      className="rounded-[20px] overflow-hidden cursor-pointer flex transition-all duration-200 group"
+      style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}
+      onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.28)'; e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 20px 48px rgba(0,212,200,0.1)' }}
+      onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.07)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
     >
       {/* Cover */}
       <div className="w-36 sm:w-48 shrink-0 relative">
         <ImageAvatar src={p.logo} alt={name} fallbackText={name} size="w-full h-full" shape="rounded-none" blurBg />
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg,transparent,#00D4C8,transparent)' }} />
         {isActive && (
-          <div className="absolute top-2 right-2 bg-cyan-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-            فعال
-          </div>
+          <span className="absolute top-2 right-2 text-xs font-bold px-2 py-0.5 rounded-full"
+                style={{ background: 'rgba(57,255,20,0.15)', border: '1px solid rgba(57,255,20,0.3)', color: '#39FF14', boxShadow: '0 0 10px rgba(57,255,20,0.2)' }}>
+            ● باز
+          </span>
         )}
       </div>
 
       {/* Info */}
       <div className="flex-1 p-4 flex flex-col justify-between min-w-0">
         <div>
-          <h2 className="font-bold text-slate-900 text-base group-hover:text-cyan-700 transition-colors truncate">
+          <h2 className="font-bold text-base truncate transition-colors" style={{ color: '#DCF0F5' }}>
             {name}
           </h2>
           {staffName && (
-            <p className="text-slate-500 text-xs mt-0.5">با مدیریت: <span className="font-semibold text-slate-600">{staffName}</span></p>
+            <p className="text-xs mt-0.5" style={{ color: '#4A6E8A' }}>با مدیریت: <span className="font-semibold" style={{ color: '#DCF0F5' }}>{staffName}</span></p>
           )}
-          <p className="text-slate-400 text-xs mt-0.5 mb-2">{category}</p>
+          <p className="text-xs mt-0.5 mb-2" style={{ color: '#4A6E8A' }}>{category}</p>
 
           {p.services_preview?.length > 0 && (
             <div className="flex flex-wrap gap-1 mb-2">
               {p.services_preview.map((s) => (
-                <span key={s} className="bg-slate-50 border border-slate-100 text-slate-600 text-xs px-2 py-0.5 rounded-lg">{s}</span>
+                <span key={s} className="text-xs px-2 py-0.5 rounded-lg"
+                      style={{ background: 'rgba(0,212,200,0.07)', border: '1px solid rgba(0,212,200,0.22)', color: '#00D4C8' }}>{s}</span>
               ))}
             </div>
           )}
 
           {hasRating && (
             <div className="flex items-center gap-1 mb-3">
-              <span className="text-amber-400 text-sm">★</span>
-              <span className="text-sm font-bold text-slate-700">{p.average_rating}</span>
-              <span className="text-xs text-slate-400">({p.reviews_count} نظر)</span>
+              <span className="text-sm" style={{ color: '#FF6B2B' }}>★</span>
+              <span className="text-sm font-bold" style={{ color: '#DCF0F5' }}>{p.average_rating}</span>
+              <span className="text-xs" style={{ color: '#4A6E8A' }}>({p.reviews_count} نظر)</span>
             </div>
           )}
         </div>
 
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-50">
-          <div className="flex items-center gap-3 text-xs text-slate-400">
+        <div className="flex items-center justify-between mt-3 pt-3" style={{ borderTop: '1px solid rgba(0,212,200,0.07)' }}>
+          <div className="flex items-center gap-3 text-xs" style={{ color: '#4A6E8A' }}>
             <span className="flex items-center gap-1">
-              <svg className="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg className="w-3.5 h-3.5" style={{ color: '#00D4C8' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
               </svg>
               {duration} دقیقه
             </span>
-            <span className="w-1 h-1 bg-slate-300 rounded-full" />
-            <span className="text-cyan-600 font-semibold">{formatFee(fee)}</span>
+            <span className="w-1 h-1 rounded-full" style={{ background: 'rgba(0,212,200,0.3)' }} />
+            <span className="font-semibold" style={{ color: '#00D4C8' }}>{formatFee(fee)}</span>
           </div>
           <button
             onClick={(e) => { e.stopPropagation(); navigate(`/providers/${p.id}`) }}
-            className="bg-cyan-50 hover:bg-cyan-500 hover:text-white text-cyan-600 font-bold text-xs px-4 py-2 rounded-xl
-                       transition-colors border border-cyan-100 hover:border-cyan-500"
+            className="font-extrabold text-xs px-4 py-2 rounded-xl cursor-pointer transition-all text-white"
+            style={{ background: 'linear-gradient(135deg,#FF6B2B,#FF4500)', boxShadow: '0 0 24px rgba(255,107,43,0.35)' }}
           >
             رزرو نوبت
           </button>

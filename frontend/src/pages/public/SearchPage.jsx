@@ -54,7 +54,7 @@ export default function SearchPage() {
         {/* Search bar */}
         <form onSubmit={handleSearch} className="flex gap-2">
           <div className="relative flex-1">
-            <svg className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#00D4C8' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" strokeLinecap="round" />
             </svg>
             <input
@@ -63,14 +63,16 @@ export default function SearchPage() {
               onChange={(e) => setInput(e.target.value)}
               placeholder="نام کسب‌وکار، تخصص یا دسته‌بندی..."
               autoFocus
-              className="w-full pr-10 pl-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-2xl text-sm
-                         focus:outline-none focus:border-cyan-400 focus:bg-white transition-colors"
+              className="w-full pr-10 pl-4 py-3 rounded-2xl text-sm outline-none transition-all"
+              style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.18)', color: '#DCF0F5' }}
+              onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.45)'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.18)'}
             />
           </div>
           <button
             type="submit"
-            className="text-white px-6 py-3 rounded-2xl text-sm font-bold hover:opacity-90 transition-opacity"
-            style={{ background: 'linear-gradient(135deg, #0891B2 0%, #06B6D4 60%, #22D3EE 100%)' }}
+            className="text-white px-6 py-3 rounded-2xl text-sm font-extrabold transition-all"
+            style={{ background: 'linear-gradient(135deg,#FF6B2B,#FF4500)', boxShadow: '0 0 24px rgba(255,107,43,0.35)' }}
           >
             جستجو
           </button>
@@ -79,30 +81,30 @@ export default function SearchPage() {
         {loading && <div className="flex justify-center py-12"><Spinner /></div>}
 
         {error && (
-          <div className="text-center py-8 text-sm text-red-500">{error}</div>
+          <div className="text-center py-8 text-sm" style={{ color: '#EF4444' }}>{error}</div>
         )}
 
         {!q && !loading && (
           <div className="text-center py-16">
-            <div className="w-16 h-16 rounded-2xl bg-slate-50 flex items-center justify-center mx-auto mb-3">
-              <svg className="w-8 h-8 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-3" style={{ background: 'rgba(0,212,200,0.06)' }}>
+              <svg className="w-8 h-8" style={{ color: '#4A6E8A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" strokeLinecap="round" />
               </svg>
             </div>
-            <p className="text-sm text-slate-400">عبارت جستجو وارد کنید</p>
+            <p className="text-sm" style={{ color: '#4A6E8A' }}>عبارت جستجو وارد کنید</p>
           </div>
         )}
 
         {q && !loading && !error && results?.length === 0 && (
           <div className="text-center py-16 space-y-3">
-            <div className="w-16 h-16 rounded-2xl bg-slate-50 flex items-center justify-center mx-auto">
-              <svg className="w-8 h-8 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto" style={{ background: 'rgba(0,212,200,0.06)' }}>
+              <svg className="w-8 h-8" style={{ color: '#4A6E8A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" strokeLinecap="round" />
               </svg>
             </div>
-            <p className="font-medium text-slate-700">نتیجه‌ای یافت نشد</p>
-            <p className="text-sm text-slate-400">جستجوی «{q}» نتیجه‌ای نداشت. کلمه دیگری امتحان کنید.</p>
-            <button onClick={() => navigate('/providers')} className="text-sm font-semibold text-cyan-600 hover:text-cyan-700">
+            <p className="font-medium" style={{ color: '#DCF0F5' }}>نتیجه‌ای یافت نشد</p>
+            <p className="text-sm" style={{ color: '#4A6E8A' }}>جستجوی «{q}» نتیجه‌ای نداشت. کلمه دیگری امتحان کنید.</p>
+            <button onClick={() => navigate('/providers')} className="text-sm font-semibold" style={{ color: '#00D4C8' }}>
               مشاهده همه کسب‌وکارها
             </button>
           </div>
@@ -110,37 +112,36 @@ export default function SearchPage() {
 
         {!loading && !error && businesses.length > 0 && (
           <div className="space-y-4">
-            <p className="text-sm text-slate-400">
-              <span className="font-bold text-slate-700">{businesses.length}</span> کسب‌وکار برای «{q}»
+            <p className="text-sm" style={{ color: '#4A6E8A' }}>
+              <span className="font-bold" style={{ color: '#DCF0F5' }}>{businesses.length}</span> کسب‌وکار برای «{q}»
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {businesses.map((p, i) => {
+              {businesses.map((p) => {
                 const slug = p.latin_slug || p.business_slug
                 const href = slug ? `/book/${slug}` : `/providers/${p.id}`
-                const gradients = [
-                  'from-cyan-500 to-cyan-400',
-                  'from-violet-500 to-violet-400',
-                  'from-emerald-500 to-emerald-400',
-                  'from-pink-500 to-pink-400',
-                ]
                 return (
                   <div
                     key={p.business_id || p.id}
                     onClick={() => navigate(href)}
-                    className="bg-white rounded-2xl border border-slate-100 overflow-hidden cursor-pointer
-                               hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 group"
+                    className="rounded-[20px] overflow-hidden cursor-pointer transition-all duration-200 group"
+                    style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.28)'; e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 20px 48px rgba(0,212,200,0.1)' }}
+                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.07)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
                   >
-                    <ImageAvatar src={p.logo} alt={p.business_name} fallbackText={p.business_name || p.full_name} size="w-full h-24" shape="rounded-none" blurBg />
+                    <div className="relative">
+                      <ImageAvatar src={p.logo} alt={p.business_name} fallbackText={p.business_name || p.full_name} size="w-full h-24" shape="rounded-none" blurBg />
+                      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg,transparent,#00D4C8,transparent)' }} />
+                    </div>
                     <div className="p-4">
-                      <h3 className="font-bold text-slate-900 text-sm group-hover:text-cyan-700 transition-colors mb-1">
+                      <h3 className="font-bold text-sm mb-1 transition-colors" style={{ color: '#DCF0F5' }}>
                         {p.business_name || p.full_name}
                       </h3>
-                      <p className="text-xs text-slate-400 mb-3">{p.category_display || p.specialty}</p>
+                      <p className="text-xs mb-3" style={{ color: '#4A6E8A' }}>{p.category_display || p.specialty}</p>
                       <button
                         onClick={(e) => { e.stopPropagation(); navigate(href) }}
-                        className="w-full bg-cyan-50 hover:bg-cyan-500 hover:text-white text-cyan-600 font-bold text-xs py-2.5 rounded-xl
-                                   transition-colors border border-cyan-100 hover:border-cyan-500"
+                        className="w-full font-extrabold text-xs py-2.5 rounded-xl transition-all text-white"
+                        style={{ background: 'linear-gradient(135deg,#FF6B2B,#FF4500)', boxShadow: '0 0 24px rgba(255,107,43,0.35)' }}
                       >
                         مشاهده خدمات و رزرو
                       </button>

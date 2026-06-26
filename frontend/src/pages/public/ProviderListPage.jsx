@@ -102,10 +102,10 @@ export default function ProviderListPage() {
   }
 
   const sidebar = (
-    <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+    <div className="rounded-[20px] overflow-hidden" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
       {/* Category */}
-      <div className="p-5 border-b border-slate-50">
-        <h3 className="text-sm font-bold text-slate-800 mb-3">دسته‌بندی</h3>
+      <div className="p-5" style={{ borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
+        <h3 className="text-sm font-bold mb-3" style={{ color: '#DCF0F5' }}>دسته‌بندی</h3>
         <div className="space-y-1">
           <CheckboxItem
             label={ALL}
@@ -125,7 +125,7 @@ export default function ProviderListPage() {
 
       {/* Availability */}
       <div className="p-5">
-        <h3 className="text-sm font-bold text-slate-800 mb-3">وضعیت</h3>
+        <h3 className="text-sm font-bold mb-3" style={{ color: '#DCF0F5' }}>وضعیت</h3>
         <div className="space-y-1">
           <CheckboxItem
             label="فقط فعال‌ها"
@@ -146,12 +146,14 @@ export default function ProviderListPage() {
       />
 
       {/* Search bar row */}
-      <div className="bg-white border-b border-slate-100 py-4 px-4">
+      <div className="py-4 px-4" style={{ borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
         <div className="max-w-7xl mx-auto">
           <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-            <div className="flex items-center flex-1 gap-3 bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3
-                            focus-within:border-cyan-400 focus-within:bg-white transition-colors">
-              <svg className="w-4 h-4 text-cyan-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <div className="flex items-center flex-1 gap-3 rounded-2xl px-4 py-3 transition-all"
+                 style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.18)' }}
+                 onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.45)'}
+                 onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.18)'}>
+              <svg className="w-4 h-4 shrink-0" style={{ color: '#00D4C8' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" strokeLinecap="round" />
               </svg>
               <input
@@ -159,13 +161,14 @@ export default function ProviderListPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="جستجوی نام کسب‌وکار یا تخصص..."
-                className="bg-transparent outline-none text-sm text-slate-700 w-full font-medium placeholder:text-slate-400"
+                className="bg-transparent outline-none text-sm w-full font-medium"
+                style={{ color: '#DCF0F5' }}
               />
             </div>
             <button
               type="submit"
-              className="text-white font-bold text-sm px-6 py-3 rounded-xl hover:opacity-90 transition-opacity shrink-0"
-              style={{ background: 'linear-gradient(135deg, #0891B2 0%, #06B6D4 60%, #22D3EE 100%)' }}
+              className="text-white font-extrabold text-sm px-6 py-3 rounded-xl transition-all shrink-0"
+              style={{ background: 'linear-gradient(135deg,#FF6B2B,#FF4500)', boxShadow: '0 0 24px rgba(255,107,43,0.35)' }}
             >
               جستجو
             </button>
@@ -231,9 +234,9 @@ export default function ProviderListPage() {
             {/* Results header */}
             <div className="flex items-center justify-between mb-5">
               <div>
-                <h1 className="text-lg font-black text-slate-900">{listTitle}</h1>
+                <h1 className="text-lg font-black" style={{ color: '#DCF0F5' }}>{listTitle}</h1>
                 {providers && (
-                  <p className="text-xs text-slate-400 mt-0.5">{filtered.length} نتیجه پیدا شد</p>
+                  <p className="text-xs mt-0.5" style={{ color: '#4A6E8A' }}>{filtered.length} نتیجه پیدا شد</p>
                 )}
               </div>
               <button
@@ -294,17 +297,20 @@ export default function ProviderListPage() {
 
 function CheckboxItem({ label, checked, onChange }) {
   return (
-    <label onClick={onChange} className="flex items-center gap-3 py-2 px-2 rounded-xl hover:bg-slate-50 cursor-pointer">
-      <div className={`w-4 h-4 rounded border-2 shrink-0 flex items-center justify-center transition-colors ${
-        checked ? 'border-cyan-500 bg-cyan-500' : 'border-slate-200'
-      }`}>
+    <label onClick={onChange} className="flex items-center gap-3 py-2 px-2 rounded-xl cursor-pointer transition-colors"
+           style={{ color: checked ? '#00D4C8' : '#4A6E8A' }}>
+      <div className="w-4 h-4 rounded shrink-0 flex items-center justify-center transition-colors"
+           style={checked
+             ? { border: '2px solid #00D4C8', background: '#00D4C8' }
+             : { border: '2px solid rgba(0,212,200,0.2)' }
+           }>
         {checked && (
           <svg className="w-2.5 h-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
             <path d="M20 6 9 17l-5-5" />
           </svg>
         )}
       </div>
-      <span className={`text-sm ${checked ? 'text-slate-700 font-medium' : 'text-slate-600'}`}>{label}</span>
+      <span className="text-sm" style={{ color: checked ? '#DCF0F5' : '#4A6E8A', fontWeight: checked ? 500 : 400 }}>{label}</span>
     </label>
   )
 }
