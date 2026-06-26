@@ -16,7 +16,7 @@ export default function OwnerLayout({ title, subtitle, headerAction, children })
   }, [])
 
   return (
-    <div className="flex min-h-screen" style={{ background: '#070D14' }} dir="rtl">
+    <div className="flex min-h-screen" style={{ background: '#0D1520' }} dir="rtl">
 
       {/* Desktop sidebar */}
       <OwnerSidebar
@@ -28,7 +28,7 @@ export default function OwnerLayout({ title, subtitle, headerAction, children })
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => setMobileMenuOpen(false)} />
-          <div className="absolute right-0 top-0 bottom-0 w-64 overflow-y-auto" style={{ background: '#0C1520', boxShadow: '0 0 40px rgba(0,0,0,0.5)' }}>
+          <div className="absolute right-0 top-0 bottom-0 w-64 overflow-y-auto" style={{ background: '#132030', boxShadow: '0 0 40px rgba(0,0,0,0.5)' }}>
             <OwnerSidebar
               businessName={business?.name}
               businessCategory={business?.category_display}

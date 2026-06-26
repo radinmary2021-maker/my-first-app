@@ -154,7 +154,7 @@ export default function HomePage() {
             {/* Search box */}
             <form onSubmit={go}
                   className="flex items-center rounded-2xl mb-[22px] transition-all max-w-[640px]"
-                  style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.18)', padding: '6px' }}
+                  style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.18)', padding: '6px' }}
                   onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.45)'}
                   onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.18)'}>
               <div className="flex items-center flex-1 gap-2.5 px-3.5 py-2.5">
@@ -207,7 +207,7 @@ export default function HomePage() {
       </section>
 
       {/* ══ STATS ══ */}
-      <section style={{ borderTop: '1px solid rgba(0,212,200,0.08)', borderBottom: '1px solid rgba(0,212,200,0.08)', padding: '26px 28px', background: '#0C1520' }}>
+      <section style={{ borderTop: '1px solid rgba(0,212,200,0.08)', borderBottom: '1px solid rgba(0,212,200,0.08)', padding: '26px 28px', background: '#132030' }}>
         <div className="max-w-[1000px] mx-auto grid grid-cols-4 text-center">
           {TRUST.map((t, i) => (
             <div key={t.label} style={{ padding: '14px', borderLeft: i < 3 ? '1px solid rgba(0,212,200,0.08)' : 'none' }}>
@@ -237,17 +237,17 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
-            {CATEGORIES.map(({ label, slug, emoji }) => (
+            {CATEGORIES.map(({ label, slug, emoji }, i) => (
               <button
                 key={slug}
                 onClick={() => navigate(`/providers?category=${slug}`)}
                 className="flex flex-col items-center gap-2.5 p-[18px] rounded-[18px] text-center cursor-pointer transition-all"
-                style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}
+                style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}
                 onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.35)'; e.currentTarget.style.background = 'rgba(0,212,200,0.06)'; e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 10px 28px rgba(0,212,200,0.12)' }}
-                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.07)'; e.currentTarget.style.background = '#0C1520'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.07)'; e.currentTarget.style.background = '#132030'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
               >
                 <div className="w-[50px] h-[50px] rounded-[14px] flex items-center justify-center text-[23px]"
-                     style={{ background: 'linear-gradient(135deg,rgba(0,212,200,0.12),rgba(0,168,255,0.06))', border: '1px solid rgba(0,212,200,0.1)' }}>
+                     style={{ background: 'linear-gradient(135deg,rgba(0,212,200,0.12),rgba(0,168,255,0.06))', border: '1px solid rgba(0,212,200,0.1)', animation: 'icon-float 3s ease-in-out infinite', animationDelay: `${i * 0.3}s` }}>
                   {emoji}
                 </div>
                 <span style={{ fontSize: '11px', fontWeight: 800, color: '#DCF0F5' }}>{label}</span>
@@ -280,7 +280,7 @@ export default function HomePage() {
                     key={p.id}
                     onClick={() => navigate(`/providers/${p.id}`)}
                     className="overflow-hidden rounded-[20px] cursor-pointer transition-all"
-                    style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}
+                    style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}
                     onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.28)'; e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 20px 48px rgba(0,212,200,0.1)' }}
                     onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.07)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
                   >
@@ -289,7 +289,7 @@ export default function HomePage() {
                       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg,transparent,#00D4C8,transparent)' }} />
                       {isActive && (
                         <span className="absolute top-3 right-3 text-xs font-bold px-2.5 py-1 rounded-full"
-                              style={{ background: 'rgba(57,255,20,0.15)', border: '1px solid rgba(57,255,20,0.3)', color: '#39FF14', boxShadow: '0 0 10px rgba(57,255,20,0.2)' }}>
+                              style={{ background: 'rgba(57,255,20,0.15)', border: '1px solid rgba(57,255,20,0.3)', color: '#39FF14', animation: 'neon-pulse 2s ease-in-out infinite' }}>
                           ● باز است
                         </span>
                       )}
@@ -329,7 +329,7 @@ export default function HomePage() {
       )}
 
       {/* ══ FOR BUSINESSES ══ */}
-      <section style={{ padding: '80px 28px', background: '#0C1520', borderTop: '1px solid rgba(0,212,200,0.07)' }}>
+      <section style={{ padding: '80px 28px', background: '#132030', borderTop: '1px solid rgba(0,212,200,0.07)' }}>
         <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <div>
             <div className="inline-flex items-center gap-[7px] px-[14px] py-[5px] rounded-full text-xs font-bold mb-5"
@@ -354,7 +354,7 @@ export default function HomePage() {
           <div className="grid grid-cols-2 gap-3.5">
             {BIZ_FEATURES.map((f) => (
               <div key={f.title} className="rounded-[20px] p-[22px] transition-all"
-                   style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}
+                   style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}
                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.28)'; e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 20px 48px rgba(0,212,200,0.1)' }}
                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.07)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}>
                 <div className="w-[42px] h-[42px] rounded-xl flex items-center justify-center mb-3.5"
@@ -379,7 +379,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {TESTIMONIALS.map((t) => (
               <div key={t.name} className="rounded-[20px] p-5 transition-all"
-                   style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}
+                   style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}
                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.28)'; e.currentTarget.style.transform = 'translateY(-5px)' }}
                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.07)'; e.currentTarget.style.transform = 'translateY(0)' }}>
                 <div className="flex items-center gap-1 text-sm mb-3" style={{ color: '#FF6B2B' }}>

@@ -287,7 +287,7 @@ export default function ReportsPage() {
       title="گزارش‌ها"
       subtitle={data ? `${toJalali(data.from)} — ${toJalali(data.to)}` : 'عملکرد کسب‌وکار شما'}
       headerAction={
-        <div className="flex rounded-xl p-1" style={{ background: '#111E2E', border: '1px solid rgba(0,212,200,0.07)' }}>
+        <div className="flex rounded-xl p-1" style={{ background: '#1A2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
           {PERIODS.map(p => (
             <button
               key={p.value}

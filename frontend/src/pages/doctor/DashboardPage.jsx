@@ -141,7 +141,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {/* Appointments list */}
-        <div className="lg:col-span-2 rounded-[20px] overflow-hidden" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+        <div className="lg:col-span-2 rounded-[20px] overflow-hidden" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
           <div className="flex items-center justify-between p-5" style={{ borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
             <h2 className="text-sm font-bold" style={{ color: '#DCF0F5' }}>نوبت‌ها</h2>
             <div className="flex items-center gap-2">
@@ -245,7 +245,7 @@ export default function DashboardPage() {
         {/* Side column */}
         <div className="space-y-6">
           {/* Quick actions */}
-          <div className="rounded-[20px] p-5" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+          <div className="rounded-[20px] p-5" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
             <h2 className="text-sm font-bold mb-4" style={{ color: '#DCF0F5' }}>دسترسی سریع</h2>
             <div className="grid grid-cols-2 gap-3">
               <QuickCard label="برنامه نوبت" iconColor="#00D4C8"
@@ -273,7 +273,7 @@ export default function DashboardPage() {
           onClick={(e) => e.target === e.currentTarget && !actionPending && setConfirmAction(null)}
         >
           <div className="rounded-[20px] p-6 w-full max-w-sm space-y-4" dir="rtl"
-               style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.15)' }}>
+               style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.15)' }}>
             <h2 className="text-base font-bold" style={{ color: '#DCF0F5' }}>تأیید عملیات</h2>
             <p className="text-sm" style={{ color: '#4A6E8A' }}>{DIALOG_COPY[confirmAction.action]?.question}</p>
             <div className="flex gap-3">
@@ -297,7 +297,7 @@ export default function DashboardPage() {
 function StatCard({ icon, iconColor, value, label }) {
   return (
     <div className="rounded-[20px] p-4 transition-all"
-         style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}
+         style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}
          onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.28)'; e.currentTarget.style.transform = 'translateY(-3px)' }}
          onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.07)'; e.currentTarget.style.transform = 'translateY(0)' }}>
       <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-2"
@@ -317,8 +317,10 @@ function QuickCard({ label, iconColor, icon, onClick }) {
             style={{ background: 'rgba(0,212,200,0.03)', border: '1px solid rgba(0,212,200,0.07)' }}
             onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.28)'; e.currentTarget.style.transform = 'translateY(-3px)' }}
             onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.07)'; e.currentTarget.style.transform = 'translateY(0)' }}>
-      <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-           style={{ background: `${iconColor}18`, border: `1px solid ${iconColor}30` }}>
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-200 group-hover:scale-[1.12] group-hover:-rotate-6"
+           style={{ background: `${iconColor}18`, border: `1px solid ${iconColor}30`, transition: 'transform 0.2s ease' }}
+           onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.12) rotate(-6deg)' }}
+           onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1) rotate(0)' }}>
         <svg className="w-5 h-5" style={{ color: iconColor }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">{icon}</svg>
       </div>
       <span className="text-xs font-bold" style={{ color: '#DCF0F5' }}>{label}</span>

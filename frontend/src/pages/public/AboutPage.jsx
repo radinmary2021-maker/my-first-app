@@ -45,7 +45,7 @@ export default function AboutPage() {
 
       {/* Hero */}
       <section className="pt-12 pb-16 px-4 text-center grid-bg"
-               style={{ background: '#070D14' }}>
+               style={{ background: '#0D1520' }}>
         <div className="inline-block rounded-full px-4 py-1.5 text-xs font-semibold mb-5"
              style={{ background: 'rgba(0,212,200,0.1)', color: '#00D4C8', border: '1px solid rgba(0,212,200,0.2)' }}>
           درباره نوبتیک
@@ -63,7 +63,7 @@ export default function AboutPage() {
       </section>
 
       {/* Stats */}
-      <section className="py-6" style={{ background: '#0C1520', borderTop: '1px solid rgba(0,212,200,0.07)', borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
+      <section className="py-6" style={{ background: '#132030', borderTop: '1px solid rgba(0,212,200,0.07)', borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
         <div className="max-w-3xl mx-auto px-4 grid grid-cols-4 gap-4 text-center">
           {STATS.map((s) => (
             <div key={s.label}>
@@ -86,7 +86,7 @@ export default function AboutPage() {
             داستان ما
           </h2>
           <div className="rounded-2xl p-6 sm:p-8 leading-8 text-sm"
-               style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)', color: '#4A6E8A' }}>
+               style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)', color: '#4A6E8A' }}>
             <p className="mb-4">
               ما در نوبتیک باور داریم که وقت شما ارزشمندترین دارایی شماست. به همین دلیل پلتفرمی ساختیم که
               رزرو نوبت را به یک تجربه سریع، ساده و قابل اعتماد تبدیل کند.
@@ -107,7 +107,7 @@ export default function AboutPage() {
             {VALUES.map((v) => (
               <div key={v.title} className="rounded-2xl p-5 flex gap-4
                           hover:-translate-y-1 hover:shadow-lg transition-all duration-200 group"
-                   style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+                   style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0
                                 transition-transform duration-200 group-hover:scale-110 group-hover:-rotate-6"
                      style={{ background: v.gradBg }}>
@@ -124,7 +124,7 @@ export default function AboutPage() {
 
         {/* CTA */}
         <section className="rounded-3xl p-8 sm:p-12 text-center"
-                 style={{ background: 'linear-gradient(135deg, #0C1520 0%, #111E2E 50%, #0C1520 100%)', border: '1px solid rgba(0,212,200,0.12)' }}>
+                 style={{ background: 'linear-gradient(135deg, #132030 0%, #1A2A3E 50%, #132030 100%)', border: '1px solid rgba(0,212,200,0.12)' }}>
           <h2 className="text-2xl font-black mb-3"
               style={{ background: 'linear-gradient(135deg,#00D4C8,#00A8FF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             آماده‌اید شروع کنید؟

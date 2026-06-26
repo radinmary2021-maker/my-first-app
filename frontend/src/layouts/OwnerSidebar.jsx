@@ -42,7 +42,7 @@ export default function OwnerSidebar({ businessName, businessCategory }) {
   }
 
   return (
-    <aside className="w-64 hidden lg:flex flex-col shrink-0" style={{ background: '#0C1520', borderLeft: '1px solid rgba(0,212,200,0.07)' }}>
+    <aside className="w-64 hidden lg:flex flex-col shrink-0" style={{ background: '#132030', borderLeft: '1px solid rgba(0,212,200,0.07)' }}>
       {/* Logo */}
       <div className="flex items-center px-5" style={{ height: '66px', borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
         <button onClick={() => navigate('/')} className="flex items-center gap-2.5">
@@ -92,8 +92,10 @@ export default function OwnerSidebar({ businessName, businessCategory }) {
               onMouseLeave={(e) => { if (!active) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#4A6E8A' } }}
             >
               <svg className="w-[18px] h-[18px]"
-                   style={{ color: active ? '#00D4C8' : '#4A6E8A' }}
-                   viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                   style={{ color: active ? '#00D4C8' : '#4A6E8A', transition: 'transform 0.2s ease' }}
+                   viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                   onMouseEnter={(e) => e.currentTarget.style.animation = 'icon-bounce 0.4s ease'}
+                   onAnimationEnd={(e) => e.currentTarget.style.animation = ''}>
                 {item.icon}
               </svg>
               {item.label}

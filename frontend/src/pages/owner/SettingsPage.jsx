@@ -136,7 +136,7 @@ export default function SettingsPage() {
 
   const previewUrl = latinSlug ? `nobatiic.ir/book/${latinSlug}` : business?.slug ? `nobatiic.ir/book/${business.slug}` : ''
   const inputCls = "w-full rounded-xl px-4 py-3 text-sm outline-none transition-colors"
-  const inputBg = { background: '#111E2E', border: '1px solid rgba(0,212,200,0.18)', color: '#DCF0F5' }
+  const inputBg = { background: '#1A2A3E', border: '1px solid rgba(0,212,200,0.25)', color: '#DCF0F5' }
 
   if (loading) {
     return <OwnerLayout title="تنظیمات"><div className="flex justify-center py-20"><Spinner /></div></OwnerLayout>
@@ -150,7 +150,7 @@ export default function SettingsPage() {
       <div className="max-w-3xl space-y-5">
 
         {/* Logo upload */}
-        <div className="rounded-2xl p-5" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+        <div className="rounded-2xl p-5" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
           <h2 className="text-sm font-bold mb-1" style={{ color: '#DCF0F5' }}>لوگوی کسب‌وکار</h2>
           <p className="text-xs mb-4" style={{ color: '#4A6E8A' }}>JPG، PNG یا WebP — حداکثر ۲ مگابایت</p>
           <div className="flex items-center gap-4">
@@ -177,12 +177,12 @@ export default function SettingsPage() {
         </div>
 
         {/* General info */}
-        <form onSubmit={handleSubmit} className="rounded-2xl p-5 space-y-4" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+        <form onSubmit={handleSubmit} className="rounded-2xl p-5 space-y-4" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
           <h2 className="text-sm font-bold mb-2" style={{ color: '#DCF0F5' }}>اطلاعات کلی</h2>
 
           <div>
             <label htmlFor="settings-name" className="text-xs font-bold mb-2 block" style={{ color: '#4A6E8A' }}>نام کسب‌وکار <span className="text-red-400">*</span></label>
-            <input id="settings-name" type="text" value={name} onChange={(e) => setName(e.target.value)} disabled={saving} className={inputCls} style={inputBg} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
+            <input id="settings-name" type="text" value={name} onChange={(e) => setName(e.target.value)} disabled={saving} className={inputCls} style={inputBg} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.6)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.25)'} />
           </div>
 
           <div>
@@ -194,17 +194,17 @@ export default function SettingsPage() {
 
           <div>
             <label htmlFor="settings-description" className="text-xs font-bold mb-2 block" style={{ color: '#4A6E8A' }}>توضیحات</label>
-            <textarea id="settings-description" value={description} onChange={(e) => setDescription(e.target.value)} rows={3} placeholder="معرفی کوتاه کسب‌وکار..." disabled={saving} className={`${inputCls} resize-none`} style={inputBg} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
+            <textarea id="settings-description" value={description} onChange={(e) => setDescription(e.target.value)} rows={3} placeholder="معرفی کوتاه کسب‌وکار..." disabled={saving} className={`${inputCls} resize-none`} style={inputBg} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.6)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.25)'} />
           </div>
 
           <div>
             <label htmlFor="settings-phone" className="text-xs font-bold mb-2 block" style={{ color: '#4A6E8A' }}>شماره تماس</label>
-            <input id="settings-phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} disabled={saving} dir="ltr" className={`${inputCls} text-left`} style={inputBg} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
+            <input id="settings-phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} disabled={saving} dir="ltr" className={`${inputCls} text-left`} style={inputBg} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.6)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.25)'} />
           </div>
 
           <div>
             <label htmlFor="settings-address" className="text-xs font-bold mb-2 block" style={{ color: '#4A6E8A' }}>آدرس</label>
-            <input id="settings-address" type="text" value={address} onChange={(e) => setAddress(e.target.value)} disabled={saving} className={inputCls} style={inputBg} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
+            <input id="settings-address" type="text" value={address} onChange={(e) => setAddress(e.target.value)} disabled={saving} className={inputCls} style={inputBg} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.6)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.25)'} />
           </div>
 
           {formError && <div className="text-sm rounded-xl px-4 py-3" style={{ color: '#EF4444', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)' }}>{formError}</div>}
@@ -219,7 +219,7 @@ export default function SettingsPage() {
         </form>
 
         {/* Latin slug */}
-        <form onSubmit={handleSlugSubmit} className="rounded-2xl p-5 space-y-4" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+        <form onSubmit={handleSlugSubmit} className="rounded-2xl p-5 space-y-4" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
           <div>
             <h2 className="text-sm font-bold" style={{ color: '#DCF0F5' }}>آدرس اختصاصی</h2>
             <p className="text-xs mt-0.5" style={{ color: '#4A6E8A' }}>یک آدرس انگلیسی برای صفحه رزرو خود انتخاب کنید.</p>
@@ -236,7 +236,7 @@ export default function SettingsPage() {
           </div>
 
           {previewUrl && (
-            <div className="rounded-xl px-3 py-2" style={{ background: '#111E2E', border: '1px solid rgba(0,212,200,0.07)' }}>
+            <div className="rounded-xl px-3 py-2" style={{ background: '#1A2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
               <p className="text-xs mb-0.5" style={{ color: '#4A6E8A' }}>پیش‌نمایش لینک:</p>
               <p className="text-sm font-mono" dir="ltr" style={{ color: '#DCF0F5' }}>{previewUrl}</p>
             </div>

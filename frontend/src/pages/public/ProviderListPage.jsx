@@ -102,7 +102,7 @@ export default function ProviderListPage() {
   }
 
   const sidebar = (
-    <div className="rounded-[20px] overflow-hidden" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+    <div className="rounded-[20px] overflow-hidden" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
       {/* Category */}
       <div className="p-5" style={{ borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
         <h3 className="text-sm font-bold mb-3" style={{ color: '#DCF0F5' }}>دسته‌بندی</h3>
@@ -150,7 +150,7 @@ export default function ProviderListPage() {
         <div className="max-w-7xl mx-auto">
           <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
             <div className="flex items-center flex-1 gap-3 rounded-2xl px-4 py-3 transition-all"
-                 style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.18)' }}
+                 style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.18)' }}
                  onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.45)'}
                  onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.18)'}>
               <svg className="w-4 h-4 shrink-0" style={{ color: '#00D4C8' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

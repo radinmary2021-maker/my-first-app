@@ -65,12 +65,12 @@ export default function MainLayout({ children, fullWidth = false }) {
   const navLinks = isBiz ? bizNavLinks : publicNavLinks
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: '#070D14', color: '#DCF0F5' }} dir="rtl">
+    <div className="min-h-screen flex flex-col" style={{ background: '#0D1520', color: '#DCF0F5' }} dir="rtl">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:right-2 focus:z-50
                    focus:px-4 focus:py-2 focus:rounded-lg focus:font-medium focus:text-sm"
-        style={{ background: '#0C1520', color: '#00D4C8' }}
+        style={{ background: '#132030', color: '#00D4C8' }}
       >
         رفتن به محتوا
       </a>
@@ -169,7 +169,7 @@ export default function MainLayout({ children, fullWidth = false }) {
 
       {/* ── Mobile dropdown nav ── */}
       {mobileOpen && (
-        <div className="lg:hidden px-4 py-3 space-y-1 z-20 relative" style={{ background: '#0C1520', borderBottom: '1px solid rgba(0,212,200,0.09)' }}>
+        <div className="lg:hidden px-4 py-3 space-y-1 z-20 relative" style={{ background: '#132030', borderBottom: '1px solid rgba(0,212,200,0.09)' }}>
           <nav className="flex flex-col gap-1 text-sm" aria-label="منوی موبایل">
             {navLinks}
           </nav>
@@ -212,7 +212,7 @@ export default function MainLayout({ children, fullWidth = false }) {
       </main>
 
       {/* ── Footer ── */}
-      <footer style={{ background: '#0C1520', borderTop: '1px solid rgba(0,212,200,0.08)' }}>
+      <footer style={{ background: '#132030', borderTop: '1px solid rgba(0,212,200,0.08)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
 
