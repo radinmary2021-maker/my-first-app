@@ -35,23 +35,27 @@ function extractError(err, fallback) {
 function SectionHeader({ step, children, isDone }) {
   return (
     <div className="flex items-center gap-2">
-      <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
-        isDone ? 'bg-green-100 text-green-700' : 'bg-cyan-100 text-cyan-700'
-      }`}>
+      <span
+        className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+        style={isDone
+          ? { background: 'rgba(57,255,20,0.12)', color: '#39FF14' }
+          : { background: 'rgba(0,212,200,0.1)', color: '#00D4C8' }
+        }
+      >
         {isDone ? (
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         ) : step}
       </span>
-      <h2 className="text-base font-semibold text-gray-700">{children}</h2>
+      <h2 className="text-base font-semibold" style={{ color: '#DCF0F5' }}>{children}</h2>
     </div>
   )
 }
 
 function Card({ children }) {
   return (
-    <div className="flex items-center justify-between bg-white rounded-xl border border-gray-100 px-4 py-3 gap-3">
+    <div className="flex items-center justify-between rounded-xl px-4 py-3 gap-3" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
       {children}
     </div>
   )
@@ -63,14 +67,19 @@ function DeleteButton({ onClick, disabled, label = 'حذف' }) {
       onClick={onClick}
       disabled={disabled}
       aria-label={label}
-      className="text-xs text-red-400 hover:text-red-600 disabled:opacity-50 shrink-0 px-2 py-1 rounded hover:bg-red-50 transition-colors"
+      className="text-xs disabled:opacity-50 shrink-0 px-2 py-1 rounded transition-colors"
+      style={{ color: 'rgba(239,68,68,0.7)' }}
+      onMouseEnter={e => e.currentTarget.style.color = '#EF4444'}
+      onMouseLeave={e => e.currentTarget.style.color = 'rgba(239,68,68,0.7)'}
     >
       حذف
     </button>
   )
 }
 
-const inputCls = 'w-full text-sm border border-gray-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent bg-white'
+const inputCls = 'w-full text-sm rounded-lg px-3 py-2.5 focus:outline-none outline-none'
+const inputStyle = { background: '#111E2E', border: '1px solid rgba(0,212,200,0.18)', color: '#DCF0F5' }
+const inputFocusStyle = { ...inputStyle, borderColor: 'rgba(0,212,200,0.45)' }
 
 // ── Services section ──────────────────────────────────────────────────────────
 
@@ -188,7 +197,8 @@ function ServicesSection() {
         {!isLoading && !isError && (
           <button
             onClick={() => { setShowInactive(p => !p); setEditingId(null) }}
-            className="text-xs text-gray-400 hover:text-gray-600 underline-offset-2 hover:underline transition-colors"
+            className="text-xs underline-offset-2 hover:underline transition-colors"
+            style={{ color: '#4A6E8A' }}
           >
             {showInactive ? 'پنهان کردن غیرفعال‌ها' : 'نمایش غیرفعال‌ها'}
           </button>
@@ -204,7 +214,7 @@ function ServicesSection() {
       )}
 
       {!isLoading && !isError && !hasSvcs && (
-        <div className="text-sm text-gray-500 bg-gray-50 rounded-xl px-4 py-3">
+        <div className="text-sm rounded-xl px-4 py-3" style={{ color: '#4A6E8A', background: 'rgba(0,212,200,0.03)', border: '1px solid rgba(0,212,200,0.07)' }}>
           {showInactive && inactiveCnt > 0
             ? 'همه خدمات غیرفعال هستند. برای بازگشت به حالت فعال، روی «فعال‌سازی مجدد» کلیک کنید.'
             : 'هیچ خدمتی ثبت نشده. اولین خدمت خود را از فرم زیر اضافه کنید.'}
@@ -217,14 +227,15 @@ function ServicesSection() {
           <div key={svc.id} className="opacity-60">
             <Card>
               <div className="flex items-center gap-3 text-sm flex-1 min-w-0 flex-wrap">
-                <span className="font-medium text-gray-800 truncate">{svc.name}</span>
-                <span className="text-gray-500 text-xs">{svc.duration_minutes} دقیقه</span>
-                <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">غیرفعال</span>
+                <span className="font-medium truncate" style={{ color: '#DCF0F5' }}>{svc.name}</span>
+                <span className="text-xs" style={{ color: '#4A6E8A' }}>{svc.duration_minutes} دقیقه</span>
+                <span className="text-xs px-2 py-0.5 rounded-full" style={{ color: '#4A6E8A', background: 'rgba(0,212,200,0.05)' }}>غیرفعال</span>
               </div>
               <button
                 onClick={() => handleReactivate(svc.id)}
                 disabled={saving}
-                className="text-xs text-emerald-600 hover:text-emerald-800 px-2 py-1 rounded hover:bg-emerald-50 transition-colors shrink-0 disabled:opacity-50 whitespace-nowrap"
+                className="text-xs px-2 py-1 rounded transition-colors shrink-0 disabled:opacity-50 whitespace-nowrap"
+                style={{ color: '#39FF14' }}
               >
                 فعال‌سازی مجدد
               </button>
@@ -235,50 +246,62 @@ function ServicesSection() {
           <form
             key={svc.id}
             onSubmit={handleUpdate}
-            className="bg-cyan-50 border border-cyan-200 rounded-xl p-4 space-y-3"
+            className="rounded-xl p-4 space-y-3"
+            style={{ background: 'rgba(0,212,200,0.04)', border: '1px solid rgba(0,212,200,0.15)' }}
           >
-            <p className="text-sm font-medium text-cyan-700">ویرایش خدمت</p>
+            <p className="text-sm font-medium" style={{ color: '#00D4C8' }}>ویرایش خدمت</p>
             <div>
-              <label className="text-xs text-gray-500 block mb-1">نام خدمت <span className="text-red-400">*</span></label>
+              <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>نام خدمت <span className="text-red-400">*</span></label>
               <input
                 type="text"
                 required
                 value={editForm.name}
                 onChange={(e) => setEditForm((p) => ({ ...p, name: e.target.value }))}
                 className={inputCls}
+                style={inputStyle}
+                onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
+                onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'}
                 autoFocus
               />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="text-xs text-gray-500 block mb-1">مدت (دقیقه)</label>
+                <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>مدت (دقیقه)</label>
                 <input type="number" inputMode="numeric" min="5" required
                   value={editForm.duration_minutes}
                   onChange={(e) => setEditForm((p) => ({ ...p, duration_minutes: e.target.value }))}
-                  className={inputCls} />
+                  className={inputCls} style={inputStyle}
+                  onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
+                  onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
               </div>
               <div>
-                <label className="text-xs text-gray-500 block mb-1">فاصله بعد از نوبت (دقیقه)</label>
+                <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>فاصله بعد از نوبت (دقیقه)</label>
                 <input type="number" inputMode="numeric" min="0"
                   value={editForm.buffer_minutes}
                   onChange={(e) => setEditForm((p) => ({ ...p, buffer_minutes: e.target.value }))}
-                  className={inputCls} />
+                  className={inputCls} style={inputStyle}
+                  onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
+                  onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
               </div>
               <div>
-                <label className="text-xs text-gray-500 block mb-1">قیمت (تومان)</label>
+                <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>قیمت (تومان)</label>
                 <input type="number" inputMode="numeric" min="0"
                   value={editForm.price}
                   onChange={(e) => setEditForm((p) => ({ ...p, price: e.target.value }))}
-                  className={inputCls} />
+                  className={inputCls} style={inputStyle}
+                  onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
+                  onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
               </div>
             </div>
             <div>
-              <label className="text-xs text-gray-500 block mb-1">توضیحات (اختیاری)</label>
+              <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>توضیحات (اختیاری)</label>
               <input type="text"
                 value={editForm.description}
                 onChange={(e) => setEditForm((p) => ({ ...p, description: e.target.value }))}
                 placeholder="توضیح کوتاه برای مشتریان"
-                className={inputCls} />
+                className={inputCls} style={inputStyle}
+                onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
+                onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
             </div>
             <div className="flex gap-2">
               <Button type="submit" variant="primary" loading={saving} disabled={saving || !editForm.name.trim()}>
@@ -293,22 +316,23 @@ function ServicesSection() {
           /* ── Normal card row ── */
           <Card key={svc.id}>
             <div className="flex items-center gap-3 text-sm flex-1 min-w-0 flex-wrap">
-              <span className="font-medium text-gray-800 truncate">{svc.name}</span>
-              <span className="text-gray-500 text-xs">{svc.duration_minutes} دقیقه</span>
+              <span className="font-medium truncate" style={{ color: '#DCF0F5' }}>{svc.name}</span>
+              <span className="text-xs" style={{ color: '#4A6E8A' }}>{svc.duration_minutes} دقیقه</span>
               {svc.buffer_minutes > 0 && (
-                <span className="text-xs text-gray-400">+{svc.buffer_minutes}د فاصله</span>
+                <span className="text-xs" style={{ color: '#4A6E8A' }}>+{svc.buffer_minutes}د فاصله</span>
               )}
               {Number(svc.price) > 0 && (
-                <span className="text-xs text-emerald-700 font-medium">
+                <span className="text-xs font-medium" style={{ color: '#39FF14' }}>
                   {Number(svc.price).toLocaleString('fa-IR')} تومان
                 </span>
               )}
-              {!svc.is_active && <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">غیرفعال</span>}
+              {!svc.is_active && <span className="text-xs px-2 py-0.5 rounded-full" style={{ color: '#4A6E8A', background: 'rgba(0,212,200,0.05)' }}>غیرفعال</span>}
             </div>
             <div className="flex items-center gap-1 shrink-0">
               <button
                 onClick={() => startEdit(svc)}
-                className="text-xs text-cyan-500 hover:text-cyan-700 px-2 py-1 rounded hover:bg-cyan-50 transition-colors"
+                className="text-xs px-2 py-1 rounded transition-colors"
+                style={{ color: '#00D4C8' }}
               >
                 ویرایش
               </button>
@@ -329,12 +353,12 @@ function ServicesSection() {
           aria-modal="true"
           aria-labelledby="delete-svc-title"
         >
-          <div className="card p-6 w-full max-w-sm space-y-4" dir="rtl">
-            <h2 id="delete-svc-title" className="text-base font-bold text-gray-800">حذف خدمت</h2>
-            <p className="text-sm text-gray-500">
+          <div className="p-6 w-full max-w-sm space-y-4 rounded-2xl shadow-xl" dir="rtl" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.15)' }}>
+            <h2 id="delete-svc-title" className="text-base font-bold" style={{ color: '#DCF0F5' }}>حذف خدمت</h2>
+            <p className="text-sm" style={{ color: '#4A6E8A' }}>
               آیا مطمئن هستید؟ این خدمت غیرفعال می‌شود و برای مشتریان جدید قابل رزرو نخواهد بود.
             </p>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs" style={{ color: 'rgba(74,110,138,0.7)' }}>
               داده از بین نمی‌رود — در صورت نیاز از طریق پنل مدیریت قابل بازگشت است.
             </p>
             <div className="flex gap-3">
@@ -349,45 +373,55 @@ function ServicesSection() {
         </div>
       )}
 
-      <form onSubmit={handleAdd} className="bg-gray-50 rounded-xl p-4 space-y-3">
-        <p className="text-sm font-medium text-gray-700">افزودن خدمت جدید</p>
+      <form onSubmit={handleAdd} className="rounded-xl p-4 space-y-3" style={{ background: 'rgba(0,212,200,0.03)', border: '1px solid rgba(0,212,200,0.07)' }}>
+        <p className="text-sm font-medium" style={{ color: '#DCF0F5' }}>افزودن خدمت جدید</p>
         <div>
-          <label className="text-xs text-gray-500 block mb-1">نام خدمت <span className="text-red-400">*</span></label>
+          <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>نام خدمت <span className="text-red-400">*</span></label>
           <input
             type="text"
             required
             placeholder="مثلاً: ویزیت، کوتاهی مو، مشاوره"
             value={form.name}
             onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
-            className={inputCls}
+            className={inputCls} style={inputStyle}
+            onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
+            onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'}
           />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
-            <label className="text-xs text-gray-500 block mb-1">مدت (دقیقه)</label>
+            <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>مدت (دقیقه)</label>
             <input type="number" inputMode="numeric" min="5" required value={form.duration_minutes}
               onChange={(e) => setForm((p) => ({ ...p, duration_minutes: e.target.value }))}
-              className={inputCls} />
+              className={inputCls} style={inputStyle}
+              onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
+              onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
           </div>
           <div>
-            <label className="text-xs text-gray-500 block mb-1">فاصله بعد از نوبت (دقیقه)</label>
+            <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>فاصله بعد از نوبت (دقیقه)</label>
             <input type="number" inputMode="numeric" min="0" value={form.buffer_minutes}
               onChange={(e) => setForm((p) => ({ ...p, buffer_minutes: e.target.value }))}
-              className={inputCls} />
+              className={inputCls} style={inputStyle}
+              onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
+              onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
           </div>
           <div>
-            <label className="text-xs text-gray-500 block mb-1">قیمت (تومان)</label>
+            <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>قیمت (تومان)</label>
             <input type="number" inputMode="numeric" min="0" value={form.price}
               onChange={(e) => setForm((p) => ({ ...p, price: e.target.value }))}
-              className={inputCls} />
+              className={inputCls} style={inputStyle}
+              onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
+              onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
           </div>
         </div>
         <div>
-          <label className="text-xs text-gray-500 block mb-1">توضیحات (اختیاری)</label>
+          <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>توضیحات (اختیاری)</label>
           <input type="text" value={form.description}
             onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
             placeholder="توضیح کوتاه برای مشتریان"
-            className={inputCls} />
+            className={inputCls} style={inputStyle}
+            onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
+            onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
         </div>
         <Button
           type="submit"
@@ -501,39 +535,46 @@ function WorkingHoursSection({ providerId }) {
       )}
 
       {!isLoading && !isError && (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="rounded-2xl overflow-hidden" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
 
           {/* Master time row */}
-          <div className="bg-gray-50 border-b border-gray-100 px-4 py-3 flex flex-wrap items-center gap-3">
-            <span className="text-xs font-medium text-gray-500 shrink-0">اعمال به همه روزها:</span>
+          <div className="px-4 py-3 flex flex-wrap items-center gap-3" style={{ background: 'rgba(0,212,200,0.03)', borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
+            <span className="text-xs font-medium shrink-0" style={{ color: '#4A6E8A' }}>اعمال به همه روزها:</span>
             <div className="flex items-center gap-2 flex-1 min-w-0 flex-wrap">
               <input
                 type="time"
                 value={masterStart}
                 onChange={(e) => setMasterStart(e.target.value)}
-                className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent bg-white"
+                className="text-sm rounded-lg px-2 py-1.5 focus:outline-none"
+                style={inputStyle}
+                onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
+                onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'}
                 dir="ltr"
               />
-              <span className="text-gray-400 text-xs">تا</span>
+              <span className="text-xs" style={{ color: '#4A6E8A' }}>تا</span>
               <input
                 type="time"
                 value={masterEnd}
                 onChange={(e) => setMasterEnd(e.target.value)}
-                className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent bg-white"
+                className="text-sm rounded-lg px-2 py-1.5 focus:outline-none"
+                style={inputStyle}
+                onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
+                onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'}
                 dir="ltr"
               />
               <button
                 onClick={applyMasterTime}
                 type="button"
-                className="text-xs bg-cyan-100 text-cyan-700 px-3 py-1.5 rounded-lg hover:bg-cyan-200 transition-colors font-medium"
+                className="text-xs px-3 py-1.5 rounded-lg transition-colors font-medium"
+                style={{ background: 'rgba(0,212,200,0.1)', color: '#00D4C8' }}
               >
                 اعمال
               </button>
             </div>
             <div className="flex gap-2 mr-auto shrink-0">
-              <button onClick={() => toggleAll(true)}  type="button" className="text-xs text-green-600 hover:underline">انتخاب همه</button>
-              <span className="text-gray-300">|</span>
-              <button onClick={() => toggleAll(false)} type="button" className="text-xs text-red-400 hover:underline">حذف انتخاب</button>
+              <button onClick={() => toggleAll(true)}  type="button" className="text-xs hover:underline" style={{ color: '#39FF14' }}>انتخاب همه</button>
+              <span style={{ color: 'rgba(0,212,200,0.15)' }}>|</span>
+              <button onClick={() => toggleAll(false)} type="button" className="text-xs hover:underline" style={{ color: 'rgba(239,68,68,0.7)' }}>حذف انتخاب</button>
             </div>
           </div>
 
@@ -541,9 +582,11 @@ function WorkingHoursSection({ providerId }) {
           {week.map((day, i) => (
             <div
               key={i}
-              className={`flex items-center gap-3 px-4 py-3 border-b border-gray-50 last:border-b-0 transition-colors ${
-                day.enabled ? 'bg-white' : 'bg-gray-50/60'
-              }`}
+              className="flex items-center gap-3 px-4 py-3 last:border-b-0 transition-colors"
+              style={{
+                background: day.enabled ? 'transparent' : 'rgba(0,212,200,0.02)',
+                borderBottom: '1px solid rgba(0,212,200,0.05)',
+              }}
             >
               {/* Toggle */}
               <label className="flex items-center gap-2 cursor-pointer shrink-0 w-24">
@@ -551,9 +594,10 @@ function WorkingHoursSection({ providerId }) {
                   type="checkbox"
                   checked={day.enabled}
                   onChange={(e) => updateDay(i, { enabled: e.target.checked })}
-                  className="w-4 h-4 rounded accent-cyan-500"
+                  className="w-4 h-4 rounded"
+                  style={{ accentColor: '#00D4C8' }}
                 />
-                <span className={`text-sm font-medium ${day.enabled ? 'text-gray-800' : 'text-gray-400'}`}>
+                <span className="text-sm font-medium" style={{ color: day.enabled ? '#DCF0F5' : '#4A6E8A' }}>
                   {WEEKDAYS[i]}
                 </span>
               </label>
@@ -565,40 +609,46 @@ function WorkingHoursSection({ providerId }) {
                     type="time"
                     value={day.start_time}
                     onChange={(e) => updateDay(i, { start_time: e.target.value })}
-                    className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent bg-white flex-1 min-w-[100px]"
+                    className="text-sm rounded-lg px-2 py-1.5 focus:outline-none flex-1 min-w-[100px]"
+                    style={inputStyle}
+                    onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
+                    onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'}
                     dir="ltr"
                   />
-                  <span className="text-gray-400 text-xs shrink-0">تا</span>
+                  <span className="text-xs shrink-0" style={{ color: '#4A6E8A' }}>تا</span>
                   <input
                     type="time"
                     value={day.end_time}
                     onChange={(e) => updateDay(i, { end_time: e.target.value })}
-                    className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent bg-white flex-1 min-w-[100px]"
+                    className="text-sm rounded-lg px-2 py-1.5 focus:outline-none flex-1 min-w-[100px]"
+                    style={inputStyle}
+                    onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
+                    onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'}
                     dir="ltr"
                   />
                   {day.start_time && day.end_time && day.start_time < day.end_time && (
-                    <span className="text-xs text-gray-400 shrink-0">
+                    <span className="text-xs shrink-0" style={{ color: '#4A6E8A' }}>
                       {calcDuration(day.start_time, day.end_time)}
                     </span>
                   )}
                 </div>
               ) : (
-                <span className="text-xs text-gray-400 flex-1">تعطیل</span>
+                <span className="text-xs flex-1" style={{ color: '#4A6E8A' }}>تعطیل</span>
               )}
             </div>
           ))}
 
           {/* Save button */}
-          <div className="px-4 py-3 bg-gray-50 border-t border-gray-100">
+          <div className="px-4 py-3" style={{ background: 'rgba(0,212,200,0.03)', borderTop: '1px solid rgba(0,212,200,0.07)' }}>
             <button
               onClick={handleSave}
               disabled={saving}
               type="button"
-              className={`w-full text-sm py-2.5 rounded-xl font-medium transition-colors ${
-                dirty
-                  ? 'bg-cyan-500 text-white hover:bg-cyan-600'
-                  : 'bg-gray-200 text-gray-500 cursor-default'
-              } disabled:opacity-50`}
+              className="w-full text-sm py-2.5 rounded-xl font-medium transition-colors text-white disabled:opacity-50"
+              style={dirty
+                ? { background: 'linear-gradient(135deg,#FF6B2B,#FF4500)', boxShadow: '0 0 24px rgba(255,107,43,0.35)' }
+                : { background: '#111E2E', color: '#4A6E8A', cursor: 'default' }
+              }
             >
               {saving ? 'در حال ذخیره...' : dirty ? 'ذخیره تغییرات' : 'تغییری وجود ندارد'}
             </button>
@@ -663,7 +713,7 @@ function TimeOffSection({ providerId }) {
       )}
 
       {!isLoading && !isError && !hasTimeoffs && (
-        <p className="text-sm text-gray-500 flex items-center gap-2">
+        <p className="text-sm flex items-center gap-2" style={{ color: '#4A6E8A' }}>
           <CalendarXIcon size={16} className="opacity-40 shrink-0" />
           هیچ مرخصی یا تعطیلی ثبت نشده.
         </p>
@@ -674,16 +724,16 @@ function TimeOffSection({ providerId }) {
         return (
           <Card key={t.id}>
             <div className="flex items-center gap-3 text-sm flex-wrap">
-              <span className="font-medium text-gray-800">{toJalali(t.date)}</span>
+              <span className="font-medium" style={{ color: '#DCF0F5' }}>{toJalali(t.date)}</span>
               <Badge variant={isFullDay ? 'danger' : 'warning'}>
                 {isFullDay ? 'تمام روز' : 'جزئی'}
               </Badge>
               {!isFullDay && (
-                <span className="font-mono text-gray-500 text-xs" dir="ltr">
+                <span className="font-mono text-xs" dir="ltr" style={{ color: '#4A6E8A' }}>
                   {t.start_time}–{t.end_time}
                 </span>
               )}
-              {t.reason && <span className="text-gray-400 text-xs truncate max-w-[120px]">{t.reason}</span>}
+              {t.reason && <span className="text-xs truncate max-w-[120px]" style={{ color: '#4A6E8A' }}>{t.reason}</span>}
             </div>
             <DeleteButton
               label={`حذف مرخصی ${t.date}`}
@@ -697,22 +747,25 @@ function TimeOffSection({ providerId }) {
         )
       })}
 
-      <form onSubmit={handleAdd} className="bg-gray-50 rounded-xl p-4 space-y-3">
-        <p className="text-sm font-medium text-gray-700">افزودن مرخصی</p>
+      <form onSubmit={handleAdd} className="rounded-xl p-4 space-y-3" style={{ background: 'rgba(0,212,200,0.03)', border: '1px solid rgba(0,212,200,0.07)' }}>
+        <p className="text-sm font-medium" style={{ color: '#DCF0F5' }}>افزودن مرخصی</p>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="text-xs text-gray-500 block mb-1">تاریخ <span className="text-red-400">*</span></label>
+            <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>تاریخ <span className="text-red-400">*</span></label>
             <input type="date" required value={form.date}
               onChange={(e) => setForm((p) => ({ ...p, date: e.target.value }))}
-              className={inputCls} />
+              className={inputCls} style={inputStyle}
+              onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
+              onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
           </div>
           <div className="flex items-end pb-1">
-            <label className="flex items-center gap-2 cursor-pointer select-none text-sm text-gray-700">
+            <label className="flex items-center gap-2 cursor-pointer select-none text-sm" style={{ color: '#DCF0F5' }}>
               <input
                 type="checkbox"
                 checked={form.is_full_day}
                 onChange={(e) => setForm((p) => ({ ...p, is_full_day: e.target.checked }))}
-                className="w-4 h-4 rounded accent-cyan-500"
+                className="w-4 h-4 rounded"
+                style={{ accentColor: '#00D4C8' }}
               />
               تمام روز
             </label>
@@ -722,26 +775,32 @@ function TimeOffSection({ providerId }) {
         {!form.is_full_day && (
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs text-gray-500 block mb-1">از ساعت</label>
+              <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>از ساعت</label>
               <input type="time" required value={form.start_time}
                 onChange={(e) => setForm((p) => ({ ...p, start_time: e.target.value }))}
-                className={inputCls} />
+                className={inputCls} style={inputStyle}
+                onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
+                onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
             </div>
             <div>
-              <label className="text-xs text-gray-500 block mb-1">تا ساعت</label>
+              <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>تا ساعت</label>
               <input type="time" required value={form.end_time}
                 onChange={(e) => setForm((p) => ({ ...p, end_time: e.target.value }))}
-                className={inputCls} />
+                className={inputCls} style={inputStyle}
+                onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
+                onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
             </div>
           </div>
         )}
 
         <div>
-          <label className="text-xs text-gray-500 block mb-1">دلیل (اختیاری)</label>
+          <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>دلیل (اختیاری)</label>
           <input type="text" placeholder="مثلاً: سفر، تعطیل رسمی"
             value={form.reason}
             onChange={(e) => setForm((p) => ({ ...p, reason: e.target.value }))}
-            className={inputCls} />
+            className={inputCls} style={inputStyle}
+            onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
+            onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
         </div>
 
         <Button
@@ -762,7 +821,7 @@ function TimeOffSection({ providerId }) {
 
 function GoLiveBanner({ navigate }) {
   return (
-    <div className="bg-gradient-to-l from-emerald-500 to-teal-500 rounded-2xl p-5 text-white shadow-md shadow-emerald-100/40"
+    <div className="rounded-2xl p-5 text-white" style={{ background: 'linear-gradient(to left, rgba(16,185,129,0.25), rgba(20,184,166,0.2))', border: '1px solid rgba(57,255,20,0.15)' }}
          role="status" aria-live="polite">
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center shrink-0 text-white">

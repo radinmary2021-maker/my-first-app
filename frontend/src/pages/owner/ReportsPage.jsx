@@ -231,7 +231,9 @@ function TopServicesTable({ services }) {
             <tr
               key={i}
               style={{ borderBottom: '1px solid var(--color-border)' }}
-              className="hover:bg-gray-50 transition-colors"
+              className="transition-colors"
+              onMouseEnter={e => e.currentTarget.style.background = 'rgba(0,212,200,0.03)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
             >
               <td className="py-2.5 pr-0 font-medium" style={{ color: 'var(--color-text-primary)' }}>
                 {s.name}
@@ -285,14 +287,16 @@ export default function ReportsPage() {
       title="گزارش‌ها"
       subtitle={data ? `${toJalali(data.from)} — ${toJalali(data.to)}` : 'عملکرد کسب‌وکار شما'}
       headerAction={
-        <div className="flex bg-slate-50 rounded-xl p-1 border border-slate-100">
+        <div className="flex rounded-xl p-1" style={{ background: '#111E2E', border: '1px solid rgba(0,212,200,0.07)' }}>
           {PERIODS.map(p => (
             <button
               key={p.value}
               onClick={() => setPeriod(p.value)}
-              className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors ${
-                period === p.value ? 'bg-white text-cyan-600 shadow-sm font-bold' : 'text-slate-500'
-              }`}
+              className="text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
+              style={period === p.value
+                ? { background: 'rgba(0,212,200,0.12)', color: '#00D4C8', fontWeight: 700 }
+                : { color: '#4A6E8A' }
+              }
             >
               {p.label}
             </button>

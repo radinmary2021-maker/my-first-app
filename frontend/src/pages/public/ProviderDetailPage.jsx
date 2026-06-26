@@ -178,7 +178,7 @@ export default function ProviderDetailPage() {
   const serviceRequired = hasServices
   const canPickDate     = !serviceRequired || selectedService !== null
   const providerName    = provider.business_name || provider.full_name
-  const staffName       = provider.full_name && provider.full_name !== provider.business_name ? provider.full_name : null
+  const staffName       = provider.business_name && provider.full_name && provider.full_name !== provider.business_name ? provider.full_name : null
   const providerSlug    = provider.latin_slug || provider.business_slug
   const category        = provider.category_display || provider.specialty
   const hasRating       = provider.average_rating != null && provider.reviews_count > 0

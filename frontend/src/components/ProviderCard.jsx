@@ -8,7 +8,7 @@ export default function ProviderCard({ doctor, provider }) {
   const hasRating = p.average_rating != null && p.reviews_count > 0
   const isActive  = (p.available_weekdays ?? []).length > 0
   const name      = p.business_name || p.full_name
-  const staffName = p.full_name && p.full_name !== p.business_name ? p.full_name : null
+  const staffName = p.business_name && p.full_name && p.full_name !== p.business_name ? p.full_name : null
   const category  = p.category_display || p.specialty
   const duration  = p.slot_duration ?? p.visit_duration
   const fee       = p.service_fee ?? p.consultation_fee
