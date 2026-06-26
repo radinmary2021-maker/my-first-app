@@ -16,28 +16,31 @@ function ServiceRow({ svc, active, onSelect }) {
   return (
     <div
       onClick={onSelect}
-      className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-colors group ${
-        active ? 'bg-cyan-50 border border-cyan-200' : 'hover:bg-slate-50'
-      }`}
+      className="flex items-center justify-between p-3 rounded-xl cursor-pointer transition-colors group"
+      style={active
+        ? { background: 'rgba(0,212,200,0.06)', border: '1px solid rgba(0,212,200,0.2)' }
+        : { border: '1px solid transparent' }
+      }
     >
       <div className="flex items-start gap-3">
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0 ${
-          active ? 'bg-cyan-100' : 'bg-slate-50'
-        }`}>
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0"
+             style={{ background: active ? 'rgba(0,212,200,0.1)' : 'rgba(0,212,200,0.04)' }}>
           ✂️
         </div>
         <div>
-          <div className={`text-sm font-semibold ${active ? 'text-cyan-700' : 'text-slate-800'}`}>{svc.name}</div>
-          <div className="text-xs text-slate-400 mt-0.5">{svc.duration_minutes} دقیقه</div>
+          <div className="text-sm font-semibold" style={{ color: active ? '#00D4C8' : '#DCF0F5' }}>{svc.name}</div>
+          <div className="text-xs mt-0.5" style={{ color: '#4A6E8A' }}>{svc.duration_minutes} دقیقه</div>
         </div>
       </div>
       <div className="flex items-center gap-3">
         {Number(svc.price) > 0 && (
-          <span className="text-sm font-bold text-slate-700">{Number(svc.price).toLocaleString('fa-IR')}ت</span>
+          <span className="text-sm font-bold" style={{ color: '#DCF0F5' }}>{Number(svc.price).toLocaleString('fa-IR')}ت</span>
         )}
-        <button className={`text-xs font-bold px-3 py-1.5 rounded-lg transition-all ${
-          active ? 'bg-cyan-500 text-white' : 'opacity-0 group-hover:opacity-100 bg-cyan-500 text-white'
-        }`}>
+        <button className="text-xs font-extrabold px-3 py-1.5 rounded-lg transition-all text-white"
+                style={active
+                  ? { background: 'linear-gradient(135deg,#FF6B2B,#FF4500)', opacity: 1 }
+                  : { background: 'linear-gradient(135deg,#FF6B2B,#FF4500)', opacity: 0 }
+                }>
           {active ? '✓ انتخاب شد' : 'انتخاب'}
         </button>
       </div>
@@ -50,12 +53,16 @@ function ProviderServiceGroup({ provider: sib, selectedProviderId, selectedServi
   const { data: svcList, isLoading } = useProviderServices(sib.id)
 
   return (
-    <div className={`rounded-2xl border p-4 transition-all ${isThisProvider ? 'border-cyan-200 bg-cyan-50/30' : 'border-slate-100'}`}>
+    <div className="rounded-2xl p-4 transition-all"
+         style={isThisProvider
+           ? { border: '1px solid rgba(0,212,200,0.2)', background: 'rgba(0,212,200,0.04)' }
+           : { border: '1px solid rgba(0,212,200,0.07)' }
+         }>
       <div className="flex items-center gap-3 mb-3">
         <ImageAvatar src={sib.avatar} alt={sib.full_name} fallbackText={sib.full_name} size="w-12 h-12" shape="rounded-xl" />
         <div className="flex-1 min-w-0">
-          <div className={`text-sm font-bold ${isThisProvider ? 'text-cyan-700' : 'text-slate-800'}`}>{sib.full_name}</div>
-          {sib.specialty && <div className="text-xs text-slate-400">{sib.specialty}</div>}
+          <div className="text-sm font-bold" style={{ color: isThisProvider ? '#00D4C8' : '#DCF0F5' }}>{sib.full_name}</div>
+          {sib.specialty && <div className="text-xs" style={{ color: '#4A6E8A' }}>{sib.specialty}</div>}
         </div>
       </div>
 
@@ -201,18 +208,18 @@ export default function ProviderDetailPage() {
       />
 
       {/* Breadcrumb */}
-      <div className="bg-white border-b border-slate-100 px-4 py-3">
-        <div className="max-w-7xl mx-auto flex items-center gap-2 text-xs text-slate-400">
-          <button onClick={() => navigate('/')} className="hover:text-cyan-600 transition-colors">خانه</button>
+      <div className="px-4 py-3" style={{ borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
+        <div className="max-w-7xl mx-auto flex items-center gap-2 text-xs" style={{ color: '#4A6E8A' }}>
+          <button onClick={() => navigate('/')} className="transition-colors" style={{ color: '#4A6E8A' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#4A6E8A'}>خانه</button>
           <svg className="w-3 h-3 rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6" /></svg>
-          <button onClick={() => navigate('/providers')} className="hover:text-cyan-600 transition-colors">{category || 'کسب‌وکارها'}</button>
+          <button onClick={() => navigate('/providers')} className="transition-colors" style={{ color: '#4A6E8A' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#4A6E8A'}>{category || 'کسب‌وکارها'}</button>
           <svg className="w-3 h-3 rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6" /></svg>
-          <span className="text-slate-600 font-medium">{providerName}</span>
+          <span className="font-medium" style={{ color: '#DCF0F5' }}>{providerName}</span>
         </div>
       </div>
 
       {/* Cover */}
-      <div className="bg-white">
+      <div>
         <div className="max-w-7xl mx-auto px-4 py-5">
           <ImageAvatar src={provider.logo} alt={providerName} fallbackText={providerName} size="w-full h-48 sm:h-72" shape="rounded-2xl" blurBg />
         </div>
@@ -226,28 +233,28 @@ export default function ProviderDetailPage() {
           <div className="flex-1 min-w-0 space-y-4">
 
             {/* Provider header */}
-            <div className="bg-white rounded-2xl border border-slate-100 p-5">
+            <div className="rounded-[20px] p-5" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-4">
-                  <ImageAvatar src={provider.logo} alt={providerName} fallbackText={providerName} size="w-16 h-16" shape="rounded-2xl" className="shadow-md shadow-cyan-200" />
+                  <ImageAvatar src={provider.logo} alt={providerName} fallbackText={providerName} size="w-16 h-16" shape="rounded-2xl" />
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <h1 className="text-xl font-black text-slate-900">{providerName}</h1>
+                      <h1 className="text-xl font-black cyan-text">{providerName}</h1>
                       {isAvailable
-                        ? <span className="bg-cyan-50 text-cyan-600 text-xs font-bold px-2.5 py-1 rounded-full border border-cyan-100">فعال</span>
-                        : <span className="bg-slate-100 text-slate-500 text-xs font-bold px-2.5 py-1 rounded-full">غیرفعال</span>
+                        ? <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: 'rgba(57,255,20,0.15)', border: '1px solid rgba(57,255,20,0.3)', color: '#39FF14' }}>● باز</span>
+                        : <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: 'rgba(0,212,200,0.05)', color: '#4A6E8A' }}>غیرفعال</span>
                       }
                     </div>
-                    <p className="text-slate-500 text-sm">{category}</p>
+                    <p className="text-sm" style={{ color: '#4A6E8A' }}>{category}</p>
                     {staffName && (
-                      <p className="text-sm text-slate-600 mt-1">با مدیریت: <span className="font-semibold text-slate-700">{staffName}</span></p>
+                      <p className="text-sm mt-1" style={{ color: '#4A6E8A' }}>با مدیریت: <span className="font-semibold" style={{ color: '#DCF0F5' }}>{staffName}</span></p>
                     )}
                     <div className="flex items-center gap-3 flex-wrap">
                       {hasRating && (
                         <div className="flex items-center gap-1">
-                          <span className="text-amber-400">{'★'.repeat(Math.floor(provider.average_rating))}{'☆'.repeat(5 - Math.floor(provider.average_rating))}</span>
-                          <span className="text-sm font-bold text-slate-700">{provider.average_rating}</span>
-                          <span className="text-xs text-slate-400">({provider.reviews_count} نظر)</span>
+                          <span style={{ color: '#FF6B2B' }}>{'★'.repeat(Math.floor(provider.average_rating))}{'☆'.repeat(5 - Math.floor(provider.average_rating))}</span>
+                          <span className="text-sm font-bold" style={{ color: '#DCF0F5' }}>{provider.average_rating}</span>
+                          <span className="text-xs" style={{ color: '#4A6E8A' }}>({provider.reviews_count} نظر)</span>
                         </div>
                       )}
                     </div>
@@ -256,7 +263,8 @@ export default function ProviderDetailPage() {
                 <div className="flex items-center gap-2 shrink-0">
                   <button
                     onClick={handleShare}
-                    className="w-9 h-9 rounded-xl border border-slate-200 flex items-center justify-center text-slate-400 hover:text-cyan-500 hover:border-cyan-200 transition-colors"
+                    className="w-9 h-9 rounded-xl flex items-center justify-center transition-colors"
+                    style={{ border: '1px solid rgba(0,212,200,0.2)', color: '#4A6E8A' }}
                   >
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98" /></svg>
                   </button>
@@ -264,41 +272,45 @@ export default function ProviderDetailPage() {
               </div>
 
               {/* Quick info pills */}
-              <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-slate-50">
+              <div className="flex flex-wrap gap-2 mt-4 pt-4" style={{ borderTop: '1px solid rgba(0,212,200,0.07)' }}>
                 {provider.slot_duration && (
-                  <div className="flex items-center gap-1.5 bg-slate-50 text-slate-600 text-xs px-3 py-1.5 rounded-full">
-                    <svg className="w-3.5 h-3.5 text-cyan-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
+                  <div className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full" style={{ background: 'rgba(0,212,200,0.07)', border: '1px solid rgba(0,212,200,0.22)', color: '#00D4C8' }}>
+                    <svg className="w-3.5 h-3.5" style={{ color: '#00D4C8' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
                     مدت نوبت: {provider.slot_duration} دقیقه
                   </div>
                 )}
                 {provider.service_fee && (
-                  <div className="flex items-center gap-1.5 bg-slate-50 text-slate-600 text-xs px-3 py-1.5 rounded-full">
+                  <div className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full" style={{ background: 'rgba(0,212,200,0.07)', border: '1px solid rgba(0,212,200,0.22)', color: '#00D4C8' }}>
                     💰 {formatFee(provider.service_fee)}
                   </div>
                 )}
               </div>
 
               {provider.bio && (
-                <p className="text-sm text-slate-500 leading-7 mt-3">{provider.bio}</p>
+                <p className="text-sm leading-7 mt-3" style={{ color: '#4A6E8A' }}>{provider.bio}</p>
               )}
             </div>
 
             {/* Unified provider + services section */}
-            <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
-              <div className="flex border-b border-slate-100 px-1">
+            <div className="rounded-[20px] overflow-hidden" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+              <div className="flex px-1" style={{ borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
                 <button
                   onClick={() => setActiveTab('services')}
-                  className={`text-sm px-5 py-4 font-medium transition-colors border-b-2 ${
-                    activeTab === 'services' ? 'text-cyan-600 border-cyan-500 font-semibold' : 'text-slate-500 border-transparent hover:text-slate-700'
-                  }`}
+                  className="text-sm px-5 py-4 font-medium transition-colors border-b-2"
+                  style={activeTab === 'services'
+                    ? { color: '#00D4C8', borderColor: '#00D4C8', fontWeight: 600 }
+                    : { color: '#4A6E8A', borderColor: 'transparent' }
+                  }
                 >
                   {hasMultipleProviders ? 'ارائه‌دهندگان و خدمات' : 'خدمات'}
                 </button>
                 <button
                   onClick={() => setActiveTab('reviews')}
-                  className={`text-sm px-5 py-4 font-medium transition-colors border-b-2 ${
-                    activeTab === 'reviews' ? 'text-cyan-600 border-cyan-500 font-semibold' : 'text-slate-500 border-transparent hover:text-slate-700'
-                  }`}
+                  className="text-sm px-5 py-4 font-medium transition-colors border-b-2"
+                  style={activeTab === 'reviews'
+                    ? { color: '#00D4C8', borderColor: '#00D4C8', fontWeight: 600 }
+                    : { color: '#4A6E8A', borderColor: 'transparent' }
+                  }
                 >
                   نظرات {hasRating ? `(${provider.reviews_count})` : ''}
                 </button>
@@ -329,7 +341,7 @@ export default function ProviderDetailPage() {
                       <>
                         {servicesLoading && <Spinner />}
                         {!hasServices && !servicesLoading && (
-                          <p className="text-sm text-slate-400 text-center py-8">خدمتی تعریف نشده است.</p>
+                          <p className="text-sm text-center py-8" style={{ color: '#4A6E8A' }}>خدمتی تعریف نشده است.</p>
                         )}
                         {hasServices && (
                           <div className="space-y-2">
@@ -382,19 +394,19 @@ export default function ProviderDetailPage() {
 
           {/* Right: Booking panel */}
           <div className="w-full lg:w-80 shrink-0 lg:sticky lg:top-24">
-            <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+            <div className="rounded-[20px] overflow-hidden" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
 
-              <div className="p-4 border-b border-slate-50">
-                <h2 className="text-base font-black text-slate-900">رزرو نوبت</h2>
-                <p className="text-xs text-slate-400 mt-0.5">تاریخ و ساعت مناسب را انتخاب کن</p>
+              <div className="p-4" style={{ borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
+                <h2 className="text-base font-black" style={{ color: '#DCF0F5' }}>رزرو نوبت</h2>
+                <p className="text-xs mt-0.5" style={{ color: '#4A6E8A' }}>تاریخ و ساعت مناسب را انتخاب کن</p>
               </div>
 
               <div className="p-4 space-y-4">
 
                 {/* Not available */}
                 {!isAvailable && (
-                  <div className="bg-amber-50 border border-amber-100 rounded-xl p-3">
-                    <p className="text-xs text-amber-700 leading-5">
+                  <div className="rounded-xl p-3" style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)' }}>
+                    <p className="text-xs leading-5" style={{ color: '#F59E0B' }}>
                       این ارائه‌دهنده هنوز ساعات کاری خود را تنظیم نکرده است. در حال حاضر امکان رزرو وجود ندارد.
                     </p>
                   </div>
@@ -402,8 +414,8 @@ export default function ProviderDetailPage() {
 
                 {/* Service required prompt */}
                 {isAvailable && serviceRequired && !canPickDate && (
-                  <div className="bg-cyan-50 border border-cyan-100 rounded-xl p-3">
-                    <p className="text-xs text-cyan-700 leading-5">
+                  <div className="rounded-xl p-3" style={{ background: 'rgba(0,212,200,0.06)', border: '1px solid rgba(0,212,200,0.15)' }}>
+                    <p className="text-xs leading-5" style={{ color: '#00D4C8' }}>
                       {hasMultipleProviders ? 'ابتدا یک ارائه‌دهنده و خدمت انتخاب کنید.' : 'ابتدا از تب «خدمات» یک خدمت انتخاب کنید.'}
                     </p>
                   </div>
@@ -412,8 +424,8 @@ export default function ProviderDetailPage() {
                 {/* Date picker */}
                 {isAvailable && canPickDate && (
                   <div>
-                    <label className="text-xs font-bold text-slate-600 mb-2 block">تاریخ</label>
-                    <div className="bg-slate-50 rounded-xl border border-slate-100 p-3">
+                    <label className="text-xs font-bold mb-2 block" style={{ color: '#4A6E8A' }}>تاریخ</label>
+                    <div className="rounded-xl p-3" style={{ background: '#111E2E', border: '1px solid rgba(0,212,200,0.1)' }}>
                       <DatePicker
                         availableWeekdays={provider.available_weekdays ?? []}
                         selectedDate={selectedDate}
@@ -426,11 +438,11 @@ export default function ProviderDetailPage() {
                 {/* Slot picker */}
                 {isAvailable && selectedDate && (
                   <div>
-                    <label className="text-xs font-bold text-slate-600 mb-2 block">ساعت</label>
+                    <label className="text-xs font-bold mb-2 block" style={{ color: '#4A6E8A' }}>ساعت</label>
                     {slotsError ? (
                       <div className="space-y-2">
-                        <p className="text-xs text-red-500">خطا در دریافت ساعت‌ها</p>
-                        <button onClick={() => refetchSlots()} className="text-xs text-cyan-600 font-semibold">تلاش مجدد</button>
+                        <p className="text-xs" style={{ color: '#EF4444' }}>خطا در دریافت ساعت‌ها</p>
+                        <button onClick={() => refetchSlots()} className="text-xs font-semibold" style={{ color: '#00D4C8' }}>تلاش مجدد</button>
                       </div>
                     ) : (
                       <SlotPicker
@@ -445,29 +457,29 @@ export default function ProviderDetailPage() {
 
                 {/* Summary */}
                 {(selectedService || selectedDate || selectedSlot) && (
-                  <div className="bg-slate-50 rounded-xl p-3 border border-slate-100 space-y-2">
+                  <div className="rounded-xl p-3 space-y-2" style={{ background: 'rgba(0,212,200,0.03)', border: '1px solid rgba(0,212,200,0.07)' }}>
                     {selectedService && (
                       <div className="flex items-center justify-between text-xs">
-                        <span className="text-slate-500">خدمت</span>
-                        <span className="font-semibold text-slate-700">{selectedService.name}</span>
+                        <span style={{ color: '#4A6E8A' }}>خدمت</span>
+                        <span className="font-semibold" style={{ color: '#DCF0F5' }}>{selectedService.name}</span>
                       </div>
                     )}
                     {selectedDate && (
                       <div className="flex items-center justify-between text-xs">
-                        <span className="text-slate-500">تاریخ</span>
-                        <span className="font-semibold text-slate-700">{toJalali(selectedDate)}</span>
+                        <span style={{ color: '#4A6E8A' }}>تاریخ</span>
+                        <span className="font-semibold" style={{ color: '#DCF0F5' }}>{toJalali(selectedDate)}</span>
                       </div>
                     )}
                     {selectedSlot && (
                       <div className="flex items-center justify-between text-xs">
-                        <span className="text-slate-500">ساعت</span>
-                        <span className="font-semibold text-slate-700 font-mono">{selectedSlot}</span>
+                        <span style={{ color: '#4A6E8A' }}>ساعت</span>
+                        <span className="font-semibold font-mono" style={{ color: '#DCF0F5' }}>{selectedSlot}</span>
                       </div>
                     )}
                     {selectedService && Number(selectedService.price) > 0 && (
-                      <div className="border-t border-slate-200 mt-2 pt-2 flex items-center justify-between">
-                        <span className="text-xs text-slate-500">مبلغ</span>
-                        <span className="text-sm font-black text-cyan-600">
+                      <div className="mt-2 pt-2 flex items-center justify-between" style={{ borderTop: '1px solid rgba(0,212,200,0.1)' }}>
+                        <span className="text-xs" style={{ color: '#4A6E8A' }}>مبلغ</span>
+                        <span className="text-sm font-black" style={{ color: '#00D4C8' }}>
                           {Number(selectedService.price).toLocaleString('fa-IR')} تومان
                         </span>
                       </div>
@@ -479,13 +491,13 @@ export default function ProviderDetailPage() {
                 {isAvailable && selectedSlot && (
                   <button
                     onClick={handleProceed}
-                    className="w-full text-white font-black py-3.5 rounded-xl text-sm hover:opacity-90 transition-opacity shadow-lg shadow-cyan-200"
-                    style={{ background: 'linear-gradient(135deg, #0891B2 0%, #06B6D4 60%, #22D3EE 100%)' }}
+                    className="w-full text-white font-black py-3.5 rounded-xl text-sm transition-all"
+                    style={{ background: 'linear-gradient(135deg,#FF6B2B,#FF4500)', boxShadow: '0 0 24px rgba(255,107,43,0.35)' }}
                   >
                     تأیید و پرداخت
                   </button>
                 )}
-                <p className="text-center text-xs text-slate-400">پرداخت امن با زرین‌پال</p>
+                <p className="text-center text-xs" style={{ color: '#4A6E8A' }}>پرداخت امن با زرین‌پال</p>
               </div>
             </div>
           </div>

@@ -70,40 +70,36 @@ export default function BookAppointmentPage() {
 
   const providerName = provider?.business_name || provider?.full_name || ''
 
-  const currentStep = step === STEPS_ENUM.IDLE || step === STEPS_ENUM.ERROR ? 3
-    : step === STEPS_ENUM.BOOKING ? 3
-    : 3
-
   return (
     <MainLayout>
       <div className="max-w-2xl mx-auto px-4 py-4">
-        <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+        <div className="rounded-[20px] overflow-hidden" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
 
           {/* Progress steps */}
           <div className="flex items-center justify-between px-6 pt-6 pb-4">
             <StepDot n={1} label="خدمت" done />
-            <div className="h-0.5 flex-1 bg-cyan-200 -mt-5" />
+            <div className="h-0.5 flex-1 -mt-5" style={{ background: 'rgba(0,212,200,0.2)' }} />
             <StepDot n={2} label="زمان" done />
-            <div className="h-0.5 flex-1 bg-cyan-200 -mt-5" />
+            <div className="h-0.5 flex-1 -mt-5" style={{ background: 'rgba(0,212,200,0.2)' }} />
             <StepDot n={3} label="تأیید" active />
           </div>
 
           <div className="px-6 pb-6">
-            <h1 className="text-lg font-black text-slate-900 mb-1">تأیید نوبت</h1>
-            <p className="text-sm text-slate-400 mb-5">جزئیات نوبت خود را بررسی کنید</p>
+            <h1 className="text-lg font-black mb-1 cyan-text">تأیید نوبت</h1>
+            <p className="text-sm mb-5" style={{ color: '#4A6E8A' }}>جزئیات نوبت خود را بررسی کنید</p>
 
             {/* Business summary */}
             {providerLoading ? (
               <div className="flex justify-center py-4"><Spinner /></div>
             ) : provider && (
-              <div className="flex items-center gap-3 bg-slate-50 rounded-2xl p-4 mb-5">
-                <div className="w-14 h-14 rounded-xl flex items-center justify-center text-white text-xl shrink-0"
-                     style={{ background: 'linear-gradient(135deg, #0891B2 0%, #06B6D4 60%, #22D3EE 100%)' }}>
+              <div className="flex items-center gap-3 rounded-2xl p-4 mb-5" style={{ background: 'rgba(0,212,200,0.04)', border: '1px solid rgba(0,212,200,0.07)' }}>
+                <div className="w-14 h-14 rounded-xl flex items-center justify-center text-xl shrink-0"
+                     style={{ background: 'linear-gradient(135deg,#00D4C8,#00A8FF)', color: 'white' }}>
                   📋
                 </div>
                 <div>
-                  <div className="text-sm font-bold text-slate-800">{providerName}</div>
-                  <div className="text-xs text-slate-400 mt-0.5">{provider.category_display || provider.specialty}</div>
+                  <div className="text-sm font-bold" style={{ color: '#DCF0F5' }}>{providerName}</div>
+                  <div className="text-xs mt-0.5" style={{ color: '#4A6E8A' }}>{provider.category_display || provider.specialty}</div>
                 </div>
               </div>
             )}
@@ -112,23 +108,20 @@ export default function BookAppointmentPage() {
             <div className="space-y-3 mb-6">
               {serviceName && (
                 <DetailRow icon={<><path d="m9 11 3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" /></>}
-                           iconColor="text-cyan-500" bg="bg-cyan-50/50 border-cyan-100"
-                           label="خدمت" value={serviceName} />
+                           iconColor="#00D4C8" label="خدمت" value={serviceName} />
               )}
               <DetailRow icon={<><rect x="3" y="4" width="18" height="18" rx="3" /><path d="M3 9h18" /><path d="M8 2v4M16 2v4" /></>}
-                         iconColor="text-emerald-500" bg="bg-emerald-50/50 border-emerald-100"
-                         label="تاریخ" value={toJalali(date)} />
+                         iconColor="#39FF14" label="تاریخ" value={toJalali(date)} />
               <DetailRow icon={<><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></>}
-                         iconColor="text-amber-500" bg="bg-amber-50/50 border-amber-100"
-                         label="ساعت" value={slot} />
+                         iconColor="#FF6B2B" label="ساعت" value={slot} />
             </div>
 
             {/* Price summary */}
             {displayFee && (
-              <div className="bg-slate-50 rounded-2xl p-4 mb-6">
+              <div className="rounded-2xl p-4 mb-6" style={{ background: 'rgba(0,212,200,0.04)', border: '1px solid rgba(0,212,200,0.07)' }}>
                 <div className="flex items-center justify-between text-sm pt-1">
-                  <span className="font-bold text-slate-700">مبلغ قابل پرداخت</span>
-                  <span className="text-lg font-black text-cyan-600">{displayFee}</span>
+                  <span className="font-bold" style={{ color: '#DCF0F5' }}>مبلغ قابل پرداخت</span>
+                  <span className="text-lg font-black" style={{ color: '#00D4C8' }}>{displayFee}</span>
                 </div>
               </div>
             )}
@@ -139,7 +132,8 @@ export default function BookAppointmentPage() {
                 <ErrorMessage message={errorMsg} />
                 {errorMsg.includes('دسترس نیست') && (
                   <button onClick={() => navigate(`/providers/${providerId}`)}
-                          className="w-full border border-cyan-200 text-cyan-600 py-2.5 rounded-xl text-sm hover:bg-cyan-50 transition-colors">
+                          className="w-full py-2.5 rounded-xl text-sm transition-colors font-bold"
+                          style={{ border: '1px solid rgba(0,212,200,0.3)', color: '#00D4C8' }}>
                     انتخاب زمان دیگر
                   </button>
                 )}
@@ -148,9 +142,9 @@ export default function BookAppointmentPage() {
 
             {/* Redirecting */}
             {step === STEPS_ENUM.REDIRECTING && trackingCode && (
-              <div className="bg-cyan-50 border border-cyan-100 rounded-2xl p-4 text-sm space-y-2 mb-4">
-                <p className="text-cyan-700 font-medium">در حال اتصال به درگاه پرداخت…</p>
-                <p className="text-slate-600">کد پیگیری: <span className="font-mono font-bold text-slate-800">{trackingCode}</span></p>
+              <div className="rounded-2xl p-4 text-sm space-y-2 mb-4" style={{ background: 'rgba(0,212,200,0.06)', border: '1px solid rgba(0,212,200,0.15)' }}>
+                <p className="font-medium" style={{ color: '#00D4C8' }}>در حال اتصال به درگاه پرداخت…</p>
+                <p style={{ color: '#4A6E8A' }}>کد پیگیری: <span className="font-mono font-bold" style={{ color: '#DCF0F5' }}>{trackingCode}</span></p>
               </div>
             )}
 
@@ -159,8 +153,9 @@ export default function BookAppointmentPage() {
               <button
                 onClick={handleConfirm}
                 disabled={isBusy || providerLoading}
-                className="w-full text-white font-black py-4 rounded-2xl text-sm hover:opacity-90 transition-opacity shadow-lg shadow-cyan-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ background: 'linear-gradient(135deg, #0891B2 0%, #06B6D4 60%, #22D3EE 100%)' }}
+                className="w-full text-white font-black py-4 rounded-2xl text-sm transition-all
+                           flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{ background: 'linear-gradient(135deg,#FF6B2B,#FF4500)', boxShadow: '0 0 24px rgba(255,107,43,0.35)' }}
               >
                 {step === STEPS_ENUM.BOOKING ? (
                   <Spinner size="xs" light />
@@ -172,7 +167,7 @@ export default function BookAppointmentPage() {
                 )}
               </button>
             )}
-            <p className="text-center text-xs text-slate-400 mt-3">پرداخت امن با درگاه زرین‌پال</p>
+            <p className="text-center text-xs mt-3" style={{ color: '#4A6E8A' }}>پرداخت امن با درگاه زرین‌پال</p>
           </div>
         </div>
       </div>
@@ -181,28 +176,28 @@ export default function BookAppointmentPage() {
 }
 
 function StepDot({ n, label, done, active }) {
-  const cls = done || active
-    ? 'bg-gradient-to-br from-cyan-600 to-cyan-400 text-white'
-    : 'bg-slate-100 text-slate-400'
   return (
     <div className={`flex flex-col items-center gap-1.5 flex-1 ${active ? 'scale-110' : ''}`}>
-      <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold ${cls} transition-transform`}
-           style={done || active ? { background: 'linear-gradient(135deg, #0891B2 0%, #06B6D4 60%, #22D3EE 100%)' } : {}}>
+      <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold transition-transform"
+           style={done || active
+             ? { background: 'linear-gradient(135deg,#00D4C8,#00A8FF)', color: 'white', boxShadow: '0 0 12px rgba(0,212,200,0.3)' }
+             : { background: '#111E2E', color: '#4A6E8A' }
+           }>
         {n}
       </div>
-      <span className={`text-[10px] font-bold ${done || active ? 'text-cyan-700' : 'text-slate-400'}`}>{label}</span>
+      <span className="text-[10px] font-bold" style={{ color: done || active ? '#00D4C8' : '#4A6E8A' }}>{label}</span>
     </div>
   )
 }
 
-function DetailRow({ icon, iconColor, bg, label, value }) {
+function DetailRow({ icon, iconColor, label, value }) {
   return (
-    <div className={`flex items-center justify-between p-3 rounded-xl border ${bg}`}>
+    <div className="flex items-center justify-between p-3 rounded-xl" style={{ background: 'rgba(0,212,200,0.03)', border: '1px solid rgba(0,212,200,0.07)' }}>
       <div className="flex items-center gap-2.5">
-        <svg className={`w-4 h-4 ${iconColor}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">{icon}</svg>
-        <span className="text-sm text-slate-600">{label}</span>
+        <svg className="w-4 h-4" style={{ color: iconColor }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">{icon}</svg>
+        <span className="text-sm" style={{ color: '#4A6E8A' }}>{label}</span>
       </div>
-      <span className="text-sm font-bold text-slate-800">{value}</span>
+      <span className="text-sm font-bold" style={{ color: '#DCF0F5' }}>{value}</span>
     </div>
   )
 }

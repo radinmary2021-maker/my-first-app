@@ -126,21 +126,20 @@ export default function VerifyOtpPage() {
   }
 
   return (
-    <div className="min-h-screen" dir="rtl"
-         style={{ background: 'linear-gradient(135deg, #DDE4FF 0%, #C7D2FE 30%, #CFFAFE 65%, #F8FAFC 100%)' }}>
+    <div className="min-h-screen grid-bg" dir="rtl" style={{ background: '#070D14' }}>
 
       {/* Logo */}
       <div className="px-6 py-5">
-        <button onClick={() => navigate('/')} className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-sm shadow-cyan-200"
-               style={{ background: 'linear-gradient(135deg, #0891B2 0%, #06B6D4 60%, #22D3EE 100%)' }}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="w-5 h-5">
+        <button onClick={() => navigate('/')} className="flex items-center gap-2.5">
+          <div className="w-[38px] h-[38px] rounded-[11px] flex items-center justify-center"
+               style={{ background: 'linear-gradient(135deg,#00D4C8,#00A8FF)', boxShadow: '0 0 20px rgba(0,212,200,0.35)' }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" className="w-[19px] h-[19px]">
               <rect x="3" y="4" width="18" height="18" rx="3" />
               <path d="M3 9h18" /><path d="M8 2v4M16 2v4" strokeLinecap="round" />
             </svg>
           </div>
-          <span className="text-lg font-extrabold"
-                style={{ background: 'linear-gradient(135deg,#0891B2,#06B6D4)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <span className="text-[19px] font-black"
+                style={{ background: 'linear-gradient(135deg,#00D4C8,#00A8FF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             Nobatic
           </span>
         </button>
@@ -148,26 +147,29 @@ export default function VerifyOtpPage() {
 
       {/* Card */}
       <div className="flex items-start justify-center px-4 pb-16">
-        <div className="w-full max-w-md bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-white p-8">
+        <div className="w-full max-w-md rounded-[20px] p-8"
+             style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
 
           <button
             onClick={() => navigate('/login')}
-            className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-slate-600 mb-6 transition-colors"
+            className="flex items-center gap-1.5 text-xs font-semibold mb-6 transition-colors"
+            style={{ color: '#4A6E8A' }}
           >
             <svg className="w-3.5 h-3.5 rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6" /></svg>
             تغییر شماره موبایل
           </button>
 
           <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-2xl bg-cyan-50 mx-auto flex items-center justify-center mb-4 border-2 border-cyan-100">
-              <svg className="w-8 h-8 text-cyan-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4"
+                 style={{ background: 'rgba(0,212,200,0.08)', border: '1px solid rgba(0,212,200,0.15)' }}>
+              <svg className="w-8 h-8" style={{ color: '#00D4C8' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
               </svg>
             </div>
-            <h1 className="text-xl font-black text-slate-900 mb-2">کد تأیید را وارد کنید</h1>
-            <p className="text-slate-500 text-sm leading-6">
+            <h1 className="text-xl font-black mb-2" style={{ color: '#DCF0F5' }}>کد تأیید را وارد کنید</h1>
+            <p className="text-sm leading-6" style={{ color: '#4A6E8A' }}>
               کد {OTP_LENGTH} رقمی به شماره{' '}
-              <span className="font-bold text-slate-700" dir="ltr">{phone}</span>{' '}
+              <span className="font-bold" style={{ color: '#DCF0F5' }} dir="ltr">{phone}</span>{' '}
               پیامک شد
             </p>
           </div>
@@ -187,23 +189,26 @@ export default function VerifyOtpPage() {
                   onKeyDown={(e) => handleKeyDown(i, e)}
                   disabled={loading}
                   autoFocus={i === 0}
-                  className="w-12 h-14 text-center text-2xl font-black bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none
-                             transition-colors focus:border-cyan-400 focus:bg-white
-                             disabled:opacity-50"
+                  className="w-12 h-14 text-center text-2xl font-black rounded-2xl outline-none transition-all disabled:opacity-50"
+                  style={{ background: '#111E2E', border: '1px solid rgba(0,212,200,0.18)', color: '#DCF0F5' }}
+                  onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.45)'}
+                  onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.18)'}
                 />
               ))}
             </div>
 
             {/* Error */}
             {error && (
-              <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-2xl px-4 py-3 mb-4 mt-4 text-center">
+              <div className="text-sm rounded-2xl px-4 py-3 mb-4 mt-4 text-center"
+                   style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', color: '#EF4444' }}>
                 {error}
               </div>
             )}
 
             {/* Rate-limit block */}
             {blockCountdown > 0 && (
-              <div className="flex items-center justify-between text-sm rounded-2xl px-4 py-3 mb-4 mt-4 bg-amber-50 border border-amber-100 text-amber-800">
+              <div className="flex items-center justify-between text-sm rounded-2xl px-4 py-3 mb-4 mt-4"
+                   style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.25)', color: '#F59E0B' }}>
                 <span className="flex items-center gap-2">
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
                   لطفاً {formatWait(blockCountdown)} دیگر امتحان کنید
@@ -217,10 +222,9 @@ export default function VerifyOtpPage() {
             <button
               type="submit"
               disabled={!isComplete || loading}
-              className="w-full text-white font-black py-4 rounded-2xl text-sm hover:opacity-90 transition-opacity
-                         shadow-lg shadow-cyan-200 mt-4 flex items-center justify-center
+              className="w-full text-white font-black py-4 rounded-2xl text-sm transition-all mt-4 flex items-center justify-center
                          disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ background: 'linear-gradient(135deg, #0891B2 0%, #06B6D4 60%, #22D3EE 100%)' }}
+              style={{ background: 'linear-gradient(135deg,#FF6B2B,#FF4500)', boxShadow: '0 0 24px rgba(255,107,43,0.35)' }}
             >
               {loading ? <Spinner size="xs" light /> : 'تأیید و ورود'}
             </button>
@@ -230,18 +234,19 @@ export default function VerifyOtpPage() {
           <div className="flex items-center justify-center gap-2 text-sm mt-5">
             {resendCountdown > 0 ? (
               <>
-                <span className="text-slate-400">ارسال مجدد تا</span>
-                <span className="font-mono font-bold tabular-nums text-slate-700" dir="ltr">
+                <span style={{ color: '#4A6E8A' }}>ارسال مجدد تا</span>
+                <span className="font-mono font-bold tabular-nums" style={{ color: '#DCF0F5' }} dir="ltr">
                   {String(Math.floor(resendCountdown / 60)).padStart(2, '0')}:{String(resendCountdown % 60).padStart(2, '0')}
                 </span>
               </>
             ) : (
               <>
-                <span className="text-slate-400">کد را دریافت نکردید؟</span>
+                <span style={{ color: '#4A6E8A' }}>کد را دریافت نکردید؟</span>
                 <button
                   onClick={handleResend}
                   disabled={!canResend}
-                  className="text-cyan-600 font-bold hover:text-cyan-700 transition-colors disabled:opacity-50"
+                  className="font-bold transition-colors disabled:opacity-50"
+                  style={{ color: '#00D4C8' }}
                 >
                   ارسال مجدد
                 </button>
