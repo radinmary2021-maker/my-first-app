@@ -40,21 +40,21 @@ export default function SetupProfilePage() {
   }
 
   return (
-    <div className="min-h-screen" dir="rtl"
-         style={{ background: 'linear-gradient(135deg, #DDE4FF 0%, #C7D2FE 30%, #CFFAFE 65%, #F8FAFC 100%)' }}>
+    <div className="min-h-screen grid-bg" dir="rtl"
+         style={{ background: '#070D14' }}>
 
       {/* Logo */}
       <div className="px-6 py-5">
         <button onClick={() => navigate('/')} className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-sm shadow-cyan-200"
-               style={{ background: 'linear-gradient(135deg, #0891B2 0%, #06B6D4 60%, #22D3EE 100%)' }}>
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+               style={{ background: 'linear-gradient(135deg, #00D4C8 0%, #00A8FF 100%)', boxShadow: '0 0 16px rgba(0,212,200,0.3)' }}>
             <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="w-5 h-5">
               <rect x="3" y="4" width="18" height="18" rx="3" />
               <path d="M3 9h18" /><path d="M8 2v4M16 2v4" strokeLinecap="round" />
             </svg>
           </div>
           <span className="text-lg font-extrabold"
-                style={{ background: 'linear-gradient(135deg,#0891B2,#06B6D4)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                style={{ background: 'linear-gradient(135deg,#00D4C8,#00A8FF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             Nobatic
           </span>
         </button>
@@ -62,29 +62,33 @@ export default function SetupProfilePage() {
 
       {/* Card */}
       <div className="flex items-start justify-center px-4 pb-16">
-        <div className="w-full max-w-md bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-white p-8">
+        <div className="w-full max-w-md rounded-3xl p-8"
+             style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}>
 
           <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-lg shadow-cyan-200"
-                 style={{ background: 'linear-gradient(135deg, #0891B2 0%, #06B6D4 60%, #22D3EE 100%)' }}>
+            <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4"
+                 style={{ background: 'linear-gradient(135deg, #00D4C8 0%, #00A8FF 100%)', boxShadow: '0 0 24px rgba(0,212,200,0.3)' }}>
               <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
               </svg>
             </div>
-            <h1 className="text-xl font-black text-slate-900 mb-2">تکمیل پروفایل</h1>
-            <p className="text-slate-500 text-sm leading-6">چند قدم تا شروع — اطلاعات خودت رو کامل کن</p>
+            <h1 className="text-xl font-black mb-2"
+                style={{ background: 'linear-gradient(135deg,#00D4C8,#00A8FF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              تکمیل پروفایل
+            </h1>
+            <p className="text-sm leading-6" style={{ color: '#4A6E8A' }}>چند قدم تا شروع — اطلاعات خودت رو کامل کن</p>
             {user?.phone && (
-              <p className="text-xs text-slate-400 mt-1 font-mono" dir="ltr">{user.phone}</p>
+              <p className="text-xs mt-1 font-mono" dir="ltr" style={{ color: '#4A6E8A' }}>{user.phone}</p>
             )}
           </div>
 
           <form onSubmit={handleSubmit} noValidate>
-            <label htmlFor="full-name" className="text-xs font-bold text-slate-600 mb-2 block">
-              نام و نام خانوادگی <span className="text-red-400">*</span>
+            <label htmlFor="full-name" className="text-xs font-bold mb-2 block" style={{ color: '#4A6E8A' }}>
+              نام و نام خانوادگی <span style={{ color: '#EF4444' }}>*</span>
             </label>
-            <div className="flex items-center bg-slate-50 border-2 border-slate-100 rounded-2xl px-4 py-3.5 mb-5
-                            focus-within:border-cyan-400 focus-within:bg-white transition-colors">
-              <svg className="w-5 h-5 text-slate-400 ml-2 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <div className="flex items-center rounded-2xl px-4 py-3.5 mb-5 transition-colors"
+                 style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.18)' }}>
+              <svg className="w-5 h-5 ml-2 shrink-0" style={{ color: '#4A6E8A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
               </svg>
               <input
@@ -93,35 +97,38 @@ export default function SetupProfilePage() {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="مثال: سارا محمدی"
-                className="bg-transparent outline-none text-sm text-slate-700 placeholder:text-slate-400 w-full font-medium"
+                className="bg-transparent outline-none text-sm w-full font-medium"
+                style={{ color: '#DCF0F5', '::placeholder': { color: '#4A6E8A' } }}
                 disabled={loading}
                 autoFocus
                 autoComplete="name"
               />
             </div>
 
-            <label className="text-xs font-bold text-slate-600 mb-3 block">می‌خواهید چطور از نوبتیک استفاده کنید؟</label>
+            <label className="text-xs font-bold mb-3 block" style={{ color: '#4A6E8A' }}>می‌خواهید چطور از نوبتیک استفاده کنید؟</label>
             <div className="grid grid-cols-2 gap-3 mb-6">
               <button
                 type="button"
                 onClick={() => setAccountType('customer')}
-                className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-colors ${
-                  accountType === 'customer'
-                    ? 'border-cyan-500 bg-cyan-50'
-                    : 'border-slate-200 hover:border-cyan-300'
-                }`}
+                className="flex flex-col items-center gap-2 p-4 rounded-2xl transition-colors"
+                style={{
+                  border: accountType === 'customer' ? '2px solid #00D4C8' : '2px solid rgba(0,212,200,0.12)',
+                  background: accountType === 'customer' ? 'rgba(0,212,200,0.1)' : 'transparent',
+                }}
               >
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                  accountType === 'customer' ? 'bg-cyan-500 text-white' : 'bg-slate-100 text-slate-500'
-                }`}>
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+                     style={{
+                       background: accountType === 'customer' ? '#00D4C8' : 'rgba(0,212,200,0.1)',
+                       color: accountType === 'customer' ? 'white' : '#4A6E8A',
+                     }}>
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" />
                   </svg>
                 </div>
-                <span className={`text-xs font-bold ${accountType === 'customer' ? 'text-cyan-700' : 'text-slate-600'}`}>
+                <span className="text-xs font-bold" style={{ color: accountType === 'customer' ? '#00D4C8' : '#DCF0F5' }}>
                   رزرو نوبت می‌خواهم
                 </span>
-                <span className={`text-[10px] ${accountType === 'customer' ? 'text-cyan-600/70' : 'text-slate-400'}`}>
+                <span className="text-[10px]" style={{ color: accountType === 'customer' ? 'rgba(0,212,200,0.7)' : '#4A6E8A' }}>
                   مشتری
                 </span>
               </button>
@@ -129,23 +136,25 @@ export default function SetupProfilePage() {
               <button
                 type="button"
                 onClick={() => setAccountType('owner')}
-                className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-colors ${
-                  accountType === 'owner'
-                    ? 'border-cyan-500 bg-cyan-50'
-                    : 'border-slate-200 hover:border-cyan-300'
-                }`}
+                className="flex flex-col items-center gap-2 p-4 rounded-2xl transition-colors"
+                style={{
+                  border: accountType === 'owner' ? '2px solid #00D4C8' : '2px solid rgba(0,212,200,0.12)',
+                  background: accountType === 'owner' ? 'rgba(0,212,200,0.1)' : 'transparent',
+                }}
               >
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                  accountType === 'owner' ? 'bg-cyan-500 text-white' : 'bg-slate-100 text-slate-500'
-                }`}>
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+                     style={{
+                       background: accountType === 'owner' ? '#00D4C8' : 'rgba(0,212,200,0.1)',
+                       color: accountType === 'owner' ? 'white' : '#4A6E8A',
+                     }}>
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <rect x="3" y="4" width="18" height="18" rx="3" /><path d="M3 9h18" />
                   </svg>
                 </div>
-                <span className={`text-xs font-bold ${accountType === 'owner' ? 'text-cyan-700' : 'text-slate-600'}`}>
+                <span className="text-xs font-bold" style={{ color: accountType === 'owner' ? '#00D4C8' : '#DCF0F5' }}>
                   کسب‌وکار دارم
                 </span>
-                <span className={`text-[10px] ${accountType === 'owner' ? 'text-cyan-600/70' : 'text-slate-400'}`}>
+                <span className="text-[10px]" style={{ color: accountType === 'owner' ? 'rgba(0,212,200,0.7)' : '#4A6E8A' }}>
                   صاحب کسب‌وکار
                 </span>
               </button>
@@ -153,7 +162,8 @@ export default function SetupProfilePage() {
 
             {/* Error */}
             {error && (
-              <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-2xl px-4 py-3 mb-4 text-center">
+              <div className="text-sm rounded-2xl px-4 py-3 mb-4 text-center"
+                   style={{ background: 'rgba(239,68,68,0.1)', color: '#EF4444', border: '1px solid rgba(239,68,68,0.2)' }}>
                 {error}
               </div>
             )}
@@ -162,9 +172,9 @@ export default function SetupProfilePage() {
               type="submit"
               disabled={loading || !fullName.trim()}
               className="w-full text-white font-black py-4 rounded-2xl text-sm hover:opacity-90 transition-opacity
-                         shadow-lg shadow-cyan-200 flex items-center justify-center
+                         flex items-center justify-center
                          disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ background: 'linear-gradient(135deg, #0891B2 0%, #06B6D4 60%, #22D3EE 100%)' }}
+              style={{ background: 'linear-gradient(135deg,#FF6B2B,#FF4500)', boxShadow: '0 0 24px rgba(255,107,43,0.35)' }}
             >
               {loading ? <Spinner size="xs" light /> : 'تکمیل و ورود به نوبتیک'}
             </button>

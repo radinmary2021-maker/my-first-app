@@ -19,18 +19,18 @@ import {
 } from '../../hooks/useBusinessProviders'
 
 const COVER_GRADS = [
-  'linear-gradient(135deg,#0891B2,#22D3EE)',
-  'linear-gradient(135deg,#7C3AED,#A78BFA)',
-  'linear-gradient(135deg,#DB2777,#F472B6)',
-  'linear-gradient(135deg,#059669,#34D399)',
-  'linear-gradient(135deg,#EA580C,#FB923C)',
+  'linear-gradient(135deg,#0a4a5c,#0a6e8a)',
+  'linear-gradient(135deg,#3a1a6e,#5a3a9a)',
+  'linear-gradient(135deg,#6e1a3a,#8a3a5a)',
+  'linear-gradient(135deg,#0a4a3a,#1a6e5a)',
+  'linear-gradient(135deg,#6e2a0a,#8a4a1a)',
 ]
 const AVATAR_COLORS = [
-  ['bg-cyan-100', 'text-cyan-700'],
-  ['bg-purple-100', 'text-purple-700'],
-  ['bg-pink-100', 'text-pink-700'],
-  ['bg-emerald-100', 'text-emerald-700'],
-  ['bg-amber-100', 'text-amber-700'],
+  ['bg-cyan-900/30', 'text-cyan-400'],
+  ['bg-purple-900/30', 'text-purple-400'],
+  ['bg-pink-900/30', 'text-pink-400'],
+  ['bg-emerald-900/30', 'text-emerald-400'],
+  ['bg-amber-900/30', 'text-amber-400'],
 ]
 
 function getInitials(name) {
@@ -78,8 +78,8 @@ export default function ProvidersPage() {
       headerAction={
         isOwner && (providers?.length ?? 0) > 0 && (
           <button onClick={() => setDialog({ type: 'add', provider: null })}
-                  className="text-white text-sm font-bold px-4 py-2.5 rounded-xl shadow-sm shadow-cyan-200 flex items-center gap-1.5 hover:opacity-90 transition-opacity"
-                  style={{ background: 'linear-gradient(135deg, #0891B2 0%, #06B6D4 60%, #22D3EE 100%)' }}>
+                  className="text-white text-sm font-bold px-4 py-2.5 rounded-xl flex items-center gap-1.5 hover:opacity-90 transition-opacity"
+                  style={{ background: 'linear-gradient(135deg,#FF6B2B,#FF4500)', boxShadow: '0 0 24px rgba(255,107,43,0.35)' }}>
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14" strokeLinecap="round" /></svg>
             + افزودن ارائه‌دهنده
           </button>
@@ -96,13 +96,13 @@ export default function ProvidersPage() {
 
       {/* Empty state */}
       {!isLoading && !isError && providers?.length === 0 && (
-        <div className="bg-white rounded-2xl border border-slate-100 p-8 text-center space-y-4 max-w-md mx-auto">
-          <div className="w-16 h-16 rounded-2xl bg-slate-50 flex items-center justify-center mx-auto">
-            <svg className="w-8 h-8 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /></svg>
+        <div className="rounded-2xl p-8 text-center space-y-4 max-w-md mx-auto" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto" style={{ background: 'rgba(0,212,200,0.06)' }}>
+            <svg className="w-8 h-8" style={{ color: '#4A6E8A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /></svg>
           </div>
-          <h2 className="text-base font-bold text-slate-800">هنوز ارائه‌دهنده‌ای ندارید</h2>
-          <p className="text-sm text-slate-500">ارائه‌دهنده کسی است که مشتریان برای او نوبت می‌گیرند.</p>
-          <p className="text-xs text-slate-400">مرحله بعد: افزودن خدمات و تنظیم ساعات کاری</p>
+          <h2 className="text-base font-bold" style={{ color: '#DCF0F5' }}>هنوز ارائه‌دهنده‌ای ندارید</h2>
+          <p className="text-sm" style={{ color: '#4A6E8A' }}>ارائه‌دهنده کسی است که مشتریان برای او نوبت می‌گیرند.</p>
+          <p className="text-xs" style={{ color: 'rgba(74,110,138,0.7)' }}>مرحله بعد: افزودن خدمات و تنظیم ساعات کاری</p>
           {isOwner && (
             <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
               <Button variant="primary" loading={soloLoading} onClick={handleAddMyself}>
@@ -123,21 +123,21 @@ export default function ProvidersPage() {
             const grad = COVER_GRADS[i % COVER_GRADS.length]
             const [avatarBg, avatarText] = AVATAR_COLORS[i % AVATAR_COLORS.length]
             return (
-              <div key={p.id} className="bg-white rounded-2xl border border-slate-100 overflow-hidden hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200">
+              <div key={p.id} className="rounded-2xl overflow-hidden hover:-translate-y-0.5 transition-all duration-200" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
                 <div className="h-20 relative" style={{ background: grad }} />
                 <div className="p-4 -mt-8">
                   <div className="relative w-16 h-16 mb-3">
-                    <ImageAvatar src={p.avatar} alt={p.full_name} fallbackText={p.full_name} size="w-16 h-16" shape="rounded-2xl" className="border-4 border-white shadow-sm" />
+                    <ImageAvatar src={p.avatar} alt={p.full_name} fallbackText={p.full_name} size="w-16 h-16" shape="rounded-2xl" className="border-4 shadow-sm" style={{ borderColor: '#0C1520' }} />
                     {isOwner && (
                       <AvatarUploadBtn providerId={p.id} onSuccess={() => refetch()} />
                     )}
                   </div>
-                  <h3 className="font-bold text-slate-900 text-sm mb-0.5">{p.full_name || '—'}</h3>
-                  <p className="text-xs text-slate-400 font-mono mb-0.5">{p.phone}</p>
-                  {p.specialty && <p className="text-xs text-slate-500 mb-2">{p.specialty}</p>}
+                  <h3 className="font-bold text-sm mb-0.5" style={{ color: '#DCF0F5' }}>{p.full_name || '—'}</h3>
+                  <p className="text-xs font-mono mb-0.5" style={{ color: '#4A6E8A' }}>{p.phone}</p>
+                  {p.specialty && <p className="text-xs mb-2" style={{ color: '#4A6E8A' }}>{p.specialty}</p>}
                   <div className="flex items-center justify-between text-xs mb-4">
-                    <span className={`flex items-center gap-1 font-semibold ${p.is_active ? 'text-emerald-600' : 'text-slate-400'}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${p.is_active ? 'bg-emerald-400' : 'bg-slate-300'}`} />
+                    <span className="flex items-center gap-1 font-semibold" style={{ color: p.is_active ? '#39FF14' : '#4A6E8A' }}>
+                      <span className="w-1.5 h-1.5 rounded-full" style={{ background: p.is_active ? '#39FF14' : '#4A6E8A' }} />
                       {p.is_active ? 'فعال' : 'غیرفعال'}
                     </span>
                   </div>
@@ -145,18 +145,21 @@ export default function ProvidersPage() {
                     {isOwner && (
                       <>
                         <button onClick={() => setDialog({ type: 'edit', provider: p })}
-                                className="flex-1 bg-cyan-50 text-cyan-700 text-xs font-bold py-2 rounded-lg border border-cyan-100 flex items-center justify-center gap-1 hover:bg-cyan-100 transition-colors">
+                                className="flex-1 text-xs font-bold py-2 rounded-lg flex items-center justify-center gap-1 transition-colors"
+                                style={{ color: '#00D4C8', border: '1px solid rgba(0,212,200,0.3)', background: 'transparent' }}>
                           <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                           ویرایش
                         </button>
                         {p.is_active ? (
                           <button onClick={() => setDialog({ type: 'deactivate', provider: p })} aria-label="غیرفعال‌سازی"
-                                  className="w-9 h-9 rounded-lg bg-slate-50 text-slate-400 flex items-center justify-center hover:text-rose-500 hover:bg-rose-50 transition-colors">
+                                  className="w-9 h-9 rounded-lg flex items-center justify-center transition-colors"
+                                  style={{ background: 'rgba(0,212,200,0.04)', color: '#4A6E8A' }}>
                             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
                           </button>
                         ) : (
                           <button onClick={() => updateMutate({ providerId: p.id, data: { is_active: true } }, { onSuccess: () => notify(`${p.full_name} فعال شد.`, 'success'), onError: () => notify('خطا در فعال‌سازی.', 'error') })} aria-label="فعال‌سازی"
-                                  className="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-500 flex items-center justify-center hover:bg-emerald-100 transition-colors">
+                                  className="w-9 h-9 rounded-lg flex items-center justify-center transition-colors"
+                                  style={{ background: 'rgba(57,255,20,0.08)', color: '#39FF14' }}>
                             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 6 9 17l-5-5" /></svg>
                           </button>
                         )}
@@ -171,11 +174,12 @@ export default function ProvidersPage() {
           {/* Add new card */}
           {isOwner && (
             <button onClick={() => setDialog({ type: 'add', provider: null })}
-                    className="border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center gap-2 p-8 hover:border-cyan-300 hover:bg-cyan-50/30 transition-colors group min-h-[220px]">
-              <div className="w-12 h-12 rounded-2xl bg-slate-50 group-hover:bg-cyan-100 flex items-center justify-center transition-colors">
-                <svg className="w-5 h-5 text-slate-400 group-hover:text-cyan-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14" strokeLinecap="round" /></svg>
+                    className="border-2 border-dashed rounded-2xl flex flex-col items-center justify-center gap-2 p-8 transition-colors group min-h-[220px]"
+                    style={{ borderColor: 'rgba(0,212,200,0.15)' }}>
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center transition-colors" style={{ background: 'rgba(0,212,200,0.06)' }}>
+                <svg className="w-5 h-5" style={{ color: '#4A6E8A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14" strokeLinecap="round" /></svg>
               </div>
-              <span className="text-xs font-bold text-slate-500 group-hover:text-cyan-700">افزودن متخصص جدید</span>
+              <span className="text-xs font-bold" style={{ color: '#4A6E8A' }}>افزودن متخصص جدید</span>
             </button>
           )}
         </div>
@@ -200,9 +204,9 @@ export default function ProvidersPage() {
       {/* Deactivate Dialog */}
       {dialog?.type === 'deactivate' && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4" role="dialog" aria-modal="true" aria-label="غیرفعال‌سازی ارائه‌دهنده">
-          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm space-y-4" dir="rtl">
-            <h2 className="text-base font-bold text-slate-800">غیرفعال‌سازی ارائه‌دهنده</h2>
-            <p className="text-sm text-slate-500">آیا می‌خواهید <span className="font-semibold text-slate-700">{dialog.provider.full_name}</span> را غیرفعال کنید؟</p>
+          <div className="rounded-2xl shadow-xl p-6 w-full max-w-sm space-y-4" dir="rtl" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.15)' }}>
+            <h2 className="text-base font-bold" style={{ color: '#DCF0F5' }}>غیرفعال‌سازی ارائه‌دهنده</h2>
+            <p className="text-sm" style={{ color: '#4A6E8A' }}>آیا می‌خواهید <span className="font-semibold" style={{ color: '#DCF0F5' }}>{dialog.provider.full_name}</span> را غیرفعال کنید؟</p>
             <div className="flex gap-3">
               <Button variant="danger" fullWidth loading={deactivating} onClick={handleDeactivate}>غیرفعال کن</Button>
               <Button variant="ghost" fullWidth disabled={deactivating} onClick={() => setDialog(null)}>انصراف</Button>
@@ -308,72 +312,79 @@ function ProviderFormModal({ title, initialValues = {}, editMode = false, onClos
     })
   }
 
-  const inputCls = "w-full border-2 border-cyan-100 rounded-xl px-4 py-3 text-sm text-slate-700 outline-none focus:border-cyan-400 focus:bg-white transition-colors"
+  const inputCls = "w-full rounded-xl px-4 py-3 text-sm outline-none transition-colors"
+  const modalInputStyle = { background: '#111E2E', border: '1px solid rgba(0,212,200,0.18)', color: '#DCF0F5' }
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4 overflow-y-auto" role="dialog" aria-modal="true" aria-label={title}>
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-5 my-8" dir="rtl">
+      <div className="rounded-2xl shadow-xl w-full max-w-md p-6 space-y-5 my-8" dir="rtl" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.15)' }}>
         <div className="flex items-center justify-between">
-          <h2 className="text-base font-bold text-slate-800">{title}</h2>
-          <button type="button" onClick={onClose} aria-label="بستن" className="text-slate-400 hover:text-slate-600 text-2xl leading-none">×</button>
+          <h2 className="text-base font-bold" style={{ color: '#DCF0F5' }}>{title}</h2>
+          <button type="button" onClick={onClose} aria-label="بستن" className="text-2xl leading-none" style={{ color: '#4A6E8A' }}>×</button>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           {!editMode && (
             <>
               <div>
-                <label htmlFor="provider-phone" className="block text-xs font-bold text-slate-600 mb-2">شماره موبایل <span className="text-red-400">*</span></label>
-                <input id="provider-phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="09xxxxxxxxx" dir="ltr" className={`${inputCls} text-left`} style={{ background: '#F0FDFF' }} />
-                {errors.phone && <p className="text-xs text-red-600 mt-1">{errors.phone}</p>}
+                <label htmlFor="provider-phone" className="block text-xs font-bold mb-2" style={{ color: '#4A6E8A' }}>شماره موبایل <span className="text-red-400">*</span></label>
+                <input id="provider-phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="09xxxxxxxxx" dir="ltr" className={`${inputCls} text-left`} style={modalInputStyle} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
+                {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone}</p>}
               </div>
               <div>
-                <label htmlFor="provider-name" className="block text-xs font-bold text-slate-600 mb-2">نام کامل <span className="text-red-400">*</span></label>
-                <input id="provider-name" type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="نام و نام خانوادگی" className={inputCls} style={{ background: '#F0FDFF' }} />
-                {errors.full_name && <p className="text-xs text-red-600 mt-1">{errors.full_name}</p>}
+                <label htmlFor="provider-name" className="block text-xs font-bold mb-2" style={{ color: '#4A6E8A' }}>نام کامل <span className="text-red-400">*</span></label>
+                <input id="provider-name" type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="نام و نام خانوادگی" className={inputCls} style={modalInputStyle} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
+                {errors.full_name && <p className="text-xs text-red-500 mt-1">{errors.full_name}</p>}
               </div>
             </>
           )}
           <div>
-            <label htmlFor="provider-specialty" className="block text-xs font-bold text-slate-600 mb-2">تخصص</label>
-            <input id="provider-specialty" type="text" value={specialty} onChange={(e) => setSpecialty(e.target.value)} placeholder="مثال: ناخن‌کار، مربی بدنسازی" className={inputCls} style={{ background: '#F0FDFF' }} />
+            <label htmlFor="provider-specialty" className="block text-xs font-bold mb-2" style={{ color: '#4A6E8A' }}>تخصص</label>
+            <input id="provider-specialty" type="text" value={specialty} onChange={(e) => setSpecialty(e.target.value)} placeholder="مثال: ناخن‌کار، مربی بدنسازی" className={inputCls} style={modalInputStyle} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
           </div>
           <div>
-            <label htmlFor="provider-bio" className="block text-xs font-bold text-slate-600 mb-2">توضیحات</label>
-            <textarea id="provider-bio" value={bio} onChange={(e) => setBio(e.target.value)} rows={2} placeholder="معرفی کوتاه..." className={`${inputCls} resize-none`} style={{ background: '#F0FDFF' }} />
+            <label htmlFor="provider-bio" className="block text-xs font-bold mb-2" style={{ color: '#4A6E8A' }}>توضیحات</label>
+            <textarea id="provider-bio" value={bio} onChange={(e) => setBio(e.target.value)} rows={2} placeholder="معرفی کوتاه..." className={`${inputCls} resize-none`} style={modalInputStyle} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
           </div>
 
           {/* Services section */}
-          <div className="border-t border-slate-100 pt-4">
+          <div className="pt-4" style={{ borderTop: '1px solid rgba(0,212,200,0.07)' }}>
             <div className="flex items-center justify-between mb-3">
-              <label className="text-xs font-bold text-slate-600">خدمات</label>
+              <label className="text-xs font-bold" style={{ color: '#4A6E8A' }}>خدمات</label>
               <button type="button" onClick={addServiceRow}
-                      className="text-xs font-bold text-cyan-600 hover:text-cyan-700 flex items-center gap-1">
+                      className="text-xs font-bold flex items-center gap-1" style={{ color: '#00D4C8' }}>
                 <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14" strokeLinecap="round" /></svg>
                 افزودن خدمت
               </button>
             </div>
             {services.length === 0 && (
-              <p className="text-xs text-slate-400 text-center py-3">هنوز خدمتی تعریف نشده. دکمه «افزودن خدمت» را بزنید.</p>
+              <p className="text-xs text-center py-3" style={{ color: '#4A6E8A' }}>هنوز خدمتی تعریف نشده. دکمه «افزودن خدمت» را بزنید.</p>
             )}
             <div className="space-y-3">
               {services.map((svc, idx) => (
-                <div key={svc.id || `new-${idx}`} className="bg-slate-50 rounded-xl p-3 space-y-2">
+                <div key={svc.id || `new-${idx}`} className="rounded-xl p-3 space-y-2" style={{ background: '#111E2E' }}>
                   <div className="flex items-center gap-2">
                     <input type="text" value={svc.name} onChange={(e) => updateServiceRow(idx, 'name', e.target.value)}
-                           placeholder="نام خدمت" className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-cyan-400" />
-                    <button type="button" onClick={() => removeServiceRow(idx)} className="text-slate-400 hover:text-red-500 shrink-0">
+                           placeholder="نام خدمت" className="flex-1 rounded-lg px-3 py-2 text-sm outline-none" style={modalInputStyle}
+                           onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
+                           onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
+                    <button type="button" onClick={() => removeServiceRow(idx)} className="shrink-0" style={{ color: 'rgba(239,68,68,0.7)' }}>
                       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
                     </button>
                   </div>
                   <div className="flex gap-2">
                     <div className="flex-1">
-                      <label className="text-xs text-slate-400 mb-1 block">قیمت (تومان)</label>
+                      <label className="text-xs mb-1 block" style={{ color: '#4A6E8A' }}>قیمت (تومان)</label>
                       <input type="number" value={svc.price} onChange={(e) => updateServiceRow(idx, 'price', e.target.value)}
-                             placeholder="0" dir="ltr" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-left outline-none focus:border-cyan-400" />
+                             placeholder="0" dir="ltr" className="w-full rounded-lg px-3 py-2 text-sm text-left outline-none" style={modalInputStyle}
+                             onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
+                             onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
                     </div>
                     <div className="w-24">
-                      <label className="text-xs text-slate-400 mb-1 block">مدت (دقیقه)</label>
+                      <label className="text-xs mb-1 block" style={{ color: '#4A6E8A' }}>مدت (دقیقه)</label>
                       <input type="number" value={svc.duration_minutes} onChange={(e) => updateServiceRow(idx, 'duration_minutes', e.target.value)}
-                             placeholder="30" dir="ltr" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-left outline-none focus:border-cyan-400" />
+                             placeholder="30" dir="ltr" className="w-full rounded-lg px-3 py-2 text-sm text-left outline-none" style={modalInputStyle}
+                             onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
+                             onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
                     </div>
                   </div>
                 </div>
@@ -426,7 +437,8 @@ function AvatarUploadBtn({ providerId, onSuccess }) {
       <button
         onClick={() => inputRef.current?.click()}
         disabled={uploading}
-        className="absolute -bottom-1 -left-1 w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-cyan-600 hover:border-cyan-300 transition-colors shadow-sm disabled:opacity-50"
+        className="absolute -bottom-1 -left-1 w-7 h-7 rounded-lg flex items-center justify-center transition-colors shadow-sm disabled:opacity-50"
+        style={{ background: '#111E2E', border: '1px solid rgba(0,212,200,0.18)', color: '#4A6E8A' }}
         title="تغییر عکس"
       >
         {uploading

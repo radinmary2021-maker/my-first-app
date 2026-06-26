@@ -20,12 +20,12 @@ const FILTERS = [
 ]
 
 const STATUS_STYLE = {
-  confirmed:       { badge: 'bg-cyan-50 text-cyan-600', border: 'border-cyan-100 border-2', opacity: '' },
-  pending_payment: { badge: 'bg-amber-50 text-amber-600', border: 'border-amber-100', opacity: '' },
-  pending:         { badge: 'bg-amber-50 text-amber-600', border: 'border-slate-100', opacity: '' },
-  completed:       { badge: 'bg-emerald-50 text-emerald-600', border: 'border-slate-100', opacity: 'opacity-75' },
-  cancelled:       { badge: 'bg-rose-50 text-rose-500', border: 'border-slate-100', opacity: 'opacity-60' },
-  no_show:         { badge: 'bg-slate-100 text-slate-500', border: 'border-slate-100', opacity: 'opacity-60' },
+  confirmed:       { bg: 'rgba(57,255,20,0.15)', color: '#39FF14', borderColor: 'rgba(57,255,20,0.2)' },
+  pending_payment: { bg: 'rgba(245,158,11,0.1)', color: '#F59E0B', borderColor: 'rgba(245,158,11,0.15)' },
+  pending:         { bg: 'rgba(245,158,11,0.1)', color: '#F59E0B', borderColor: 'rgba(0,212,200,0.07)' },
+  completed:       { bg: 'rgba(0,212,200,0.1)', color: '#00D4C8', borderColor: 'rgba(0,212,200,0.07)' },
+  cancelled:       { bg: 'rgba(239,68,68,0.1)', color: '#EF4444', borderColor: 'rgba(0,212,200,0.07)' },
+  no_show:         { bg: 'rgba(74,110,138,0.15)', color: '#4A6E8A', borderColor: 'rgba(0,212,200,0.07)' },
 }
 
 function StarPicker({ value, onChange }) {
@@ -37,7 +37,8 @@ function StarPicker({ value, onChange }) {
         <button key={star} type="button" onClick={() => onChange(star)} onMouseEnter={() => setHovered(star)}
                 className="focus:outline-none" aria-label={`${star} ستاره`}>
           <svg viewBox="0 0 20 20" fill="currentColor"
-               className={`w-8 h-8 transition-colors ${star <= display ? 'text-amber-400' : 'text-gray-200'}`}>
+               className={`w-8 h-8 transition-colors`}
+               style={{ color: star <= display ? '#F59E0B' : '#111E2E' }}>
             <path d={STAR_PATH} />
           </svg>
         </button>
@@ -88,8 +89,11 @@ export default function MyAppointmentsPage() {
     <MainLayout>
       <div className="max-w-3xl mx-auto space-y-5">
         <div>
-          <h1 className="text-xl font-black text-slate-900 mb-1">نوبت‌های من</h1>
-          <p className="text-sm text-slate-400">مدیریت و پیگیری نوبت‌های رزروشده</p>
+          <h1 className="text-xl font-black mb-1"
+              style={{ background: 'linear-gradient(135deg,#00D4C8,#00A8FF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            نوبت‌های من
+          </h1>
+          <p className="text-sm" style={{ color: '#4A6E8A' }}>مدیریت و پیگیری نوبت‌های رزروشده</p>
         </div>
 
         {/* Filter pills */}
@@ -98,11 +102,11 @@ export default function MyAppointmentsPage() {
             <button
               key={f.value}
               onClick={() => setFilter(f.value)}
-              className={`text-xs font-bold px-4 py-2 rounded-full shrink-0 transition-colors ${
-                filter === f.value
-                  ? 'bg-cyan-500 text-white'
-                  : 'bg-white border border-slate-200 text-slate-600 hover:border-cyan-300'
-              }`}
+              className="text-xs font-bold px-4 py-2 rounded-full shrink-0 transition-colors"
+              style={filter === f.value
+                ? { background: 'rgba(0,212,200,0.15)', color: '#00D4C8', border: '1px solid rgba(0,212,200,0.3)' }
+                : { background: 'transparent', color: '#4A6E8A', border: '1px solid rgba(0,212,200,0.12)' }
+              }
             >
               {f.label}
             </button>
@@ -114,13 +118,14 @@ export default function MyAppointmentsPage() {
 
         {!isLoading && !isError && filtered.length === 0 && (
           <div className="text-center py-20 space-y-4">
-            <div className="w-16 h-16 rounded-2xl bg-cyan-50 flex items-center justify-center mx-auto">
-              <svg className="w-8 h-8 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="3" /><path d="M3 9h18" /></svg>
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto"
+                 style={{ background: 'rgba(0,212,200,0.1)' }}>
+              <svg className="w-8 h-8" style={{ color: '#00D4C8' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="3" /><path d="M3 9h18" /></svg>
             </div>
-            <p className="font-medium text-slate-700">هنوز نوبتی ثبت نکرده‌اید</p>
+            <p className="font-medium" style={{ color: '#DCF0F5' }}>هنوز نوبتی ثبت نکرده‌اید</p>
             <button onClick={() => navigate('/providers')}
-                    className="text-white font-bold px-6 py-2.5 rounded-xl text-sm shadow-sm shadow-cyan-200 hover:opacity-90 transition-opacity"
-                    style={{ background: 'linear-gradient(135deg, #0891B2 0%, #06B6D4 60%, #22D3EE 100%)' }}>
+                    className="text-white font-bold px-6 py-2.5 rounded-xl text-sm hover:opacity-90 transition-opacity"
+                    style={{ background: 'linear-gradient(135deg,#FF6B2B,#FF4500)', boxShadow: '0 0 24px rgba(255,107,43,0.35)' }}>
               رزرو نوبت
             </button>
           </div>
@@ -133,45 +138,61 @@ export default function MyAppointmentsPage() {
               const isActive = ACTIVE_STATUSES.includes(appt.status)
               const canReview = appt.status === 'completed' && !appt.has_review
               const isCancelled = appt.status === 'cancelled' || appt.status === 'no_show'
+              const isCompleted = appt.status === 'completed'
 
               return (
-                <div key={appt.id} className={`bg-white rounded-2xl ${style.border} overflow-hidden ${style.opacity} hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200`}>
+                <div key={appt.id}
+                     className="rounded-2xl overflow-hidden hover:-translate-y-0.5 transition-all duration-200"
+                     style={{
+                       background: '#0C1520',
+                       border: `1px solid ${isActive ? style.borderColor : 'rgba(0,212,200,0.07)'}`,
+                       opacity: isCancelled ? 0.6 : isCompleted ? 0.75 : 1,
+                     }}>
                   <div className="flex items-center gap-4 p-4">
                     <div className="text-center shrink-0 w-16">
-                      <div className={`text-xs font-bold ${isCancelled ? 'text-slate-400' : isActive ? 'text-cyan-500' : 'text-slate-400'}`}>
+                      <div className="text-xs font-bold" style={{ color: isCancelled ? '#4A6E8A' : isActive ? '#00D4C8' : '#4A6E8A' }}>
                         {toJalali(appt.date)?.split(' ')[1] || ''}
                       </div>
-                      <div className={`text-2xl font-black ${isCancelled ? 'text-slate-400 line-through' : isActive ? 'text-cyan-700' : 'text-slate-500'}`}>
+                      <div className="text-2xl font-black" style={{
+                        color: isCancelled ? '#4A6E8A' : isActive ? '#00D4C8' : '#4A6E8A',
+                        textDecoration: isCancelled ? 'line-through' : 'none',
+                      }}>
                         {toJalali(appt.date)?.split(' ')[0] || ''}
                       </div>
                     </div>
-                    <div className="w-px h-12 bg-slate-100" />
+                    <div className="w-px h-12" style={{ background: 'rgba(0,212,200,0.07)' }} />
                     <div className="flex-1 min-w-0">
-                      <div className={`text-sm font-bold ${isCancelled ? 'text-slate-500 line-through' : 'text-slate-800'}`}>
+                      <div className="text-sm font-bold" style={{
+                        color: isCancelled ? '#4A6E8A' : '#DCF0F5',
+                        textDecoration: isCancelled ? 'line-through' : 'none',
+                      }}>
                         {appt.provider_name || appt.doctor_name}
                       </div>
-                      <div className="text-xs text-slate-400 mt-0.5">
+                      <div className="text-xs mt-0.5" style={{ color: '#4A6E8A' }}>
                         {appt.service_name || appt.tracking_code} · {appt.start_time}
                       </div>
                     </div>
-                    <span className={`text-xs font-bold px-3 py-1.5 rounded-full shrink-0 ${style.badge}`}>
+                    <span className="text-xs font-bold px-3 py-1.5 rounded-full shrink-0"
+                          style={{ background: style.bg, color: style.color }}>
                       {APPOINTMENT_STATUS_LABEL[appt.status] ?? appt.status}
                     </span>
                   </div>
 
                   {/* Actions */}
                   {(isActive || canReview) && (
-                    <div className="flex border-t border-slate-50">
+                    <div className="flex" style={{ borderTop: '1px solid rgba(0,212,200,0.07)' }}>
                       {isActive && (
                         <button onClick={() => setConfirmId(appt.id)}
-                                className="flex-1 text-xs font-bold text-slate-500 py-3 hover:bg-slate-50 transition-colors flex items-center justify-center gap-1.5">
+                                className="flex-1 text-xs font-bold py-3 hover:bg-white/5 transition-colors flex items-center justify-center gap-1.5"
+                                style={{ color: '#4A6E8A' }}>
                           <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /></svg>
                           لغو نوبت
                         </button>
                       )}
                       {canReview && (
                         <button onClick={() => { setReviewAppt(appt); setRating(0); setComment('') }}
-                                className="flex-1 text-xs font-bold text-amber-600 py-3 hover:bg-amber-50 transition-colors flex items-center justify-center gap-1.5">
+                                className="flex-1 text-xs font-bold py-3 hover:bg-white/5 transition-colors flex items-center justify-center gap-1.5"
+                                style={{ color: '#F59E0B' }}>
                           <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d={STAR_PATH.replace(/20/g, '24')} /></svg>
                           ثبت نظر
                         </button>
@@ -181,7 +202,7 @@ export default function MyAppointmentsPage() {
 
                   {appt.status === 'completed' && appt.has_review && (
                     <div className="px-4 pb-3">
-                      <p className="text-xs text-slate-400">✓ نظر شما ثبت شده است</p>
+                      <p className="text-xs" style={{ color: '#4A6E8A' }}>✓ نظر شما ثبت شده است</p>
                     </div>
                   )}
                 </div>
@@ -193,10 +214,11 @@ export default function MyAppointmentsPage() {
 
       {/* Cancel dialog */}
       {confirmId && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4" role="dialog" aria-modal="true" aria-labelledby="cancel-dialog-title">
-          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm space-y-4" dir="rtl">
-            <h2 id="cancel-dialog-title" className="text-base font-bold text-slate-800">لغو نوبت</h2>
-            <p className="text-sm text-slate-500">آیا مطمئن هستید که می‌خواهید این نوبت را لغو کنید؟</p>
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4" role="dialog" aria-modal="true" aria-labelledby="cancel-dialog-title">
+          <div className="rounded-2xl shadow-xl p-6 w-full max-w-sm space-y-4" dir="rtl"
+               style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+            <h2 id="cancel-dialog-title" className="text-base font-bold" style={{ color: '#DCF0F5' }}>لغو نوبت</h2>
+            <p className="text-sm" style={{ color: '#4A6E8A' }}>آیا مطمئن هستید که می‌خواهید این نوبت را لغو کنید؟</p>
             <div className="flex gap-3">
               <Button variant="danger" fullWidth loading={cancelling} onClick={handleCancelConfirm}>بله، لغو کن</Button>
               <Button variant="ghost" fullWidth disabled={cancelling} onClick={() => setConfirmId(null)}>انصراف</Button>
@@ -207,27 +229,44 @@ export default function MyAppointmentsPage() {
 
       {/* Review modal */}
       {reviewAppt && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4" role="dialog" aria-modal="true" aria-labelledby="review-dialog-title">
-          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm space-y-5" dir="rtl">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4" role="dialog" aria-modal="true" aria-labelledby="review-dialog-title">
+          <div className="rounded-2xl shadow-xl p-6 w-full max-w-sm space-y-5" dir="rtl"
+               style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
             <div>
-              <h2 id="review-dialog-title" className="text-base font-bold text-slate-800">ثبت نظر</h2>
-              <p className="text-sm mt-0.5 text-slate-400">{reviewAppt.provider_name}</p>
+              <h2 id="review-dialog-title" className="text-base font-bold" style={{ color: '#DCF0F5' }}>ثبت نظر</h2>
+              <p className="text-sm mt-0.5" style={{ color: '#4A6E8A' }}>{reviewAppt.provider_name}</p>
             </div>
             <div className="space-y-1">
-              <p className="text-xs font-medium text-slate-600">امتیاز شما</p>
+              <p className="text-xs font-medium" style={{ color: '#4A6E8A' }}>امتیاز شما</p>
               <StarPicker value={rating} onChange={setRating} />
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-600">نظر (اختیاری)</label>
+              <label className="text-xs font-medium" style={{ color: '#4A6E8A' }}>نظر (اختیاری)</label>
               <textarea value={comment} onChange={(e) => setComment(e.target.value)} maxLength={500} rows={3}
                         placeholder="تجربه خود را بنویسید..."
-                        className="w-full rounded-xl border-2 px-3 py-2 text-sm resize-none outline-none focus:border-cyan-400 transition-colors"
-                        style={{ borderColor: '#E0F7FA', background: '#F0FDFF' }} />
-              <p className="text-xs text-slate-400 text-left">{comment.length}/۵۰۰</p>
+                        className="w-full rounded-xl px-3 py-2 text-sm resize-none outline-none transition-colors"
+                        style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.18)', color: '#DCF0F5' }}
+                        onFocus={(e) => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
+                        onBlur={(e) => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
+              <p className="text-xs text-left" style={{ color: '#4A6E8A' }}>{comment.length}/۵۰۰</p>
             </div>
             <div className="flex gap-3">
-              <Button fullWidth loading={submitting} onClick={handleReviewSubmit} disabled={!rating || submitting}>ثبت نظر</Button>
-              <Button variant="ghost" fullWidth disabled={submitting} onClick={() => setReviewAppt(null)}>انصراف</Button>
+              <button
+                className="flex-1 text-white font-bold py-3 rounded-xl text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+                style={{ background: 'linear-gradient(135deg,#FF6B2B,#FF4500)', boxShadow: '0 0 24px rgba(255,107,43,0.35)' }}
+                onClick={handleReviewSubmit}
+                disabled={!rating || submitting}
+              >
+                {submitting ? <Spinner size="xs" light /> : 'ثبت نظر'}
+              </button>
+              <button
+                className="flex-1 font-bold py-3 rounded-xl text-sm transition-colors"
+                style={{ border: '1px solid rgba(0,212,200,0.3)', color: '#00D4C8', background: 'transparent' }}
+                disabled={submitting}
+                onClick={() => setReviewAppt(null)}
+              >
+                انصراف
+              </button>
             </div>
           </div>
         </div>
