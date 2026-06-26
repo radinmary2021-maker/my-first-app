@@ -136,7 +136,7 @@ export default function SettingsPage() {
 
   const previewUrl = latinSlug ? `nobatiic.ir/book/${latinSlug}` : business?.slug ? `nobatiic.ir/book/${business.slug}` : ''
   const inputCls = "w-full rounded-xl px-4 py-3 text-sm outline-none transition-colors"
-  const inputBg = { background: '#1A2A3E', border: '1px solid rgba(0,212,200,0.25)', color: '#DCF0F5' }
+  const inputBg = { background: '#243548', border: '1px solid rgba(0,212,200,0.25)', color: '#E8F4FF' }
 
   if (loading) {
     return <OwnerLayout title="تنظیمات"><div className="flex justify-center py-20"><Spinner /></div></OwnerLayout>
@@ -150,9 +150,9 @@ export default function SettingsPage() {
       <div className="max-w-3xl space-y-5">
 
         {/* Logo upload */}
-        <div className="rounded-2xl p-5" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
-          <h2 className="text-sm font-bold mb-1" style={{ color: '#DCF0F5' }}>لوگوی کسب‌وکار</h2>
-          <p className="text-xs mb-4" style={{ color: '#4A6E8A' }}>JPG، PNG یا WebP — حداکثر ۲ مگابایت</p>
+        <div className="rounded-2xl p-5" style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
+          <h2 className="text-sm font-bold mb-1" style={{ color: '#E8F4FF' }}>لوگوی کسب‌وکار</h2>
+          <p className="text-xs mb-4" style={{ color: '#6B8FAD' }}>JPG، PNG یا WebP — حداکثر ۲ مگابایت</p>
           <div className="flex items-center gap-4">
             <ImageAvatar src={logoPreview || business?.logo} alt="لوگو" fallbackText={business?.name} size="w-20 h-20" shape="rounded-2xl" className="shadow-md" />
             <div className="flex flex-col gap-2">
@@ -167,43 +167,43 @@ export default function SettingsPage() {
               ) : (
                 <div className="flex items-center gap-2">
                   <Button type="button" variant="primary" size="sm" loading={uploadingLogo} onClick={handleLogoUpload}>آپلود</Button>
-                  <button type="button" onClick={handleLogoClear} disabled={uploadingLogo} className="text-xs transition-colors disabled:opacity-50" style={{ color: '#4A6E8A' }}>انصراف</button>
+                  <button type="button" onClick={handleLogoClear} disabled={uploadingLogo} className="text-xs transition-colors disabled:opacity-50" style={{ color: '#6B8FAD' }}>انصراف</button>
                 </div>
               )}
-              {logoFile && <p className="text-xs" style={{ color: '#4A6E8A' }}>{logoFile.name} — {(logoFile.size / 1024).toFixed(0)} KB</p>}
+              {logoFile && <p className="text-xs" style={{ color: '#6B8FAD' }}>{logoFile.name} — {(logoFile.size / 1024).toFixed(0)} KB</p>}
             </div>
           </div>
           {logoError && <p className="text-xs text-red-500 mt-2">{logoError}</p>}
         </div>
 
         {/* General info */}
-        <form onSubmit={handleSubmit} className="rounded-2xl p-5 space-y-4" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
-          <h2 className="text-sm font-bold mb-2" style={{ color: '#DCF0F5' }}>اطلاعات کلی</h2>
+        <form onSubmit={handleSubmit} className="rounded-2xl p-5 space-y-4" style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
+          <h2 className="text-sm font-bold mb-2" style={{ color: '#E8F4FF' }}>اطلاعات کلی</h2>
 
           <div>
-            <label htmlFor="settings-name" className="text-xs font-bold mb-2 block" style={{ color: '#4A6E8A' }}>نام کسب‌وکار <span className="text-red-400">*</span></label>
+            <label htmlFor="settings-name" className="text-xs font-bold mb-2 block" style={{ color: '#6B8FAD' }}>نام کسب‌وکار <span className="text-red-400">*</span></label>
             <input id="settings-name" type="text" value={name} onChange={(e) => setName(e.target.value)} disabled={saving} className={inputCls} style={inputBg} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.6)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.25)'} />
           </div>
 
           <div>
-            <label htmlFor="settings-category" className="text-xs font-bold mb-2 block" style={{ color: '#4A6E8A' }}>دسته‌بندی</label>
+            <label htmlFor="settings-category" className="text-xs font-bold mb-2 block" style={{ color: '#6B8FAD' }}>دسته‌بندی</label>
             <select id="settings-category" value={category} onChange={(e) => setCategory(e.target.value)} disabled={saving} className={inputCls} style={inputBg}>
               {categories.map((cat) => <option key={cat.value} value={cat.value}>{cat.label}</option>)}
             </select>
           </div>
 
           <div>
-            <label htmlFor="settings-description" className="text-xs font-bold mb-2 block" style={{ color: '#4A6E8A' }}>توضیحات</label>
+            <label htmlFor="settings-description" className="text-xs font-bold mb-2 block" style={{ color: '#6B8FAD' }}>توضیحات</label>
             <textarea id="settings-description" value={description} onChange={(e) => setDescription(e.target.value)} rows={3} placeholder="معرفی کوتاه کسب‌وکار..." disabled={saving} className={`${inputCls} resize-none`} style={inputBg} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.6)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.25)'} />
           </div>
 
           <div>
-            <label htmlFor="settings-phone" className="text-xs font-bold mb-2 block" style={{ color: '#4A6E8A' }}>شماره تماس</label>
+            <label htmlFor="settings-phone" className="text-xs font-bold mb-2 block" style={{ color: '#6B8FAD' }}>شماره تماس</label>
             <input id="settings-phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} disabled={saving} dir="ltr" className={`${inputCls} text-left`} style={inputBg} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.6)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.25)'} />
           </div>
 
           <div>
-            <label htmlFor="settings-address" className="text-xs font-bold mb-2 block" style={{ color: '#4A6E8A' }}>آدرس</label>
+            <label htmlFor="settings-address" className="text-xs font-bold mb-2 block" style={{ color: '#6B8FAD' }}>آدرس</label>
             <input id="settings-address" type="text" value={address} onChange={(e) => setAddress(e.target.value)} disabled={saving} className={inputCls} style={inputBg} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.6)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.25)'} />
           </div>
 
@@ -219,26 +219,26 @@ export default function SettingsPage() {
         </form>
 
         {/* Latin slug */}
-        <form onSubmit={handleSlugSubmit} className="rounded-2xl p-5 space-y-4" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
+        <form onSubmit={handleSlugSubmit} className="rounded-2xl p-5 space-y-4" style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
           <div>
-            <h2 className="text-sm font-bold" style={{ color: '#DCF0F5' }}>آدرس اختصاصی</h2>
-            <p className="text-xs mt-0.5" style={{ color: '#4A6E8A' }}>یک آدرس انگلیسی برای صفحه رزرو خود انتخاب کنید.</p>
+            <h2 className="text-sm font-bold" style={{ color: '#E8F4FF' }}>آدرس اختصاصی</h2>
+            <p className="text-xs mt-0.5" style={{ color: '#6B8FAD' }}>یک آدرس انگلیسی برای صفحه رزرو خود انتخاب کنید.</p>
           </div>
 
           <div>
-            <label htmlFor="latin-slug" className="text-xs font-bold mb-2 block" style={{ color: '#4A6E8A' }}>آدرس اختصاصی کسب‌وکار</label>
+            <label htmlFor="latin-slug" className="text-xs font-bold mb-2 block" style={{ color: '#6B8FAD' }}>آدرس اختصاصی کسب‌وکار</label>
             <input id="latin-slug" type="text" value={latinSlug} onChange={handleLatinSlugChange} placeholder="ariya-beauty" disabled={savingSlug} dir="ltr" autoComplete="off"
                    className={`${inputCls} text-left`} style={{ ...inputBg, ...(slugError ? { borderColor: 'rgba(239,68,68,0.5)' } : {}) }}
                    onFocus={e => e.target.style.borderColor = slugError ? 'rgba(239,68,68,0.5)' : 'rgba(0,212,200,0.45)'}
                    onBlur={e => e.target.style.borderColor = slugError ? 'rgba(239,68,68,0.5)' : 'rgba(0,212,200,0.18)'} />
-            <p className="text-xs mt-1" style={{ color: '#4A6E8A' }}>فقط حروف انگلیسی کوچک، اعداد و خط‌فاصله مجاز است</p>
+            <p className="text-xs mt-1" style={{ color: '#6B8FAD' }}>فقط حروف انگلیسی کوچک، اعداد و خط‌فاصله مجاز است</p>
             {slugError && <p className="text-xs text-red-500 mt-1">{slugError}</p>}
           </div>
 
           {previewUrl && (
-            <div className="rounded-xl px-3 py-2" style={{ background: '#1A2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
-              <p className="text-xs mb-0.5" style={{ color: '#4A6E8A' }}>پیش‌نمایش لینک:</p>
-              <p className="text-sm font-mono" dir="ltr" style={{ color: '#DCF0F5' }}>{previewUrl}</p>
+            <div className="rounded-xl px-3 py-2" style={{ background: '#243548', border: '1px solid rgba(0,212,200,0.07)' }}>
+              <p className="text-xs mb-0.5" style={{ color: '#6B8FAD' }}>پیش‌نمایش لینک:</p>
+              <p className="text-sm font-mono" dir="ltr" style={{ color: '#E8F4FF' }}>{previewUrl}</p>
             </div>
           )}
 

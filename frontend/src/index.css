@@ -7,11 +7,11 @@
   --cyan:   #00D4C8;
   --neon:   #39FF14;
   --orange: #FF6B2B;
-  --dark:   #0D1520;
-  --dark2:  #132030;
-  --dark3:  #1A2A3E;
-  --muted:  #4A6E8A;
-  --text:   #DCF0F5;
+  --dark:   #162030;
+  --dark2:  #1C2A3E;
+  --dark3:  #243548;
+  --muted:  #6B8FAD;
+  --text:   #E8F4FF;
 
   /* Legacy aliases (keep components working) */
   --color-brand:       #00D4C8;
@@ -20,14 +20,14 @@
   --color-brand-ring:  rgba(0,212,200,0.18);
 
   /* Surface */
-  --color-surface:    #0D1520;
-  --color-elevated:   #132030;
+  --color-surface:    #162030;
+  --color-elevated:   #1C2A3E;
   --color-border:     rgba(0,212,200,0.07);
   --color-border-strong: rgba(0,212,200,0.18);
 
   /* Text */
-  --color-text-primary:   #DCF0F5;
-  --color-text-secondary: #4A6E8A;
+  --color-text-primary:   #E8F4FF;
+  --color-text-secondary: #6B8FAD;
   --color-text-tertiary:  #3A5A70;
 
   /* Semantic */
@@ -78,12 +78,16 @@
 
 /* ── Base ─────────────────────────────────────────────────────────────────── */
 * { font-family: var(--font-body); }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; color-scheme: dark; }
 body { background-color: var(--dark); color: var(--text); }
+
+@media (prefers-color-scheme: dark) {
+  :root { color-scheme: dark only; }
+}
 
 /* ── Scrollbar ────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #132030; }
+::-webkit-scrollbar-track { background: #1C2A3E; }
 ::-webkit-scrollbar-thumb { background: rgba(0,212,200,0.2); border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(0,212,200,0.4); }
 
@@ -146,9 +150,8 @@ input::placeholder, textarea::placeholder, select::placeholder {
 
 /* Category icon float */
 @keyframes icon-float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  25%      { transform: translateY(-4px) rotate(-3deg); }
-  75%      { transform: translateY(-2px) rotate(2deg); }
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-6px); }
 }
 
 /* Neon pulse for live/active badges */
@@ -188,6 +191,7 @@ input::placeholder, textarea::placeholder, select::placeholder {
 }
 .scroll-strip::-webkit-scrollbar { display: none; }
 .scroll-strip { -ms-overflow-style: none; scrollbar-width: none; }
+.featured-scroll::-webkit-scrollbar { display: none; }
 .scroll-strip > * { scroll-snap-align: start; flex-shrink: 0; }
 
 /* Toast enter animation */

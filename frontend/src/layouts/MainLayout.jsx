@@ -18,7 +18,7 @@ export default function MainLayout({ children, fullWidth = false }) {
     `px-3 py-2 rounded-lg font-medium transition-colors text-sm ${
       isActive
         ? 'text-[#00D4C8]'
-        : 'text-[#4A6E8A] hover:text-[#00D4C8]'
+        : 'text-[#6B8FAD] hover:text-[#00D4C8]'
     }`
 
   const isBiz = user && isBusinessUser(user.role)
@@ -65,12 +65,12 @@ export default function MainLayout({ children, fullWidth = false }) {
   const navLinks = isBiz ? bizNavLinks : publicNavLinks
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: '#0D1520', color: '#DCF0F5' }} dir="rtl">
+    <div className="min-h-screen flex flex-col" style={{ background: '#162030', color: '#E8F4FF' }} dir="rtl">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:right-2 focus:z-50
                    focus:px-4 focus:py-2 focus:rounded-lg focus:font-medium focus:text-sm"
-        style={{ background: '#132030', color: '#00D4C8' }}
+        style={{ background: '#1C2A3E', color: '#00D4C8' }}
       >
         رفتن به محتوا
       </a>
@@ -107,7 +107,7 @@ export default function MainLayout({ children, fullWidth = false }) {
                   to="/profile"
                   className={({ isActive }) =>
                     `px-3 py-2 rounded-lg font-semibold transition-all ${
-                      isActive ? 'text-[#00D4C8]' : 'text-[#4A6E8A] hover:text-[#00D4C8]'
+                      isActive ? 'text-[#00D4C8]' : 'text-[#6B8FAD] hover:text-[#00D4C8]'
                     }`
                   }
                 >
@@ -147,7 +147,7 @@ export default function MainLayout({ children, fullWidth = false }) {
             {/* Mobile hamburger */}
             <button
               className="lg:hidden p-2 rounded-lg transition-colors"
-              style={{ color: '#4A6E8A' }}
+              style={{ color: '#6B8FAD' }}
               onClick={() => setMobileOpen((v) => !v)}
               aria-label={mobileOpen ? 'بستن منو' : 'باز کردن منو'}
               aria-expanded={mobileOpen}
@@ -169,7 +169,7 @@ export default function MainLayout({ children, fullWidth = false }) {
 
       {/* ── Mobile dropdown nav ── */}
       {mobileOpen && (
-        <div className="lg:hidden px-4 py-3 space-y-1 z-20 relative" style={{ background: '#132030', borderBottom: '1px solid rgba(0,212,200,0.09)' }}>
+        <div className="lg:hidden px-4 py-3 space-y-1 z-20 relative" style={{ background: '#1C2A3E', borderBottom: '1px solid rgba(0,212,200,0.09)' }}>
           <nav className="flex flex-col gap-1 text-sm" aria-label="منوی موبایل">
             {navLinks}
           </nav>
@@ -212,7 +212,7 @@ export default function MainLayout({ children, fullWidth = false }) {
       </main>
 
       {/* ── Footer ── */}
-      <footer style={{ background: '#132030', borderTop: '1px solid rgba(0,212,200,0.08)' }}>
+      <footer style={{ background: '#1C2A3E', borderTop: '1px solid rgba(0,212,200,0.08)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
 
@@ -231,42 +231,42 @@ export default function MainLayout({ children, fullWidth = false }) {
                   Nobatic
                 </span>
               </div>
-              <p className="text-sm leading-7" style={{ color: '#4A6E8A' }}>
+              <p className="text-sm leading-7" style={{ color: '#6B8FAD' }}>
                 رزرو آنلاین نوبت برای هر کسب‌وکاری
               </p>
             </div>
 
             {/* شرکت */}
             <div>
-              <h4 className="text-xs font-extrabold mb-4 tracking-wider uppercase" style={{ color: '#DCF0F5' }}>شرکت</h4>
+              <h4 className="text-xs font-extrabold mb-4 tracking-wider uppercase" style={{ color: '#E8F4FF' }}>شرکت</h4>
               <ul className="space-y-3 text-sm">
-                <li><Link to="/about" className="transition-colors" style={{ color: '#4A6E8A' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#4A6E8A'}>درباره ما</Link></li>
-                <li><Link to="/contact" className="transition-colors" style={{ color: '#4A6E8A' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#4A6E8A'}>تماس با ما</Link></li>
+                <li><Link to="/about" className="transition-colors" style={{ color: '#6B8FAD' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#6B8FAD'}>درباره ما</Link></li>
+                <li><Link to="/contact" className="transition-colors" style={{ color: '#6B8FAD' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#6B8FAD'}>تماس با ما</Link></li>
               </ul>
             </div>
 
             {/* کسب‌وکارها */}
             <div>
-              <h4 className="text-xs font-extrabold mb-4 tracking-wider uppercase" style={{ color: '#DCF0F5' }}>کسب‌وکارها</h4>
+              <h4 className="text-xs font-extrabold mb-4 tracking-wider uppercase" style={{ color: '#E8F4FF' }}>کسب‌وکارها</h4>
               <ul className="space-y-3 text-sm">
-                <li><Link to="/create-business" className="transition-colors" style={{ color: '#4A6E8A' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#4A6E8A'}>ثبت کسب‌وکار</Link></li>
-                <li><Link to="/providers" className="transition-colors" style={{ color: '#4A6E8A' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#4A6E8A'}>پنل مدیریت</Link></li>
+                <li><Link to="/create-business" className="transition-colors" style={{ color: '#6B8FAD' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#6B8FAD'}>ثبت کسب‌وکار</Link></li>
+                <li><Link to="/providers" className="transition-colors" style={{ color: '#6B8FAD' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#6B8FAD'}>پنل مدیریت</Link></li>
               </ul>
             </div>
 
             {/* پشتیبانی */}
             <div>
-              <h4 className="text-xs font-extrabold mb-4 tracking-wider uppercase" style={{ color: '#DCF0F5' }}>پشتیبانی</h4>
+              <h4 className="text-xs font-extrabold mb-4 tracking-wider uppercase" style={{ color: '#E8F4FF' }}>پشتیبانی</h4>
               <ul className="space-y-3 text-sm">
-                <li><Link to="/terms" className="transition-colors" style={{ color: '#4A6E8A' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#4A6E8A'}>قوانین</Link></li>
-                <li><Link to="/contact" className="transition-colors" style={{ color: '#4A6E8A' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#4A6E8A'}>سوالات متداول</Link></li>
+                <li><Link to="/terms" className="transition-colors" style={{ color: '#6B8FAD' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#6B8FAD'}>قوانین</Link></li>
+                <li><Link to="/contact" className="transition-colors" style={{ color: '#6B8FAD' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#6B8FAD'}>سوالات متداول</Link></li>
               </ul>
             </div>
           </div>
 
           <div className="mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4" style={{ borderTop: '1px solid rgba(0,212,200,0.07)' }}>
-            <p className="text-xs" style={{ color: '#4A6E8A' }}>© ۱۴۰۴ Nobatic — تمامی حقوق محفوظ است</p>
-            <span className="text-xs" style={{ color: '#4A6E8A' }}>پرداخت امن با زرین‌پال</span>
+            <p className="text-xs" style={{ color: '#6B8FAD' }}>© ۱۴۰۴ Nobatic — تمامی حقوق محفوظ است</p>
+            <span className="text-xs" style={{ color: '#6B8FAD' }}>پرداخت امن با زرین‌پال</span>
           </div>
         </div>
       </footer>

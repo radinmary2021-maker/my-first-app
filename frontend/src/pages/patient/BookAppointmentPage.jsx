@@ -73,7 +73,7 @@ export default function BookAppointmentPage() {
   return (
     <MainLayout>
       <div className="max-w-2xl mx-auto px-4 py-4">
-        <div className="rounded-[20px] overflow-hidden" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
+        <div className="rounded-[20px] overflow-hidden" style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
 
           {/* Progress steps */}
           <div className="flex items-center justify-between px-6 pt-6 pb-4">
@@ -86,7 +86,7 @@ export default function BookAppointmentPage() {
 
           <div className="px-6 pb-6">
             <h1 className="text-lg font-black mb-1 cyan-text">تأیید نوبت</h1>
-            <p className="text-sm mb-5" style={{ color: '#4A6E8A' }}>جزئیات نوبت خود را بررسی کنید</p>
+            <p className="text-sm mb-5" style={{ color: '#6B8FAD' }}>جزئیات نوبت خود را بررسی کنید</p>
 
             {/* Business summary */}
             {providerLoading ? (
@@ -98,8 +98,8 @@ export default function BookAppointmentPage() {
                   📋
                 </div>
                 <div>
-                  <div className="text-sm font-bold" style={{ color: '#DCF0F5' }}>{providerName}</div>
-                  <div className="text-xs mt-0.5" style={{ color: '#4A6E8A' }}>{provider.category_display || provider.specialty}</div>
+                  <div className="text-sm font-bold" style={{ color: '#E8F4FF' }}>{providerName}</div>
+                  <div className="text-xs mt-0.5" style={{ color: '#6B8FAD' }}>{provider.category_display || provider.specialty}</div>
                 </div>
               </div>
             )}
@@ -120,7 +120,7 @@ export default function BookAppointmentPage() {
             {displayFee && (
               <div className="rounded-2xl p-4 mb-6" style={{ background: 'rgba(0,212,200,0.04)', border: '1px solid rgba(0,212,200,0.07)' }}>
                 <div className="flex items-center justify-between text-sm pt-1">
-                  <span className="font-bold" style={{ color: '#DCF0F5' }}>مبلغ قابل پرداخت</span>
+                  <span className="font-bold" style={{ color: '#E8F4FF' }}>مبلغ قابل پرداخت</span>
                   <span className="text-lg font-black" style={{ color: '#00D4C8' }}>{displayFee}</span>
                 </div>
               </div>
@@ -144,7 +144,7 @@ export default function BookAppointmentPage() {
             {step === STEPS_ENUM.REDIRECTING && trackingCode && (
               <div className="rounded-2xl p-4 text-sm space-y-2 mb-4" style={{ background: 'rgba(0,212,200,0.06)', border: '1px solid rgba(0,212,200,0.15)' }}>
                 <p className="font-medium" style={{ color: '#00D4C8' }}>در حال اتصال به درگاه پرداخت…</p>
-                <p style={{ color: '#4A6E8A' }}>کد پیگیری: <span className="font-mono font-bold" style={{ color: '#DCF0F5' }}>{trackingCode}</span></p>
+                <p style={{ color: '#6B8FAD' }}>کد پیگیری: <span className="font-mono font-bold" style={{ color: '#E8F4FF' }}>{trackingCode}</span></p>
               </div>
             )}
 
@@ -167,7 +167,7 @@ export default function BookAppointmentPage() {
                 )}
               </button>
             )}
-            <p className="text-center text-xs mt-3" style={{ color: '#4A6E8A' }}>پرداخت امن با درگاه زرین‌پال</p>
+            <p className="text-center text-xs mt-3" style={{ color: '#6B8FAD' }}>پرداخت امن با درگاه زرین‌پال</p>
           </div>
         </div>
       </div>
@@ -181,11 +181,11 @@ function StepDot({ n, label, done, active }) {
       <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold transition-transform"
            style={done || active
              ? { background: 'linear-gradient(135deg,#00D4C8,#00A8FF)', color: 'white', boxShadow: '0 0 12px rgba(0,212,200,0.3)' }
-             : { background: '#1A2A3E', color: '#4A6E8A' }
+             : { background: '#243548', color: '#6B8FAD' }
            }>
         {n}
       </div>
-      <span className="text-[10px] font-bold" style={{ color: done || active ? '#00D4C8' : '#4A6E8A' }}>{label}</span>
+      <span className="text-[10px] font-bold" style={{ color: done || active ? '#00D4C8' : '#6B8FAD' }}>{label}</span>
     </div>
   )
 }
@@ -195,9 +195,9 @@ function DetailRow({ icon, iconColor, label, value }) {
     <div className="flex items-center justify-between p-3 rounded-xl" style={{ background: 'rgba(0,212,200,0.03)', border: '1px solid rgba(0,212,200,0.07)' }}>
       <div className="flex items-center gap-2.5">
         <svg className="w-4 h-4" style={{ color: iconColor }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">{icon}</svg>
-        <span className="text-sm" style={{ color: '#4A6E8A' }}>{label}</span>
+        <span className="text-sm" style={{ color: '#6B8FAD' }}>{label}</span>
       </div>
-      <span className="text-sm font-bold" style={{ color: '#DCF0F5' }}>{value}</span>
+      <span className="text-sm font-bold" style={{ color: '#E8F4FF' }}>{value}</span>
     </div>
   )
 }

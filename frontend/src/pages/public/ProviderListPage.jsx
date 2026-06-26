@@ -102,10 +102,10 @@ export default function ProviderListPage() {
   }
 
   const sidebar = (
-    <div className="rounded-[20px] overflow-hidden" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
+    <div className="rounded-[20px] overflow-hidden" style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
       {/* Category */}
       <div className="p-5" style={{ borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
-        <h3 className="text-sm font-bold mb-3" style={{ color: '#DCF0F5' }}>دسته‌بندی</h3>
+        <h3 className="text-sm font-bold mb-3" style={{ color: '#E8F4FF' }}>دسته‌بندی</h3>
         <div className="space-y-1">
           <CheckboxItem
             label={ALL}
@@ -125,7 +125,7 @@ export default function ProviderListPage() {
 
       {/* Availability */}
       <div className="p-5">
-        <h3 className="text-sm font-bold mb-3" style={{ color: '#DCF0F5' }}>وضعیت</h3>
+        <h3 className="text-sm font-bold mb-3" style={{ color: '#E8F4FF' }}>وضعیت</h3>
         <div className="space-y-1">
           <CheckboxItem
             label="فقط فعال‌ها"
@@ -150,7 +150,7 @@ export default function ProviderListPage() {
         <div className="max-w-7xl mx-auto">
           <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
             <div className="flex items-center flex-1 gap-3 rounded-2xl px-4 py-3 transition-all"
-                 style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.18)' }}
+                 style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.18)' }}
                  onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.45)'}
                  onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.18)'}>
               <svg className="w-4 h-4 shrink-0" style={{ color: '#00D4C8' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -162,7 +162,7 @@ export default function ProviderListPage() {
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="جستجوی نام کسب‌وکار یا تخصص..."
                 className="bg-transparent outline-none text-sm w-full font-medium"
-                style={{ color: '#DCF0F5' }}
+                style={{ color: '#E8F4FF' }}
               />
             </div>
             <button
@@ -234,9 +234,9 @@ export default function ProviderListPage() {
             {/* Results header */}
             <div className="flex items-center justify-between mb-5">
               <div>
-                <h1 className="text-lg font-black" style={{ color: '#DCF0F5' }}>{listTitle}</h1>
+                <h1 className="text-lg font-black" style={{ color: '#E8F4FF' }}>{listTitle}</h1>
                 {providers && (
-                  <p className="text-xs mt-0.5" style={{ color: '#4A6E8A' }}>{filtered.length} نتیجه پیدا شد</p>
+                  <p className="text-xs mt-0.5" style={{ color: '#6B8FAD' }}>{filtered.length} نتیجه پیدا شد</p>
                 )}
               </div>
               <button
@@ -298,7 +298,7 @@ export default function ProviderListPage() {
 function CheckboxItem({ label, checked, onChange }) {
   return (
     <label onClick={onChange} className="flex items-center gap-3 py-2 px-2 rounded-xl cursor-pointer transition-colors"
-           style={{ color: checked ? '#00D4C8' : '#4A6E8A' }}>
+           style={{ color: checked ? '#00D4C8' : '#6B8FAD' }}>
       <div className="w-4 h-4 rounded shrink-0 flex items-center justify-center transition-colors"
            style={checked
              ? { border: '2px solid #00D4C8', background: '#00D4C8' }
@@ -310,7 +310,7 @@ function CheckboxItem({ label, checked, onChange }) {
           </svg>
         )}
       </div>
-      <span className="text-sm" style={{ color: checked ? '#DCF0F5' : '#4A6E8A', fontWeight: checked ? 500 : 400 }}>{label}</span>
+      <span className="text-sm" style={{ color: checked ? '#E8F4FF' : '#6B8FAD', fontWeight: checked ? 500 : 400 }}>{label}</span>
     </label>
   )
 }

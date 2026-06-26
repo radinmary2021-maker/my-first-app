@@ -42,7 +42,7 @@ export default function OwnerSidebar({ businessName, businessCategory }) {
   }
 
   return (
-    <aside className="w-64 hidden lg:flex flex-col shrink-0" style={{ background: '#132030', borderLeft: '1px solid rgba(0,212,200,0.07)' }}>
+    <aside className="w-64 hidden lg:flex flex-col shrink-0" style={{ background: '#1C2A3E', borderLeft: '1px solid rgba(0,212,200,0.07)' }}>
       {/* Logo */}
       <div className="flex items-center px-5" style={{ height: '66px', borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
         <button onClick={() => navigate('/')} className="flex items-center gap-2.5">
@@ -68,8 +68,8 @@ export default function OwnerSidebar({ businessName, businessCategory }) {
               📋
             </div>
             <div className="text-right flex-1 min-w-0">
-              <div className="text-xs font-bold truncate" style={{ color: '#DCF0F5' }}>{businessName}</div>
-              {businessCategory && <div className="text-[10px]" style={{ color: '#4A6E8A' }}>{businessCategory}</div>}
+              <div className="text-xs font-bold truncate" style={{ color: '#E8F4FF' }}>{businessName}</div>
+              {businessCategory && <div className="text-[10px]" style={{ color: '#6B8FAD' }}>{businessCategory}</div>}
             </div>
           </div>
         </div>
@@ -86,13 +86,13 @@ export default function OwnerSidebar({ businessName, businessCategory }) {
               className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all"
               style={active
                 ? { background: 'rgba(0,212,200,0.08)', color: '#00D4C8', fontWeight: 700 }
-                : { color: '#4A6E8A', fontWeight: 500 }
+                : { color: '#6B8FAD', fontWeight: 500 }
               }
-              onMouseEnter={(e) => { if (!active) { e.currentTarget.style.background = 'rgba(0,212,200,0.04)'; e.currentTarget.style.color = '#DCF0F5' } }}
-              onMouseLeave={(e) => { if (!active) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#4A6E8A' } }}
+              onMouseEnter={(e) => { if (!active) { e.currentTarget.style.background = 'rgba(0,212,200,0.04)'; e.currentTarget.style.color = '#E8F4FF' } }}
+              onMouseLeave={(e) => { if (!active) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#6B8FAD' } }}
             >
               <svg className="w-[18px] h-[18px]"
-                   style={{ color: active ? '#00D4C8' : '#4A6E8A', transition: 'transform 0.2s ease' }}
+                   style={{ color: active ? '#00D4C8' : '#6B8FAD', transition: 'transform 0.2s ease' }}
                    viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
                    onMouseEnter={(e) => e.currentTarget.style.animation = 'icon-bounce 0.4s ease'}
                    onAnimationEnd={(e) => e.currentTarget.style.animation = ''}>
@@ -117,8 +117,8 @@ export default function OwnerSidebar({ businessName, businessCategory }) {
             {getInitials(user?.full_name)}
           </div>
           <div className="text-right flex-1 min-w-0">
-            <div className="text-xs font-bold truncate" style={{ color: '#DCF0F5' }}>{user?.full_name || user?.phone}</div>
-            <div className="text-[10px]" style={{ color: '#4A6E8A' }}>مدیر کسب‌وکار</div>
+            <div className="text-xs font-bold truncate" style={{ color: '#E8F4FF' }}>{user?.full_name || user?.phone}</div>
+            <div className="text-[10px]" style={{ color: '#6B8FAD' }}>مدیر کسب‌وکار</div>
           </div>
         </button>
       </div>

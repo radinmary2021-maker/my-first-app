@@ -53,7 +53,7 @@ const STATUS_BADGE_STYLES = {
   confirmed:       { background: 'rgba(57,255,20,0.1)', color: '#39FF14' },
   pending:         { background: 'rgba(245,158,11,0.1)', color: '#F59E0B' },
   completed:       { background: 'rgba(0,212,200,0.08)', color: '#00D4C8' },
-  cancelled:       { background: 'rgba(0,212,200,0.05)', color: '#4A6E8A' },
+  cancelled:       { background: 'rgba(0,212,200,0.05)', color: '#6B8FAD' },
   no_show:         { background: 'rgba(239,68,68,0.1)', color: '#EF4444' },
   pending_payment: { background: 'rgba(245,158,11,0.1)', color: '#F59E0B' },
 }
@@ -141,9 +141,9 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {/* Appointments list */}
-        <div className="lg:col-span-2 rounded-[20px] overflow-hidden" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
+        <div className="lg:col-span-2 rounded-[20px] overflow-hidden" style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
           <div className="flex items-center justify-between p-5" style={{ borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
-            <h2 className="text-sm font-bold" style={{ color: '#DCF0F5' }}>نوبت‌ها</h2>
+            <h2 className="text-sm font-bold" style={{ color: '#E8F4FF' }}>نوبت‌ها</h2>
             <div className="flex items-center gap-2">
               <Input
                 type="date"
@@ -171,7 +171,7 @@ export default function DashboardPage() {
                 className="text-xs font-bold px-3 py-1.5 rounded-full transition-colors"
                 style={filterStatus === f.value
                   ? { background: 'rgba(0,212,200,0.15)', color: '#00D4C8', border: '1px solid rgba(0,212,200,0.3)' }
-                  : { background: 'transparent', color: '#4A6E8A', border: '1px solid rgba(0,212,200,0.12)' }
+                  : { background: 'transparent', color: '#6B8FAD', border: '1px solid rgba(0,212,200,0.12)' }
                 }
               >
                 {f.label}
@@ -184,7 +184,7 @@ export default function DashboardPage() {
 
           {!isLoading && !isError && appointments?.length === 0 && (
             <div className="text-center py-16">
-              <p className="text-sm" style={{ color: '#4A6E8A' }}>نوبتی یافت نشد.</p>
+              <p className="text-sm" style={{ color: '#6B8FAD' }}>نوبتی یافت نشد.</p>
             </div>
           )}
 
@@ -196,22 +196,22 @@ export default function DashboardPage() {
                      onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,212,200,0.03)'}
                      onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
                   <div className="text-center w-14 shrink-0">
-                    <div className="text-sm font-black" style={{ color: '#DCF0F5' }}>{appt.start_time?.slice(0, 5)}</div>
-                    <div className="text-[10px]" style={{ color: '#4A6E8A' }}>{toJalali(appt.date)}</div>
+                    <div className="text-sm font-black" style={{ color: '#E8F4FF' }}>{appt.start_time?.slice(0, 5)}</div>
+                    <div className="text-[10px]" style={{ color: '#6B8FAD' }}>{toJalali(appt.date)}</div>
                   </div>
                   <div className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
                        style={{ background: 'rgba(0,212,200,0.1)', color: '#00D4C8' }}>
                     {getInitials(appt.customer_name)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-bold" style={{ color: '#DCF0F5' }}>{appt.customer_name || '—'}</div>
-                    <div className="text-xs" style={{ color: '#4A6E8A' }}>
+                    <div className="text-sm font-bold" style={{ color: '#E8F4FF' }}>{appt.customer_name || '—'}</div>
+                    <div className="text-xs" style={{ color: '#6B8FAD' }}>
                       {appt.service_name || appt.tracking_code}
                       {isOwner && appt.provider_name && ` · با ${appt.provider_name}`}
                     </div>
                   </div>
                   <span className="text-xs font-bold px-2.5 py-1 rounded-full shrink-0"
-                        style={STATUS_BADGE_STYLES[appt.status] || { background: 'rgba(0,212,200,0.05)', color: '#4A6E8A' }}>
+                        style={STATUS_BADGE_STYLES[appt.status] || { background: 'rgba(0,212,200,0.05)', color: '#6B8FAD' }}>
                     {APPOINTMENT_STATUS_LABEL[appt.status] ?? appt.status}
                   </span>
                   {(appt.status === 'confirmed' || appt.status === 'pending') && (
@@ -229,7 +229,7 @@ export default function DashboardPage() {
                       {appt.status === 'confirmed' && (
                         <button onClick={() => requestAction(appt.id, 'no_show')} disabled={actionPending}
                                 className="text-xs font-bold px-2 py-1 rounded-lg transition-colors disabled:opacity-50"
-                                style={{ color: '#4A6E8A', background: 'rgba(0,212,200,0.04)' }}>غیبت</button>
+                                style={{ color: '#6B8FAD', background: 'rgba(0,212,200,0.04)' }}>غیبت</button>
                       )}
                       <button onClick={() => requestAction(appt.id, 'cancel')} disabled={actionPending}
                               className="text-xs font-bold px-2 py-1 rounded-lg transition-colors disabled:opacity-50"
@@ -245,8 +245,8 @@ export default function DashboardPage() {
         {/* Side column */}
         <div className="space-y-6">
           {/* Quick actions */}
-          <div className="rounded-[20px] p-5" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
-            <h2 className="text-sm font-bold mb-4" style={{ color: '#DCF0F5' }}>دسترسی سریع</h2>
+          <div className="rounded-[20px] p-5" style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
+            <h2 className="text-sm font-bold mb-4" style={{ color: '#E8F4FF' }}>دسترسی سریع</h2>
             <div className="grid grid-cols-2 gap-3">
               <QuickCard label="برنامه نوبت" iconColor="#00D4C8"
                          icon={<><rect x="3" y="4" width="18" height="18" rx="3" /><path d="M3 9h18" /><path d="M8 2v4M16 2v4" /></>}
@@ -273,9 +273,9 @@ export default function DashboardPage() {
           onClick={(e) => e.target === e.currentTarget && !actionPending && setConfirmAction(null)}
         >
           <div className="rounded-[20px] p-6 w-full max-w-sm space-y-4" dir="rtl"
-               style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.15)' }}>
-            <h2 className="text-base font-bold" style={{ color: '#DCF0F5' }}>تأیید عملیات</h2>
-            <p className="text-sm" style={{ color: '#4A6E8A' }}>{DIALOG_COPY[confirmAction.action]?.question}</p>
+               style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.15)' }}>
+            <h2 className="text-base font-bold" style={{ color: '#E8F4FF' }}>تأیید عملیات</h2>
+            <p className="text-sm" style={{ color: '#6B8FAD' }}>{DIALOG_COPY[confirmAction.action]?.question}</p>
             <div className="flex gap-3">
               <Button
                 variant={confirmAction.action === 'cancel' ? 'danger' : 'primary'}
@@ -297,15 +297,15 @@ export default function DashboardPage() {
 function StatCard({ icon, iconColor, value, label }) {
   return (
     <div className="rounded-[20px] p-4 transition-all"
-         style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}
+         style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}
          onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.28)'; e.currentTarget.style.transform = 'translateY(-3px)' }}
          onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.07)'; e.currentTarget.style.transform = 'translateY(0)' }}>
       <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-2"
            style={{ background: `${iconColor}15`, border: `1px solid ${iconColor}25` }}>
         <svg className="w-4 h-4" style={{ color: iconColor }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">{icon}</svg>
       </div>
-      <div className="text-2xl font-black" style={{ color: '#DCF0F5' }}>{value}</div>
-      <div className="text-xs mt-0.5" style={{ color: '#4A6E8A' }}>{label}</div>
+      <div className="text-2xl font-black" style={{ color: '#E8F4FF' }}>{value}</div>
+      <div className="text-xs mt-0.5" style={{ color: '#6B8FAD' }}>{label}</div>
     </div>
   )
 }
@@ -323,7 +323,7 @@ function QuickCard({ label, iconColor, icon, onClick }) {
            onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1) rotate(0)' }}>
         <svg className="w-5 h-5" style={{ color: iconColor }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">{icon}</svg>
       </div>
-      <span className="text-xs font-bold" style={{ color: '#DCF0F5' }}>{label}</span>
+      <span className="text-xs font-bold" style={{ color: '#E8F4FF' }}>{label}</span>
     </button>
   )
 }

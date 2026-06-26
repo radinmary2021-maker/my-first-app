@@ -17,7 +17,7 @@ export default function ProviderCard({ doctor, provider }) {
     <div
       onClick={() => navigate(`/providers/${p.id}`)}
       className="rounded-[20px] overflow-hidden cursor-pointer flex transition-all duration-200 group"
-      style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}
+      style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}
       onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.28)'; e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 20px 48px rgba(0,212,200,0.1)' }}
       onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.07)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
     >
@@ -36,13 +36,13 @@ export default function ProviderCard({ doctor, provider }) {
       {/* Info */}
       <div className="flex-1 p-4 flex flex-col justify-between min-w-0">
         <div>
-          <h2 className="font-bold text-base truncate transition-colors" style={{ color: '#DCF0F5' }}>
+          <h2 className="font-bold text-base truncate transition-colors" style={{ color: '#E8F4FF' }}>
             {name}
           </h2>
           {staffName && (
-            <p className="text-xs mt-0.5" style={{ color: '#4A6E8A' }}>با مدیریت: <span className="font-semibold" style={{ color: '#DCF0F5' }}>{staffName}</span></p>
+            <p className="text-xs mt-0.5" style={{ color: '#6B8FAD' }}>با مدیریت: <span className="font-semibold" style={{ color: '#E8F4FF' }}>{staffName}</span></p>
           )}
-          <p className="text-xs mt-0.5 mb-2" style={{ color: '#4A6E8A' }}>{category}</p>
+          <p className="text-xs mt-0.5 mb-2" style={{ color: '#6B8FAD' }}>{category}</p>
 
           {p.services_preview?.length > 0 && (
             <div className="flex flex-wrap gap-1 mb-2">
@@ -56,14 +56,14 @@ export default function ProviderCard({ doctor, provider }) {
           {hasRating && (
             <div className="flex items-center gap-1 mb-3">
               <span className="text-sm" style={{ color: '#FF6B2B' }}>★</span>
-              <span className="text-sm font-bold" style={{ color: '#DCF0F5' }}>{p.average_rating}</span>
-              <span className="text-xs" style={{ color: '#4A6E8A' }}>({p.reviews_count} نظر)</span>
+              <span className="text-sm font-bold" style={{ color: '#E8F4FF' }}>{p.average_rating}</span>
+              <span className="text-xs" style={{ color: '#6B8FAD' }}>({p.reviews_count} نظر)</span>
             </div>
           )}
         </div>
 
         <div className="flex items-center justify-between mt-3 pt-3" style={{ borderTop: '1px solid rgba(0,212,200,0.07)' }}>
-          <div className="flex items-center gap-3 text-xs" style={{ color: '#4A6E8A' }}>
+          <div className="flex items-center gap-3 text-xs" style={{ color: '#6B8FAD' }}>
             <span className="flex items-center gap-1">
               <svg className="w-3.5 h-3.5" style={{ color: '#00D4C8' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />

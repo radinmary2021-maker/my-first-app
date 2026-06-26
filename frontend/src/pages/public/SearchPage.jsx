@@ -64,7 +64,7 @@ export default function SearchPage() {
               placeholder="نام کسب‌وکار، تخصص یا دسته‌بندی..."
               autoFocus
               className="w-full pr-10 pl-4 py-3 rounded-2xl text-sm outline-none transition-all"
-              style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.18)', color: '#DCF0F5' }}
+              style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.18)', color: '#E8F4FF' }}
               onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.45)'}
               onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.18)'}
             />
@@ -87,23 +87,23 @@ export default function SearchPage() {
         {!q && !loading && (
           <div className="text-center py-16">
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-3" style={{ background: 'rgba(0,212,200,0.06)' }}>
-              <svg className="w-8 h-8" style={{ color: '#4A6E8A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg className="w-8 h-8" style={{ color: '#6B8FAD' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" strokeLinecap="round" />
               </svg>
             </div>
-            <p className="text-sm" style={{ color: '#4A6E8A' }}>عبارت جستجو وارد کنید</p>
+            <p className="text-sm" style={{ color: '#6B8FAD' }}>عبارت جستجو وارد کنید</p>
           </div>
         )}
 
         {q && !loading && !error && results?.length === 0 && (
           <div className="text-center py-16 space-y-3">
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto" style={{ background: 'rgba(0,212,200,0.06)' }}>
-              <svg className="w-8 h-8" style={{ color: '#4A6E8A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg className="w-8 h-8" style={{ color: '#6B8FAD' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" strokeLinecap="round" />
               </svg>
             </div>
-            <p className="font-medium" style={{ color: '#DCF0F5' }}>نتیجه‌ای یافت نشد</p>
-            <p className="text-sm" style={{ color: '#4A6E8A' }}>جستجوی «{q}» نتیجه‌ای نداشت. کلمه دیگری امتحان کنید.</p>
+            <p className="font-medium" style={{ color: '#E8F4FF' }}>نتیجه‌ای یافت نشد</p>
+            <p className="text-sm" style={{ color: '#6B8FAD' }}>جستجوی «{q}» نتیجه‌ای نداشت. کلمه دیگری امتحان کنید.</p>
             <button onClick={() => navigate('/providers')} className="text-sm font-semibold" style={{ color: '#00D4C8' }}>
               مشاهده همه کسب‌وکارها
             </button>
@@ -112,8 +112,8 @@ export default function SearchPage() {
 
         {!loading && !error && businesses.length > 0 && (
           <div className="space-y-4">
-            <p className="text-sm" style={{ color: '#4A6E8A' }}>
-              <span className="font-bold" style={{ color: '#DCF0F5' }}>{businesses.length}</span> کسب‌وکار برای «{q}»
+            <p className="text-sm" style={{ color: '#6B8FAD' }}>
+              <span className="font-bold" style={{ color: '#E8F4FF' }}>{businesses.length}</span> کسب‌وکار برای «{q}»
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -125,7 +125,7 @@ export default function SearchPage() {
                     key={p.business_id || p.id}
                     onClick={() => navigate(href)}
                     className="rounded-[20px] overflow-hidden cursor-pointer transition-all duration-200 group"
-                    style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}
+                    style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}
                     onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.28)'; e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 20px 48px rgba(0,212,200,0.1)' }}
                     onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.07)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
                   >
@@ -134,10 +134,10 @@ export default function SearchPage() {
                       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg,transparent,#00D4C8,transparent)' }} />
                     </div>
                     <div className="p-4">
-                      <h3 className="font-bold text-sm mb-1 transition-colors" style={{ color: '#DCF0F5' }}>
+                      <h3 className="font-bold text-sm mb-1 transition-colors" style={{ color: '#E8F4FF' }}>
                         {p.business_name || p.full_name}
                       </h3>
-                      <p className="text-xs mb-3" style={{ color: '#4A6E8A' }}>{p.category_display || p.specialty}</p>
+                      <p className="text-xs mb-3" style={{ color: '#6B8FAD' }}>{p.category_display || p.specialty}</p>
                       <button
                         onClick={(e) => { e.stopPropagation(); navigate(href) }}
                         className="w-full font-extrabold text-xs py-2.5 rounded-xl transition-all text-white"

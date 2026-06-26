@@ -48,14 +48,14 @@ function SectionHeader({ step, children, isDone }) {
           </svg>
         ) : step}
       </span>
-      <h2 className="text-base font-semibold" style={{ color: '#DCF0F5' }}>{children}</h2>
+      <h2 className="text-base font-semibold" style={{ color: '#E8F4FF' }}>{children}</h2>
     </div>
   )
 }
 
 function Card({ children }) {
   return (
-    <div className="flex items-center justify-between rounded-xl px-4 py-3 gap-3" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
+    <div className="flex items-center justify-between rounded-xl px-4 py-3 gap-3" style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
       {children}
     </div>
   )
@@ -78,7 +78,7 @@ function DeleteButton({ onClick, disabled, label = 'حذف' }) {
 }
 
 const inputCls = 'w-full text-sm rounded-lg px-3 py-2.5 focus:outline-none outline-none'
-const inputStyle = { background: '#1A2A3E', border: '1px solid rgba(0,212,200,0.25)', color: '#DCF0F5' }
+const inputStyle = { background: '#243548', border: '1px solid rgba(0,212,200,0.25)', color: '#E8F4FF' }
 const inputFocusStyle = { ...inputStyle, borderColor: 'rgba(0,212,200,0.6)' }
 
 // ── Services section ──────────────────────────────────────────────────────────
@@ -198,7 +198,7 @@ function ServicesSection() {
           <button
             onClick={() => { setShowInactive(p => !p); setEditingId(null) }}
             className="text-xs underline-offset-2 hover:underline transition-colors"
-            style={{ color: '#4A6E8A' }}
+            style={{ color: '#6B8FAD' }}
           >
             {showInactive ? 'پنهان کردن غیرفعال‌ها' : 'نمایش غیرفعال‌ها'}
           </button>
@@ -214,7 +214,7 @@ function ServicesSection() {
       )}
 
       {!isLoading && !isError && !hasSvcs && (
-        <div className="text-sm rounded-xl px-4 py-3" style={{ color: '#4A6E8A', background: 'rgba(0,212,200,0.03)', border: '1px solid rgba(0,212,200,0.07)' }}>
+        <div className="text-sm rounded-xl px-4 py-3" style={{ color: '#6B8FAD', background: 'rgba(0,212,200,0.03)', border: '1px solid rgba(0,212,200,0.07)' }}>
           {showInactive && inactiveCnt > 0
             ? 'همه خدمات غیرفعال هستند. برای بازگشت به حالت فعال، روی «فعال‌سازی مجدد» کلیک کنید.'
             : 'هیچ خدمتی ثبت نشده. اولین خدمت خود را از فرم زیر اضافه کنید.'}
@@ -227,9 +227,9 @@ function ServicesSection() {
           <div key={svc.id} className="opacity-60">
             <Card>
               <div className="flex items-center gap-3 text-sm flex-1 min-w-0 flex-wrap">
-                <span className="font-medium truncate" style={{ color: '#DCF0F5' }}>{svc.name}</span>
-                <span className="text-xs" style={{ color: '#4A6E8A' }}>{svc.duration_minutes} دقیقه</span>
-                <span className="text-xs px-2 py-0.5 rounded-full" style={{ color: '#4A6E8A', background: 'rgba(0,212,200,0.05)' }}>غیرفعال</span>
+                <span className="font-medium truncate" style={{ color: '#E8F4FF' }}>{svc.name}</span>
+                <span className="text-xs" style={{ color: '#6B8FAD' }}>{svc.duration_minutes} دقیقه</span>
+                <span className="text-xs px-2 py-0.5 rounded-full" style={{ color: '#6B8FAD', background: 'rgba(0,212,200,0.05)' }}>غیرفعال</span>
               </div>
               <button
                 onClick={() => handleReactivate(svc.id)}
@@ -251,7 +251,7 @@ function ServicesSection() {
           >
             <p className="text-sm font-medium" style={{ color: '#00D4C8' }}>ویرایش خدمت</p>
             <div>
-              <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>نام خدمت <span className="text-red-400">*</span></label>
+              <label className="text-xs block mb-1" style={{ color: '#6B8FAD' }}>نام خدمت <span className="text-red-400">*</span></label>
               <input
                 type="text"
                 required
@@ -266,7 +266,7 @@ function ServicesSection() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>مدت (دقیقه)</label>
+                <label className="text-xs block mb-1" style={{ color: '#6B8FAD' }}>مدت (دقیقه)</label>
                 <input type="number" inputMode="numeric" min="5" required
                   value={editForm.duration_minutes}
                   onChange={(e) => setEditForm((p) => ({ ...p, duration_minutes: e.target.value }))}
@@ -275,7 +275,7 @@ function ServicesSection() {
                   onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
               </div>
               <div>
-                <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>فاصله بعد از نوبت (دقیقه)</label>
+                <label className="text-xs block mb-1" style={{ color: '#6B8FAD' }}>فاصله بعد از نوبت (دقیقه)</label>
                 <input type="number" inputMode="numeric" min="0"
                   value={editForm.buffer_minutes}
                   onChange={(e) => setEditForm((p) => ({ ...p, buffer_minutes: e.target.value }))}
@@ -284,7 +284,7 @@ function ServicesSection() {
                   onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
               </div>
               <div>
-                <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>قیمت (تومان)</label>
+                <label className="text-xs block mb-1" style={{ color: '#6B8FAD' }}>قیمت (تومان)</label>
                 <input type="number" inputMode="numeric" min="0"
                   value={editForm.price}
                   onChange={(e) => setEditForm((p) => ({ ...p, price: e.target.value }))}
@@ -294,7 +294,7 @@ function ServicesSection() {
               </div>
             </div>
             <div>
-              <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>توضیحات (اختیاری)</label>
+              <label className="text-xs block mb-1" style={{ color: '#6B8FAD' }}>توضیحات (اختیاری)</label>
               <input type="text"
                 value={editForm.description}
                 onChange={(e) => setEditForm((p) => ({ ...p, description: e.target.value }))}
@@ -316,17 +316,17 @@ function ServicesSection() {
           /* ── Normal card row ── */
           <Card key={svc.id}>
             <div className="flex items-center gap-3 text-sm flex-1 min-w-0 flex-wrap">
-              <span className="font-medium truncate" style={{ color: '#DCF0F5' }}>{svc.name}</span>
-              <span className="text-xs" style={{ color: '#4A6E8A' }}>{svc.duration_minutes} دقیقه</span>
+              <span className="font-medium truncate" style={{ color: '#E8F4FF' }}>{svc.name}</span>
+              <span className="text-xs" style={{ color: '#6B8FAD' }}>{svc.duration_minutes} دقیقه</span>
               {svc.buffer_minutes > 0 && (
-                <span className="text-xs" style={{ color: '#4A6E8A' }}>+{svc.buffer_minutes}د فاصله</span>
+                <span className="text-xs" style={{ color: '#6B8FAD' }}>+{svc.buffer_minutes}د فاصله</span>
               )}
               {Number(svc.price) > 0 && (
                 <span className="text-xs font-medium" style={{ color: '#39FF14' }}>
                   {Number(svc.price).toLocaleString('fa-IR')} تومان
                 </span>
               )}
-              {!svc.is_active && <span className="text-xs px-2 py-0.5 rounded-full" style={{ color: '#4A6E8A', background: 'rgba(0,212,200,0.05)' }}>غیرفعال</span>}
+              {!svc.is_active && <span className="text-xs px-2 py-0.5 rounded-full" style={{ color: '#6B8FAD', background: 'rgba(0,212,200,0.05)' }}>غیرفعال</span>}
             </div>
             <div className="flex items-center gap-1 shrink-0">
               <button
@@ -353,9 +353,9 @@ function ServicesSection() {
           aria-modal="true"
           aria-labelledby="delete-svc-title"
         >
-          <div className="p-6 w-full max-w-sm space-y-4 rounded-2xl shadow-xl" dir="rtl" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.15)' }}>
-            <h2 id="delete-svc-title" className="text-base font-bold" style={{ color: '#DCF0F5' }}>حذف خدمت</h2>
-            <p className="text-sm" style={{ color: '#4A6E8A' }}>
+          <div className="p-6 w-full max-w-sm space-y-4 rounded-2xl shadow-xl" dir="rtl" style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.15)' }}>
+            <h2 id="delete-svc-title" className="text-base font-bold" style={{ color: '#E8F4FF' }}>حذف خدمت</h2>
+            <p className="text-sm" style={{ color: '#6B8FAD' }}>
               آیا مطمئن هستید؟ این خدمت غیرفعال می‌شود و برای مشتریان جدید قابل رزرو نخواهد بود.
             </p>
             <p className="text-xs" style={{ color: 'rgba(74,110,138,0.7)' }}>
@@ -374,9 +374,9 @@ function ServicesSection() {
       )}
 
       <form onSubmit={handleAdd} className="rounded-xl p-4 space-y-3" style={{ background: 'rgba(0,212,200,0.03)', border: '1px solid rgba(0,212,200,0.07)' }}>
-        <p className="text-sm font-medium" style={{ color: '#DCF0F5' }}>افزودن خدمت جدید</p>
+        <p className="text-sm font-medium" style={{ color: '#E8F4FF' }}>افزودن خدمت جدید</p>
         <div>
-          <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>نام خدمت <span className="text-red-400">*</span></label>
+          <label className="text-xs block mb-1" style={{ color: '#6B8FAD' }}>نام خدمت <span className="text-red-400">*</span></label>
           <input
             type="text"
             required
@@ -390,7 +390,7 @@ function ServicesSection() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
-            <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>مدت (دقیقه)</label>
+            <label className="text-xs block mb-1" style={{ color: '#6B8FAD' }}>مدت (دقیقه)</label>
             <input type="number" inputMode="numeric" min="5" required value={form.duration_minutes}
               onChange={(e) => setForm((p) => ({ ...p, duration_minutes: e.target.value }))}
               className={inputCls} style={inputStyle}
@@ -398,7 +398,7 @@ function ServicesSection() {
               onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
           </div>
           <div>
-            <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>فاصله بعد از نوبت (دقیقه)</label>
+            <label className="text-xs block mb-1" style={{ color: '#6B8FAD' }}>فاصله بعد از نوبت (دقیقه)</label>
             <input type="number" inputMode="numeric" min="0" value={form.buffer_minutes}
               onChange={(e) => setForm((p) => ({ ...p, buffer_minutes: e.target.value }))}
               className={inputCls} style={inputStyle}
@@ -406,7 +406,7 @@ function ServicesSection() {
               onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
           </div>
           <div>
-            <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>قیمت (تومان)</label>
+            <label className="text-xs block mb-1" style={{ color: '#6B8FAD' }}>قیمت (تومان)</label>
             <input type="number" inputMode="numeric" min="0" value={form.price}
               onChange={(e) => setForm((p) => ({ ...p, price: e.target.value }))}
               className={inputCls} style={inputStyle}
@@ -415,7 +415,7 @@ function ServicesSection() {
           </div>
         </div>
         <div>
-          <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>توضیحات (اختیاری)</label>
+          <label className="text-xs block mb-1" style={{ color: '#6B8FAD' }}>توضیحات (اختیاری)</label>
           <input type="text" value={form.description}
             onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
             placeholder="توضیح کوتاه برای مشتریان"
@@ -535,11 +535,11 @@ function WorkingHoursSection({ providerId }) {
       )}
 
       {!isLoading && !isError && (
-        <div className="rounded-2xl overflow-hidden" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
+        <div className="rounded-2xl overflow-hidden" style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
 
           {/* Master time row */}
           <div className="px-4 py-3 flex flex-wrap items-center gap-3" style={{ background: 'rgba(0,212,200,0.03)', borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
-            <span className="text-xs font-medium shrink-0" style={{ color: '#4A6E8A' }}>اعمال به همه روزها:</span>
+            <span className="text-xs font-medium shrink-0" style={{ color: '#6B8FAD' }}>اعمال به همه روزها:</span>
             <div className="flex items-center gap-2 flex-1 min-w-0 flex-wrap">
               <input
                 type="time"
@@ -551,7 +551,7 @@ function WorkingHoursSection({ providerId }) {
                 onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'}
                 dir="ltr"
               />
-              <span className="text-xs" style={{ color: '#4A6E8A' }}>تا</span>
+              <span className="text-xs" style={{ color: '#6B8FAD' }}>تا</span>
               <input
                 type="time"
                 value={masterEnd}
@@ -597,7 +597,7 @@ function WorkingHoursSection({ providerId }) {
                   className="w-4 h-4 rounded"
                   style={{ accentColor: '#00D4C8' }}
                 />
-                <span className="text-sm font-medium" style={{ color: day.enabled ? '#DCF0F5' : '#4A6E8A' }}>
+                <span className="text-sm font-medium" style={{ color: day.enabled ? '#E8F4FF' : '#6B8FAD' }}>
                   {WEEKDAYS[i]}
                 </span>
               </label>
@@ -615,7 +615,7 @@ function WorkingHoursSection({ providerId }) {
                     onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'}
                     dir="ltr"
                   />
-                  <span className="text-xs shrink-0" style={{ color: '#4A6E8A' }}>تا</span>
+                  <span className="text-xs shrink-0" style={{ color: '#6B8FAD' }}>تا</span>
                   <input
                     type="time"
                     value={day.end_time}
@@ -627,13 +627,13 @@ function WorkingHoursSection({ providerId }) {
                     dir="ltr"
                   />
                   {day.start_time && day.end_time && day.start_time < day.end_time && (
-                    <span className="text-xs shrink-0" style={{ color: '#4A6E8A' }}>
+                    <span className="text-xs shrink-0" style={{ color: '#6B8FAD' }}>
                       {calcDuration(day.start_time, day.end_time)}
                     </span>
                   )}
                 </div>
               ) : (
-                <span className="text-xs flex-1" style={{ color: '#4A6E8A' }}>تعطیل</span>
+                <span className="text-xs flex-1" style={{ color: '#6B8FAD' }}>تعطیل</span>
               )}
             </div>
           ))}
@@ -647,7 +647,7 @@ function WorkingHoursSection({ providerId }) {
               className="w-full text-sm py-2.5 rounded-xl font-medium transition-colors text-white disabled:opacity-50"
               style={dirty
                 ? { background: 'linear-gradient(135deg,#FF6B2B,#FF4500)', boxShadow: '0 0 24px rgba(255,107,43,0.35)' }
-                : { background: '#1A2A3E', color: '#4A6E8A', cursor: 'default' }
+                : { background: '#243548', color: '#6B8FAD', cursor: 'default' }
               }
             >
               {saving ? 'در حال ذخیره...' : dirty ? 'ذخیره تغییرات' : 'تغییری وجود ندارد'}
@@ -713,7 +713,7 @@ function TimeOffSection({ providerId }) {
       )}
 
       {!isLoading && !isError && !hasTimeoffs && (
-        <p className="text-sm flex items-center gap-2" style={{ color: '#4A6E8A' }}>
+        <p className="text-sm flex items-center gap-2" style={{ color: '#6B8FAD' }}>
           <CalendarXIcon size={16} className="opacity-40 shrink-0" />
           هیچ مرخصی یا تعطیلی ثبت نشده.
         </p>
@@ -724,16 +724,16 @@ function TimeOffSection({ providerId }) {
         return (
           <Card key={t.id}>
             <div className="flex items-center gap-3 text-sm flex-wrap">
-              <span className="font-medium" style={{ color: '#DCF0F5' }}>{toJalali(t.date)}</span>
+              <span className="font-medium" style={{ color: '#E8F4FF' }}>{toJalali(t.date)}</span>
               <Badge variant={isFullDay ? 'danger' : 'warning'}>
                 {isFullDay ? 'تمام روز' : 'جزئی'}
               </Badge>
               {!isFullDay && (
-                <span className="font-mono text-xs" dir="ltr" style={{ color: '#4A6E8A' }}>
+                <span className="font-mono text-xs" dir="ltr" style={{ color: '#6B8FAD' }}>
                   {t.start_time}–{t.end_time}
                 </span>
               )}
-              {t.reason && <span className="text-xs truncate max-w-[120px]" style={{ color: '#4A6E8A' }}>{t.reason}</span>}
+              {t.reason && <span className="text-xs truncate max-w-[120px]" style={{ color: '#6B8FAD' }}>{t.reason}</span>}
             </div>
             <DeleteButton
               label={`حذف مرخصی ${t.date}`}
@@ -748,10 +748,10 @@ function TimeOffSection({ providerId }) {
       })}
 
       <form onSubmit={handleAdd} className="rounded-xl p-4 space-y-3" style={{ background: 'rgba(0,212,200,0.03)', border: '1px solid rgba(0,212,200,0.07)' }}>
-        <p className="text-sm font-medium" style={{ color: '#DCF0F5' }}>افزودن مرخصی</p>
+        <p className="text-sm font-medium" style={{ color: '#E8F4FF' }}>افزودن مرخصی</p>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>تاریخ <span className="text-red-400">*</span></label>
+            <label className="text-xs block mb-1" style={{ color: '#6B8FAD' }}>تاریخ <span className="text-red-400">*</span></label>
             <input type="date" required value={form.date}
               onChange={(e) => setForm((p) => ({ ...p, date: e.target.value }))}
               className={inputCls} style={inputStyle}
@@ -759,7 +759,7 @@ function TimeOffSection({ providerId }) {
               onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
           </div>
           <div className="flex items-end pb-1">
-            <label className="flex items-center gap-2 cursor-pointer select-none text-sm" style={{ color: '#DCF0F5' }}>
+            <label className="flex items-center gap-2 cursor-pointer select-none text-sm" style={{ color: '#E8F4FF' }}>
               <input
                 type="checkbox"
                 checked={form.is_full_day}
@@ -775,7 +775,7 @@ function TimeOffSection({ providerId }) {
         {!form.is_full_day && (
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>از ساعت</label>
+              <label className="text-xs block mb-1" style={{ color: '#6B8FAD' }}>از ساعت</label>
               <input type="time" required value={form.start_time}
                 onChange={(e) => setForm((p) => ({ ...p, start_time: e.target.value }))}
                 className={inputCls} style={inputStyle}
@@ -783,7 +783,7 @@ function TimeOffSection({ providerId }) {
                 onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
             </div>
             <div>
-              <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>تا ساعت</label>
+              <label className="text-xs block mb-1" style={{ color: '#6B8FAD' }}>تا ساعت</label>
               <input type="time" required value={form.end_time}
                 onChange={(e) => setForm((p) => ({ ...p, end_time: e.target.value }))}
                 className={inputCls} style={inputStyle}
@@ -794,7 +794,7 @@ function TimeOffSection({ providerId }) {
         )}
 
         <div>
-          <label className="text-xs block mb-1" style={{ color: '#4A6E8A' }}>دلیل (اختیاری)</label>
+          <label className="text-xs block mb-1" style={{ color: '#6B8FAD' }}>دلیل (اختیاری)</label>
           <input type="text" placeholder="مثلاً: سفر، تعطیل رسمی"
             value={form.reason}
             onChange={(e) => setForm((p) => ({ ...p, reason: e.target.value }))}
