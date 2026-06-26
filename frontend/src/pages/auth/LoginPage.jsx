@@ -59,7 +59,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen grid-bg" dir="rtl" style={{ background: '#070D14' }}>
+    <div className="min-h-screen grid-bg" dir="rtl" style={{ background: '#0D1520' }}>
 
       {/* Logo */}
       <div className="px-6 py-5">
@@ -82,7 +82,7 @@ export default function LoginPage() {
       {/* Card */}
       <div className="flex items-start justify-center px-4 pb-16">
         <div className="w-full max-w-md rounded-[20px] p-8"
-             style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+             style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
 
           <div className="text-center mb-8">
             <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4"
@@ -98,7 +98,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} noValidate>
             <label className="text-xs font-bold mb-2 block" style={{ color: '#4A6E8A' }}>شماره موبایل</label>
             <div className="flex items-center rounded-2xl px-4 py-3.5 mb-1 transition-all"
-                 style={{ background: '#111E2E', border: '1px solid rgba(0,212,200,0.18)' }}
+                 style={{ background: '#1A2A3E', border: '1px solid rgba(0,212,200,0.18)' }}
                  onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.45)'}
                  onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.18)'}>
               <svg className="w-5 h-5 ml-2 shrink-0" style={{ color: '#00D4C8' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

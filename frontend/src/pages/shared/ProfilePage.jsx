@@ -58,7 +58,7 @@ export default function ProfilePage() {
       <div className="max-w-2xl mx-auto space-y-5">
 
         {/* Profile header */}
-        <div className="rounded-3xl p-6" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+        <div className="rounded-3xl p-6" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
           <div className="flex items-center gap-4">
             <div className="w-20 h-20 rounded-2xl flex items-center justify-center text-2xl font-black shrink-0"
                  style={{ background: 'rgba(0,212,200,0.1)', color: '#00D4C8' }}>
@@ -77,22 +77,22 @@ export default function ProfilePage() {
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-3">
-          <div className="rounded-2xl p-4 text-center" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+          <div className="rounded-2xl p-4 text-center" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
             <div className="text-xl font-black" style={{ background: 'linear-gradient(135deg,#00D4C8,#00A8FF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>—</div>
             <div className="text-[11px] mt-0.5" style={{ color: '#4A6E8A' }}>نوبت تکمیل‌شده</div>
           </div>
-          <div className="rounded-2xl p-4 text-center" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+          <div className="rounded-2xl p-4 text-center" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
             <div className="text-xl font-black" style={{ background: 'linear-gradient(135deg,#39FF14,#00D4C8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>—</div>
             <div className="text-[11px] mt-0.5" style={{ color: '#4A6E8A' }}>کسب‌وکار ذخیره‌شده</div>
           </div>
-          <div className="rounded-2xl p-4 text-center" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+          <div className="rounded-2xl p-4 text-center" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
             <div className="text-xl font-black" style={{ background: 'linear-gradient(135deg,#FF6B2B,#FF4500)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>—</div>
             <div className="text-[11px] mt-0.5" style={{ color: '#4A6E8A' }}>میانگین امتیاز شما</div>
           </div>
         </div>
 
         {/* Edit form */}
-        <form onSubmit={handleSubmit} className="rounded-2xl p-5 space-y-4" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+        <form onSubmit={handleSubmit} className="rounded-2xl p-5 space-y-4" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
           <h2 className="text-sm font-bold mb-2" style={{ color: '#DCF0F5' }}>اطلاعات شخصی</h2>
           <div>
             <label htmlFor="profile-name" className="text-xs font-bold mb-2 block" style={{ color: '#4A6E8A' }}>نام و نام خانوادگی</label>
@@ -104,14 +104,14 @@ export default function ProfilePage() {
               placeholder="نام خود را وارد کنید"
               disabled={saving}
               className="w-full rounded-xl px-4 py-3 text-sm outline-none transition-colors"
-              style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.18)', color: '#DCF0F5' }}
+              style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.18)', color: '#DCF0F5' }}
               onFocus={(e) => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
               onBlur={(e) => e.target.style.borderColor = 'rgba(0,212,200,0.18)'}
             />
           </div>
           <div>
             <label className="text-xs font-bold mb-2 block" style={{ color: '#4A6E8A' }}>شماره موبایل</label>
-            <div className="flex items-center rounded-xl px-4 py-3" style={{ background: '#111E2E', border: '1px solid rgba(0,212,200,0.07)' }}>
+            <div className="flex items-center rounded-xl px-4 py-3" style={{ background: '#1A2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
               <span className="text-sm" dir="ltr" style={{ color: '#4A6E8A' }}>{user.phone}</span>
               <svg className="w-3.5 h-3.5 mr-auto" style={{ color: '#4A6E8A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
@@ -130,7 +130,7 @@ export default function ProfilePage() {
         </form>
 
         {/* Menu */}
-        <div className="rounded-2xl overflow-hidden" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+        <div className="rounded-2xl overflow-hidden" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
           <button onClick={() => navigate('/my-appointments')} className="w-full flex items-center gap-3 p-4 hover:bg-white/5 transition-colors"
                   style={{ borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
             <svg className="w-[18px] h-[18px]" style={{ color: '#00D4C8' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="3" /><path d="M3 9h18" /><path d="M8 2v4M16 2v4" /></svg>

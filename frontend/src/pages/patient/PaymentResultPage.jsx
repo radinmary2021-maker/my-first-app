@@ -22,7 +22,7 @@ export default function PaymentResultPage() {
 
       <div className="max-w-md mx-auto px-4 py-8 grid-bg">
         <div className="rounded-3xl p-8 text-center"
-             style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}>
+             style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}>
 
           {/* -- Success -- */}
           {isSuccess && (
@@ -42,7 +42,7 @@ export default function PaymentResultPage() {
               </p>
 
               <div className="rounded-2xl p-4 mb-6 text-right space-y-2.5"
-                   style={{ background: '#111E2E', border: '1px solid rgba(0,212,200,0.07)' }}>
+                   style={{ background: '#1A2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
                 {trackingCode && (
                   <div className="flex items-center justify-between text-sm">
                     <span style={{ color: '#4A6E8A' }}>کد پیگیری</span>

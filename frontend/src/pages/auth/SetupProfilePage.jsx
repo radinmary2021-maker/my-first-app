@@ -41,7 +41,7 @@ export default function SetupProfilePage() {
 
   return (
     <div className="min-h-screen grid-bg" dir="rtl"
-         style={{ background: '#070D14' }}>
+         style={{ background: '#0D1520' }}>
 
       {/* Logo */}
       <div className="px-6 py-5">
@@ -63,7 +63,7 @@ export default function SetupProfilePage() {
       {/* Card */}
       <div className="flex items-start justify-center px-4 pb-16">
         <div className="w-full max-w-md rounded-3xl p-8"
-             style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}>
+             style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}>
 
           <div className="text-center mb-8">
             <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4"
@@ -87,7 +87,7 @@ export default function SetupProfilePage() {
               نام و نام خانوادگی <span style={{ color: '#EF4444' }}>*</span>
             </label>
             <div className="flex items-center rounded-2xl px-4 py-3.5 mb-5 transition-colors"
-                 style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.18)' }}>
+                 style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.18)' }}>
               <svg className="w-5 h-5 ml-2 shrink-0" style={{ color: '#4A6E8A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
               </svg>

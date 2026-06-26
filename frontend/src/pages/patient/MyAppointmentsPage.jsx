@@ -38,7 +38,7 @@ function StarPicker({ value, onChange }) {
                 className="focus:outline-none" aria-label={`${star} ستاره`}>
           <svg viewBox="0 0 20 20" fill="currentColor"
                className={`w-8 h-8 transition-colors`}
-               style={{ color: star <= display ? '#F59E0B' : '#111E2E' }}>
+               style={{ color: star <= display ? '#F59E0B' : '#1A2A3E' }}>
             <path d={STAR_PATH} />
           </svg>
         </button>
@@ -144,7 +144,7 @@ export default function MyAppointmentsPage() {
                 <div key={appt.id}
                      className="rounded-2xl overflow-hidden hover:-translate-y-0.5 transition-all duration-200"
                      style={{
-                       background: '#0C1520',
+                       background: '#132030',
                        border: `1px solid ${isActive ? style.borderColor : 'rgba(0,212,200,0.07)'}`,
                        opacity: isCancelled ? 0.6 : isCompleted ? 0.75 : 1,
                      }}>
@@ -216,7 +216,7 @@ export default function MyAppointmentsPage() {
       {confirmId && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4" role="dialog" aria-modal="true" aria-labelledby="cancel-dialog-title">
           <div className="rounded-2xl shadow-xl p-6 w-full max-w-sm space-y-4" dir="rtl"
-               style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+               style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
             <h2 id="cancel-dialog-title" className="text-base font-bold" style={{ color: '#DCF0F5' }}>لغو نوبت</h2>
             <p className="text-sm" style={{ color: '#4A6E8A' }}>آیا مطمئن هستید که می‌خواهید این نوبت را لغو کنید؟</p>
             <div className="flex gap-3">
@@ -231,7 +231,7 @@ export default function MyAppointmentsPage() {
       {reviewAppt && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4" role="dialog" aria-modal="true" aria-labelledby="review-dialog-title">
           <div className="rounded-2xl shadow-xl p-6 w-full max-w-sm space-y-5" dir="rtl"
-               style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+               style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
             <div>
               <h2 id="review-dialog-title" className="text-base font-bold" style={{ color: '#DCF0F5' }}>ثبت نظر</h2>
               <p className="text-sm mt-0.5" style={{ color: '#4A6E8A' }}>{reviewAppt.provider_name}</p>
@@ -245,7 +245,7 @@ export default function MyAppointmentsPage() {
               <textarea value={comment} onChange={(e) => setComment(e.target.value)} maxLength={500} rows={3}
                         placeholder="تجربه خود را بنویسید..."
                         className="w-full rounded-xl px-3 py-2 text-sm resize-none outline-none transition-colors"
-                        style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.18)', color: '#DCF0F5' }}
+                        style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.18)', color: '#DCF0F5' }}
                         onFocus={(e) => e.target.style.borderColor = 'rgba(0,212,200,0.45)'}
                         onBlur={(e) => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
               <p className="text-xs text-left" style={{ color: '#4A6E8A' }}>{comment.length}/۵۰۰</p>

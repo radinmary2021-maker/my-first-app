@@ -4,7 +4,7 @@ export default function NotFoundPage() {
   const navigate = useNavigate()
   return (
     <div className="min-h-screen grid-bg flex flex-col items-center justify-center px-4 pb-16" dir="rtl"
-         style={{ background: '#070D14' }}>
+         style={{ background: '#0D1520' }}>
       <div className="text-center">
         <div className="relative w-48 h-48 mx-auto mb-6" style={{ animation: 'float 3s ease-in-out infinite' }}>
           <div className="absolute inset-0 rounded-full"

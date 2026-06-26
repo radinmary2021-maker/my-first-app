@@ -55,7 +55,7 @@ function SectionHeader({ step, children, isDone }) {
 
 function Card({ children }) {
   return (
-    <div className="flex items-center justify-between rounded-xl px-4 py-3 gap-3" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+    <div className="flex items-center justify-between rounded-xl px-4 py-3 gap-3" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
       {children}
     </div>
   )
@@ -78,8 +78,8 @@ function DeleteButton({ onClick, disabled, label = 'حذف' }) {
 }
 
 const inputCls = 'w-full text-sm rounded-lg px-3 py-2.5 focus:outline-none outline-none'
-const inputStyle = { background: '#111E2E', border: '1px solid rgba(0,212,200,0.18)', color: '#DCF0F5' }
-const inputFocusStyle = { ...inputStyle, borderColor: 'rgba(0,212,200,0.45)' }
+const inputStyle = { background: '#1A2A3E', border: '1px solid rgba(0,212,200,0.25)', color: '#DCF0F5' }
+const inputFocusStyle = { ...inputStyle, borderColor: 'rgba(0,212,200,0.6)' }
 
 // ── Services section ──────────────────────────────────────────────────────────
 
@@ -353,7 +353,7 @@ function ServicesSection() {
           aria-modal="true"
           aria-labelledby="delete-svc-title"
         >
-          <div className="p-6 w-full max-w-sm space-y-4 rounded-2xl shadow-xl" dir="rtl" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.15)' }}>
+          <div className="p-6 w-full max-w-sm space-y-4 rounded-2xl shadow-xl" dir="rtl" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.15)' }}>
             <h2 id="delete-svc-title" className="text-base font-bold" style={{ color: '#DCF0F5' }}>حذف خدمت</h2>
             <p className="text-sm" style={{ color: '#4A6E8A' }}>
               آیا مطمئن هستید؟ این خدمت غیرفعال می‌شود و برای مشتریان جدید قابل رزرو نخواهد بود.
@@ -535,7 +535,7 @@ function WorkingHoursSection({ providerId }) {
       )}
 
       {!isLoading && !isError && (
-        <div className="rounded-2xl overflow-hidden" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+        <div className="rounded-2xl overflow-hidden" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
 
           {/* Master time row */}
           <div className="px-4 py-3 flex flex-wrap items-center gap-3" style={{ background: 'rgba(0,212,200,0.03)', borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
@@ -647,7 +647,7 @@ function WorkingHoursSection({ providerId }) {
               className="w-full text-sm py-2.5 rounded-xl font-medium transition-colors text-white disabled:opacity-50"
               style={dirty
                 ? { background: 'linear-gradient(135deg,#FF6B2B,#FF4500)', boxShadow: '0 0 24px rgba(255,107,43,0.35)' }
-                : { background: '#111E2E', color: '#4A6E8A', cursor: 'default' }
+                : { background: '#1A2A3E', color: '#4A6E8A', cursor: 'default' }
               }
             >
               {saving ? 'در حال ذخیره...' : dirty ? 'ذخیره تغییرات' : 'تغییری وجود ندارد'}

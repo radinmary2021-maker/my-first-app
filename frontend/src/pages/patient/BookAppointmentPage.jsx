@@ -73,7 +73,7 @@ export default function BookAppointmentPage() {
   return (
     <MainLayout>
       <div className="max-w-2xl mx-auto px-4 py-4">
-        <div className="rounded-[20px] overflow-hidden" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+        <div className="rounded-[20px] overflow-hidden" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
 
           {/* Progress steps */}
           <div className="flex items-center justify-between px-6 pt-6 pb-4">
@@ -181,7 +181,7 @@ function StepDot({ n, label, done, active }) {
       <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold transition-transform"
            style={done || active
              ? { background: 'linear-gradient(135deg,#00D4C8,#00A8FF)', color: 'white', boxShadow: '0 0 12px rgba(0,212,200,0.3)' }
-             : { background: '#111E2E', color: '#4A6E8A' }
+             : { background: '#1A2A3E', color: '#4A6E8A' }
            }>
         {n}
       </div>

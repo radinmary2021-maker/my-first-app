@@ -17,7 +17,7 @@ export default function ProviderCard({ doctor, provider }) {
     <div
       onClick={() => navigate(`/providers/${p.id}`)}
       className="rounded-[20px] overflow-hidden cursor-pointer flex transition-all duration-200 group"
-      style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}
+      style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}
       onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.28)'; e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 20px 48px rgba(0,212,200,0.1)' }}
       onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.07)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
     >
@@ -27,7 +27,7 @@ export default function ProviderCard({ doctor, provider }) {
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg,transparent,#00D4C8,transparent)' }} />
         {isActive && (
           <span className="absolute top-2 right-2 text-xs font-bold px-2 py-0.5 rounded-full"
-                style={{ background: 'rgba(57,255,20,0.15)', border: '1px solid rgba(57,255,20,0.3)', color: '#39FF14', boxShadow: '0 0 10px rgba(57,255,20,0.2)' }}>
+                style={{ background: 'rgba(57,255,20,0.15)', border: '1px solid rgba(57,255,20,0.3)', color: '#39FF14', animation: 'neon-pulse 2s ease-in-out infinite' }}>
             ● باز
           </span>
         )}

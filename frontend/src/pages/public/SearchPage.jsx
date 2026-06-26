@@ -64,7 +64,7 @@ export default function SearchPage() {
               placeholder="نام کسب‌وکار، تخصص یا دسته‌بندی..."
               autoFocus
               className="w-full pr-10 pl-4 py-3 rounded-2xl text-sm outline-none transition-all"
-              style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.18)', color: '#DCF0F5' }}
+              style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.18)', color: '#DCF0F5' }}
               onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.45)'}
               onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.18)'}
             />
@@ -125,7 +125,7 @@ export default function SearchPage() {
                     key={p.business_id || p.id}
                     onClick={() => navigate(href)}
                     className="rounded-[20px] overflow-hidden cursor-pointer transition-all duration-200 group"
-                    style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}
+                    style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}
                     onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.28)'; e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 20px 48px rgba(0,212,200,0.1)' }}
                     onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.07)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
                   >

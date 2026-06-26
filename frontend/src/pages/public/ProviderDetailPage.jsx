@@ -233,7 +233,7 @@ export default function ProviderDetailPage() {
           <div className="flex-1 min-w-0 space-y-4">
 
             {/* Provider header */}
-            <div className="rounded-[20px] p-5" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+            <div className="rounded-[20px] p-5" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-4">
                   <ImageAvatar src={provider.logo} alt={providerName} fallbackText={providerName} size="w-16 h-16" shape="rounded-2xl" />
@@ -241,7 +241,7 @@ export default function ProviderDetailPage() {
                     <div className="flex items-center gap-2 mb-1">
                       <h1 className="text-xl font-black cyan-text">{providerName}</h1>
                       {isAvailable
-                        ? <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: 'rgba(57,255,20,0.15)', border: '1px solid rgba(57,255,20,0.3)', color: '#39FF14' }}>● باز</span>
+                        ? <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: 'rgba(57,255,20,0.15)', border: '1px solid rgba(57,255,20,0.3)', color: '#39FF14', animation: 'neon-pulse 2s ease-in-out infinite' }}>● باز</span>
                         : <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: 'rgba(0,212,200,0.05)', color: '#4A6E8A' }}>غیرفعال</span>
                       }
                     </div>
@@ -292,7 +292,7 @@ export default function ProviderDetailPage() {
             </div>
 
             {/* Unified provider + services section */}
-            <div className="rounded-[20px] overflow-hidden" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+            <div className="rounded-[20px] overflow-hidden" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
               <div className="flex px-1" style={{ borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
                 <button
                   onClick={() => setActiveTab('services')}
@@ -394,7 +394,7 @@ export default function ProviderDetailPage() {
 
           {/* Right: Booking panel */}
           <div className="w-full lg:w-80 shrink-0 lg:sticky lg:top-24">
-            <div className="rounded-[20px] overflow-hidden" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+            <div className="rounded-[20px] overflow-hidden" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
 
               <div className="p-4" style={{ borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
                 <h2 className="text-base font-black" style={{ color: '#DCF0F5' }}>رزرو نوبت</h2>
@@ -425,7 +425,7 @@ export default function ProviderDetailPage() {
                 {isAvailable && canPickDate && (
                   <div>
                     <label className="text-xs font-bold mb-2 block" style={{ color: '#4A6E8A' }}>تاریخ</label>
-                    <div className="rounded-xl p-3" style={{ background: '#111E2E', border: '1px solid rgba(0,212,200,0.1)' }}>
+                    <div className="rounded-xl p-3" style={{ background: '#1A2A3E', border: '1px solid rgba(0,212,200,0.1)' }}>
                       <DatePicker
                         availableWeekdays={provider.available_weekdays ?? []}
                         selectedDate={selectedDate}

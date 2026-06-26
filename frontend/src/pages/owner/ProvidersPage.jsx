@@ -96,7 +96,7 @@ export default function ProvidersPage() {
 
       {/* Empty state */}
       {!isLoading && !isError && providers?.length === 0 && (
-        <div className="rounded-2xl p-8 text-center space-y-4 max-w-md mx-auto" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+        <div className="rounded-2xl p-8 text-center space-y-4 max-w-md mx-auto" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
           <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto" style={{ background: 'rgba(0,212,200,0.06)' }}>
             <svg className="w-8 h-8" style={{ color: '#4A6E8A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /></svg>
           </div>
@@ -123,11 +123,11 @@ export default function ProvidersPage() {
             const grad = COVER_GRADS[i % COVER_GRADS.length]
             const [avatarBg, avatarText] = AVATAR_COLORS[i % AVATAR_COLORS.length]
             return (
-              <div key={p.id} className="rounded-2xl overflow-hidden hover:-translate-y-0.5 transition-all duration-200" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+              <div key={p.id} className="rounded-2xl overflow-hidden hover:-translate-y-0.5 transition-all duration-200" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
                 <div className="h-20 relative" style={{ background: grad }} />
                 <div className="p-4 -mt-8">
                   <div className="relative w-16 h-16 mb-3">
-                    <ImageAvatar src={p.avatar} alt={p.full_name} fallbackText={p.full_name} size="w-16 h-16" shape="rounded-2xl" className="border-4 shadow-sm" style={{ borderColor: '#0C1520' }} />
+                    <ImageAvatar src={p.avatar} alt={p.full_name} fallbackText={p.full_name} size="w-16 h-16" shape="rounded-2xl" className="border-4 shadow-sm" style={{ borderColor: '#132030' }} />
                     {isOwner && (
                       <AvatarUploadBtn providerId={p.id} onSuccess={() => refetch()} />
                     )}
@@ -204,7 +204,7 @@ export default function ProvidersPage() {
       {/* Deactivate Dialog */}
       {dialog?.type === 'deactivate' && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4" role="dialog" aria-modal="true" aria-label="غیرفعال‌سازی ارائه‌دهنده">
-          <div className="rounded-2xl shadow-xl p-6 w-full max-w-sm space-y-4" dir="rtl" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.15)' }}>
+          <div className="rounded-2xl shadow-xl p-6 w-full max-w-sm space-y-4" dir="rtl" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.15)' }}>
             <h2 className="text-base font-bold" style={{ color: '#DCF0F5' }}>غیرفعال‌سازی ارائه‌دهنده</h2>
             <p className="text-sm" style={{ color: '#4A6E8A' }}>آیا می‌خواهید <span className="font-semibold" style={{ color: '#DCF0F5' }}>{dialog.provider.full_name}</span> را غیرفعال کنید؟</p>
             <div className="flex gap-3">
@@ -313,11 +313,11 @@ function ProviderFormModal({ title, initialValues = {}, editMode = false, onClos
   }
 
   const inputCls = "w-full rounded-xl px-4 py-3 text-sm outline-none transition-colors"
-  const modalInputStyle = { background: '#111E2E', border: '1px solid rgba(0,212,200,0.18)', color: '#DCF0F5' }
+  const modalInputStyle = { background: '#1A2A3E', border: '1px solid rgba(0,212,200,0.25)', color: '#DCF0F5' }
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4 overflow-y-auto" role="dialog" aria-modal="true" aria-label={title}>
-      <div className="rounded-2xl shadow-xl w-full max-w-md p-6 space-y-5 my-8" dir="rtl" style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.15)' }}>
+      <div className="rounded-2xl shadow-xl w-full max-w-md p-6 space-y-5 my-8" dir="rtl" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.15)' }}>
         <div className="flex items-center justify-between">
           <h2 className="text-base font-bold" style={{ color: '#DCF0F5' }}>{title}</h2>
           <button type="button" onClick={onClose} aria-label="بستن" className="text-2xl leading-none" style={{ color: '#4A6E8A' }}>×</button>
@@ -327,23 +327,23 @@ function ProviderFormModal({ title, initialValues = {}, editMode = false, onClos
             <>
               <div>
                 <label htmlFor="provider-phone" className="block text-xs font-bold mb-2" style={{ color: '#4A6E8A' }}>شماره موبایل <span className="text-red-400">*</span></label>
-                <input id="provider-phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="09xxxxxxxxx" dir="ltr" className={`${inputCls} text-left`} style={modalInputStyle} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
+                <input id="provider-phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="09xxxxxxxxx" dir="ltr" className={`${inputCls} text-left`} style={modalInputStyle} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.6)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.25)'} />
                 {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone}</p>}
               </div>
               <div>
                 <label htmlFor="provider-name" className="block text-xs font-bold mb-2" style={{ color: '#4A6E8A' }}>نام کامل <span className="text-red-400">*</span></label>
-                <input id="provider-name" type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="نام و نام خانوادگی" className={inputCls} style={modalInputStyle} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
+                <input id="provider-name" type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="نام و نام خانوادگی" className={inputCls} style={modalInputStyle} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.6)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.25)'} />
                 {errors.full_name && <p className="text-xs text-red-500 mt-1">{errors.full_name}</p>}
               </div>
             </>
           )}
           <div>
             <label htmlFor="provider-specialty" className="block text-xs font-bold mb-2" style={{ color: '#4A6E8A' }}>تخصص</label>
-            <input id="provider-specialty" type="text" value={specialty} onChange={(e) => setSpecialty(e.target.value)} placeholder="مثال: ناخن‌کار، مربی بدنسازی" className={inputCls} style={modalInputStyle} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
+            <input id="provider-specialty" type="text" value={specialty} onChange={(e) => setSpecialty(e.target.value)} placeholder="مثال: ناخن‌کار، مربی بدنسازی" className={inputCls} style={modalInputStyle} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.6)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.25)'} />
           </div>
           <div>
             <label htmlFor="provider-bio" className="block text-xs font-bold mb-2" style={{ color: '#4A6E8A' }}>توضیحات</label>
-            <textarea id="provider-bio" value={bio} onChange={(e) => setBio(e.target.value)} rows={2} placeholder="معرفی کوتاه..." className={`${inputCls} resize-none`} style={modalInputStyle} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.45)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.18)'} />
+            <textarea id="provider-bio" value={bio} onChange={(e) => setBio(e.target.value)} rows={2} placeholder="معرفی کوتاه..." className={`${inputCls} resize-none`} style={modalInputStyle} onFocus={e => e.target.style.borderColor = 'rgba(0,212,200,0.6)'} onBlur={e => e.target.style.borderColor = 'rgba(0,212,200,0.25)'} />
           </div>
 
           {/* Services section */}
@@ -361,7 +361,7 @@ function ProviderFormModal({ title, initialValues = {}, editMode = false, onClos
             )}
             <div className="space-y-3">
               {services.map((svc, idx) => (
-                <div key={svc.id || `new-${idx}`} className="rounded-xl p-3 space-y-2" style={{ background: '#111E2E' }}>
+                <div key={svc.id || `new-${idx}`} className="rounded-xl p-3 space-y-2" style={{ background: '#1A2A3E' }}>
                   <div className="flex items-center gap-2">
                     <input type="text" value={svc.name} onChange={(e) => updateServiceRow(idx, 'name', e.target.value)}
                            placeholder="نام خدمت" className="flex-1 rounded-lg px-3 py-2 text-sm outline-none" style={modalInputStyle}
@@ -438,7 +438,7 @@ function AvatarUploadBtn({ providerId, onSuccess }) {
         onClick={() => inputRef.current?.click()}
         disabled={uploading}
         className="absolute -bottom-1 -left-1 w-7 h-7 rounded-lg flex items-center justify-center transition-colors shadow-sm disabled:opacity-50"
-        style={{ background: '#111E2E', border: '1px solid rgba(0,212,200,0.18)', color: '#4A6E8A' }}
+        style={{ background: '#1A2A3E', border: '1px solid rgba(0,212,200,0.18)', color: '#4A6E8A' }}
         title="تغییر عکس"
       >
         {uploading

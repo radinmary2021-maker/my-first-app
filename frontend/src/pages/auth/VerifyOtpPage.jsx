@@ -126,7 +126,7 @@ export default function VerifyOtpPage() {
   }
 
   return (
-    <div className="min-h-screen grid-bg" dir="rtl" style={{ background: '#070D14' }}>
+    <div className="min-h-screen grid-bg" dir="rtl" style={{ background: '#0D1520' }}>
 
       {/* Logo */}
       <div className="px-6 py-5">
@@ -148,7 +148,7 @@ export default function VerifyOtpPage() {
       {/* Card */}
       <div className="flex items-start justify-center px-4 pb-16">
         <div className="w-full max-w-md rounded-[20px] p-8"
-             style={{ background: '#0C1520', border: '1px solid rgba(0,212,200,0.07)' }}>
+             style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
 
           <button
             onClick={() => navigate('/login')}
@@ -190,7 +190,7 @@ export default function VerifyOtpPage() {
                   disabled={loading}
                   autoFocus={i === 0}
                   className="w-12 h-14 text-center text-2xl font-black rounded-2xl outline-none transition-all disabled:opacity-50"
-                  style={{ background: '#111E2E', border: '1px solid rgba(0,212,200,0.18)', color: '#DCF0F5' }}
+                  style={{ background: '#1A2A3E', border: '1px solid rgba(0,212,200,0.18)', color: '#DCF0F5' }}
                   onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.45)'}
                   onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.18)'}
                 />
