@@ -287,7 +287,7 @@ export default function ReportsPage() {
       title="گزارش‌ها"
       subtitle={data ? `${toJalali(data.from)} — ${toJalali(data.to)}` : 'عملکرد کسب‌وکار شما'}
       headerAction={
-        <div className="flex rounded-xl p-1" style={{ background: '#1A2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
+        <div className="flex rounded-xl p-1" style={{ background: '#243548', border: '1px solid rgba(0,212,200,0.07)' }}>
           {PERIODS.map(p => (
             <button
               key={p.value}
@@ -295,7 +295,7 @@ export default function ReportsPage() {
               className="text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
               style={period === p.value
                 ? { background: 'rgba(0,212,200,0.12)', color: '#00D4C8', fontWeight: 700 }
-                : { color: '#4A6E8A' }
+                : { color: '#6B8FAD' }
               }
             >
               {p.label}

@@ -45,25 +45,25 @@ export default function AboutPage() {
 
       {/* Hero */}
       <section className="pt-12 pb-16 px-4 text-center grid-bg"
-               style={{ background: '#0D1520' }}>
+               style={{ background: '#162030' }}>
         <div className="inline-block rounded-full px-4 py-1.5 text-xs font-semibold mb-5"
              style={{ background: 'rgba(0,212,200,0.1)', color: '#00D4C8', border: '1px solid rgba(0,212,200,0.2)' }}>
           درباره نوبتیک
         </div>
-        <h1 className="text-3xl sm:text-4xl font-black mb-4" style={{ color: '#DCF0F5' }}>
+        <h1 className="text-3xl sm:text-4xl font-black mb-4" style={{ color: '#E8F4FF' }}>
           رزرو آنلاین نوبت،
           <br />
           <span style={{ background: 'linear-gradient(135deg,#00D4C8,#00A8FF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             برای هر کسب‌وکاری
           </span>
         </h1>
-        <p className="leading-8 max-w-xl mx-auto" style={{ color: '#4A6E8A' }}>
+        <p className="leading-8 max-w-xl mx-auto" style={{ color: '#6B8FAD' }}>
           نوبتیک یک پلتفرم رزرو آنلاین نوبت است که کسب‌وکارها و مشتریان را به هم متصل می‌کند.
         </p>
       </section>
 
       {/* Stats */}
-      <section className="py-6" style={{ background: '#132030', borderTop: '1px solid rgba(0,212,200,0.07)', borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
+      <section className="py-6" style={{ background: '#1C2A3E', borderTop: '1px solid rgba(0,212,200,0.07)', borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
         <div className="max-w-3xl mx-auto px-4 grid grid-cols-4 gap-4 text-center">
           {STATS.map((s) => (
             <div key={s.label}>
@@ -71,7 +71,7 @@ export default function AboutPage() {
                    style={{ background: s.grad, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                 {s.value}
               </div>
-              <div className="text-[11px] mt-1" style={{ color: '#4A6E8A' }}>{s.label}</div>
+              <div className="text-[11px] mt-1" style={{ color: '#6B8FAD' }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -86,7 +86,7 @@ export default function AboutPage() {
             داستان ما
           </h2>
           <div className="rounded-2xl p-6 sm:p-8 leading-8 text-sm"
-               style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)', color: '#4A6E8A' }}>
+               style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)', color: '#6B8FAD' }}>
             <p className="mb-4">
               ما در نوبتیک باور داریم که وقت شما ارزشمندترین دارایی شماست. به همین دلیل پلتفرمی ساختیم که
               رزرو نوبت را به یک تجربه سریع، ساده و قابل اعتماد تبدیل کند.
@@ -107,15 +107,15 @@ export default function AboutPage() {
             {VALUES.map((v) => (
               <div key={v.title} className="rounded-2xl p-5 flex gap-4
                           hover:-translate-y-1 hover:shadow-lg transition-all duration-200 group"
-                   style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
+                   style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0
                                 transition-transform duration-200 group-hover:scale-110 group-hover:-rotate-6"
                      style={{ background: v.gradBg }}>
                   <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">{v.icon}</svg>
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold mb-1" style={{ color: '#DCF0F5' }}>{v.title}</h3>
-                  <p className="text-xs leading-6" style={{ color: '#4A6E8A' }}>{v.desc}</p>
+                  <h3 className="text-sm font-bold mb-1" style={{ color: '#E8F4FF' }}>{v.title}</h3>
+                  <p className="text-xs leading-6" style={{ color: '#6B8FAD' }}>{v.desc}</p>
                 </div>
               </div>
             ))}
@@ -124,12 +124,12 @@ export default function AboutPage() {
 
         {/* CTA */}
         <section className="rounded-3xl p-8 sm:p-12 text-center"
-                 style={{ background: 'linear-gradient(135deg, #132030 0%, #1A2A3E 50%, #132030 100%)', border: '1px solid rgba(0,212,200,0.12)' }}>
+                 style={{ background: 'linear-gradient(135deg, #1C2A3E 0%, #243548 50%, #1C2A3E 100%)', border: '1px solid rgba(0,212,200,0.12)' }}>
           <h2 className="text-2xl font-black mb-3"
               style={{ background: 'linear-gradient(135deg,#00D4C8,#00A8FF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             آماده‌اید شروع کنید؟
           </h2>
-          <p className="mb-6" style={{ color: '#4A6E8A' }}>همین حالا کسب‌وکار خود را در نوبتیک ثبت کنید</p>
+          <p className="mb-6" style={{ color: '#6B8FAD' }}>همین حالا کسب‌وکار خود را در نوبتیک ثبت کنید</p>
           <div className="flex gap-3 justify-center flex-wrap">
             <button onClick={() => navigate('/login')}
                     className="text-white font-bold px-6 py-3 rounded-xl text-sm hover:opacity-90 transition-opacity"

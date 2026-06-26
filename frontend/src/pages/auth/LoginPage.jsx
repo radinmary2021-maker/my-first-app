@@ -59,7 +59,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen grid-bg" dir="rtl" style={{ background: '#0D1520' }}>
+    <div className="min-h-screen grid-bg" dir="rtl" style={{ background: '#162030' }}>
 
       {/* Logo */}
       <div className="px-6 py-5">
@@ -82,7 +82,7 @@ export default function LoginPage() {
       {/* Card */}
       <div className="flex items-start justify-center px-4 pb-16">
         <div className="w-full max-w-md rounded-[20px] p-8"
-             style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
+             style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
 
           <div className="text-center mb-8">
             <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4"
@@ -91,14 +91,14 @@ export default function LoginPage() {
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12 12 0 0 0 .66 2.65 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6.29 6.29l1.19-1.19a2 2 0 0 1 2.11-.45 12 12 0 0 0 2.65.66A2 2 0 0 1 22 16.92z" />
               </svg>
             </div>
-            <h1 className="text-xl font-black mb-2" style={{ color: '#DCF0F5' }}>خوش آمدید</h1>
-            <p className="text-sm leading-6" style={{ color: '#4A6E8A' }}>شماره موبایل خود را وارد کنید تا کد تأیید برایتان ارسال شود</p>
+            <h1 className="text-xl font-black mb-2" style={{ color: '#E8F4FF' }}>خوش آمدید</h1>
+            <p className="text-sm leading-6" style={{ color: '#6B8FAD' }}>شماره موبایل خود را وارد کنید تا کد تأیید برایتان ارسال شود</p>
           </div>
 
           <form onSubmit={handleSubmit} noValidate>
-            <label className="text-xs font-bold mb-2 block" style={{ color: '#4A6E8A' }}>شماره موبایل</label>
+            <label className="text-xs font-bold mb-2 block" style={{ color: '#6B8FAD' }}>شماره موبایل</label>
             <div className="flex items-center rounded-2xl px-4 py-3.5 mb-1 transition-all"
-                 style={{ background: '#1A2A3E', border: '1px solid rgba(0,212,200,0.18)' }}
+                 style={{ background: '#243548', border: '1px solid rgba(0,212,200,0.18)' }}
                  onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.45)'}
                  onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.18)'}>
               <svg className="w-5 h-5 ml-2 shrink-0" style={{ color: '#00D4C8' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -111,14 +111,14 @@ export default function LoginPage() {
                 placeholder="09120000001"
                 dir="ltr"
                 className="bg-transparent outline-none text-sm w-full text-right font-semibold tracking-wide"
-                style={{ color: '#DCF0F5' }}
+                style={{ color: '#E8F4FF' }}
                 disabled={loading || isBlocked}
                 autoFocus
                 maxLength={11}
                 autoComplete="tel"
               />
             </div>
-            <p className="text-xs mb-5" style={{ color: '#4A6E8A' }}>مثال: ۰۹۱۲۳۴۵۶۷۸۹</p>
+            <p className="text-xs mb-5" style={{ color: '#6B8FAD' }}>مثال: ۰۹۱۲۳۴۵۶۷۸۹</p>
 
             {/* Rate-limit countdown */}
             {isBlocked && (
@@ -159,7 +159,7 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p className="text-center text-xs mt-6 leading-6" style={{ color: '#4A6E8A' }}>
+          <p className="text-center text-xs mt-6 leading-6" style={{ color: '#6B8FAD' }}>
             با ادامه دادن، <Link to="/terms" style={{ color: '#00D4C8', fontWeight: 600 }}>قوانین و مقررات</Link> نوبتیک را می‌پذیرید
           </p>
         </div>

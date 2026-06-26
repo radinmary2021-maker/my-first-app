@@ -56,15 +56,15 @@ export default function TermsPage() {
 
       <div className="max-w-5xl mx-auto px-4 pb-16">
         <div className="text-center pt-8 pb-10">
-          <h1 className="text-2xl sm:text-3xl font-black mb-3" style={{ color: '#DCF0F5' }}>قوانین و مقررات</h1>
-          <p className="text-sm" style={{ color: '#4A6E8A' }}>آخرین بروزرسانی: ۱ تیر ۱۴۰۴</p>
+          <h1 className="text-2xl sm:text-3xl font-black mb-3" style={{ color: '#E8F4FF' }}>قوانین و مقررات</h1>
+          <p className="text-sm" style={{ color: '#6B8FAD' }}>آخرین بروزرسانی: ۱ تیر ۱۴۰۴</p>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8 items-start">
 
           {/* TOC */}
-          <aside className="w-full lg:w-56 shrink-0 rounded-2xl p-3 lg:sticky lg:top-24" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
-            <h3 className="text-xs font-bold px-3 py-2" style={{ color: '#4A6E8A' }}>فهرست مطالب</h3>
+          <aside className="w-full lg:w-56 shrink-0 rounded-2xl p-3 lg:sticky lg:top-24" style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
+            <h3 className="text-xs font-bold px-3 py-2" style={{ color: '#6B8FAD' }}>فهرست مطالب</h3>
             <nav className="space-y-0.5">
               {SECTIONS.map((s) => (
                 <button
@@ -74,7 +74,7 @@ export default function TermsPage() {
                   style={
                     activeSection === s.id
                       ? { background: 'rgba(0,212,200,0.08)', color: '#00D4C8', fontWeight: 700 }
-                      : { color: '#4A6E8A' }
+                      : { color: '#6B8FAD' }
                   }
                   onMouseEnter={(e) => { if (activeSection !== s.id) e.currentTarget.style.background = 'rgba(0,212,200,0.04)' }}
                   onMouseLeave={(e) => { if (activeSection !== s.id) e.currentTarget.style.background = 'transparent' }}
@@ -86,14 +86,14 @@ export default function TermsPage() {
           </aside>
 
           {/* Content */}
-          <div className="flex-1 w-full rounded-2xl p-6 sm:p-8 space-y-8" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
+          <div className="flex-1 w-full rounded-2xl p-6 sm:p-8 space-y-8" style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
             {SECTIONS.map((s) => (
               <section key={s.id} id={s.id} style={{ scrollMarginTop: 90 }}>
-                <h2 className="text-sm font-black mb-3 flex items-center gap-2" style={{ color: '#DCF0F5' }}>
+                <h2 className="text-sm font-black mb-3 flex items-center gap-2" style={{ color: '#E8F4FF' }}>
                   <span className={`w-1.5 h-5 ${s.color} rounded-full`} />
                   {s.n}. {s.title}
                 </h2>
-                <p className="text-xs leading-7" style={{ color: '#4A6E8A' }}>{s.text}</p>
+                <p className="text-xs leading-7" style={{ color: '#6B8FAD' }}>{s.text}</p>
               </section>
             ))}
 

@@ -22,7 +22,7 @@ export default function PaymentResultPage() {
 
       <div className="max-w-md mx-auto px-4 py-8 grid-bg">
         <div className="rounded-3xl p-8 text-center"
-             style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}>
+             style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}>
 
           {/* -- Success -- */}
           {isSuccess && (
@@ -37,22 +37,22 @@ export default function PaymentResultPage() {
                   style={{ background: 'linear-gradient(135deg,#00D4C8,#00A8FF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                 پرداخت موفق
               </h1>
-              <p className="text-sm leading-7 mb-6" style={{ color: '#4A6E8A' }}>
+              <p className="text-sm leading-7 mb-6" style={{ color: '#6B8FAD' }}>
                 نوبت شما با موفقیت ثبت شد. کد رهگیری و یادآوری از طریق پیامک برایتان ارسال می‌شود.
               </p>
 
               <div className="rounded-2xl p-4 mb-6 text-right space-y-2.5"
-                   style={{ background: '#1A2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
+                   style={{ background: '#243548', border: '1px solid rgba(0,212,200,0.07)' }}>
                 {trackingCode && (
                   <div className="flex items-center justify-between text-sm">
-                    <span style={{ color: '#4A6E8A' }}>کد پیگیری</span>
-                    <span className="font-bold" dir="ltr" style={{ color: '#DCF0F5' }}>{trackingCode}</span>
+                    <span style={{ color: '#6B8FAD' }}>کد پیگیری</span>
+                    <span className="font-bold" dir="ltr" style={{ color: '#E8F4FF' }}>{trackingCode}</span>
                   </div>
                 )}
                 {refId && (
                   <div className="flex items-center justify-between text-sm">
-                    <span style={{ color: '#4A6E8A' }}>شماره مرجع</span>
-                    <span className="font-bold" dir="ltr" style={{ color: '#DCF0F5' }}>{refId}</span>
+                    <span style={{ color: '#6B8FAD' }}>شماره مرجع</span>
+                    <span className="font-bold" dir="ltr" style={{ color: '#E8F4FF' }}>{refId}</span>
                   </div>
                 )}
               </div>
@@ -76,8 +76,8 @@ export default function PaymentResultPage() {
                   <path d="M18 6 6 18M6 6l12 12" strokeLinecap="round" />
                 </svg>
               </div>
-              <h1 className="text-xl font-black mb-2" style={{ color: '#DCF0F5' }}>پرداخت ناموفق</h1>
-              <p className="text-sm leading-7 mb-6" style={{ color: '#4A6E8A' }}>
+              <h1 className="text-xl font-black mb-2" style={{ color: '#E8F4FF' }}>پرداخت ناموفق</h1>
+              <p className="text-sm leading-7 mb-6" style={{ color: '#6B8FAD' }}>
                 متأسفانه پرداخت شما تکمیل نشد. نگران نباشید، مبلغی از حساب شما کسر نشده است.
               </p>
 
@@ -117,12 +117,12 @@ export default function PaymentResultPage() {
             <>
               <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5"
                    style={{ background: 'rgba(74,110,138,0.15)' }}>
-                <svg className="w-10 h-10" style={{ color: '#4A6E8A' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg className="w-10 h-10" style={{ color: '#6B8FAD' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
                 </svg>
               </div>
-              <h1 className="text-xl font-black mb-2" style={{ color: '#DCF0F5' }}>نتیجه نامشخص</h1>
-              <p className="text-sm leading-7 mb-6" style={{ color: '#4A6E8A' }}>
+              <h1 className="text-xl font-black mb-2" style={{ color: '#E8F4FF' }}>نتیجه نامشخص</h1>
+              <p className="text-sm leading-7 mb-6" style={{ color: '#6B8FAD' }}>
                 وضعیت پرداخت شما مشخص نیست. لطفاً نوبت‌های خود را بررسی کنید.
               </p>
 

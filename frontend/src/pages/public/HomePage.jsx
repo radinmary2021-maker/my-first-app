@@ -138,7 +138,7 @@ export default function HomePage() {
             </div>
 
             {/* Hero title */}
-            <h1 style={{ fontSize: 'clamp(3rem,8vw,6.2rem)', fontWeight: 900, lineHeight: 1.0, margin: '0 0 26px', letterSpacing: '-0.03em', color: '#DCF0F5' }}>
+            <h1 style={{ fontSize: 'clamp(3rem,8vw,6.2rem)', fontWeight: 900, lineHeight: 1.0, margin: '0 0 26px', letterSpacing: '-0.03em', color: '#E8F4FF' }}>
               نوبتت رو<br />
               <span className="cyan-text">هوشمند</span><br />
               بگیر
@@ -147,14 +147,14 @@ export default function HomePage() {
             {/* Neon accent line */}
             <div style={{ width: '80px', height: '3px', background: 'linear-gradient(90deg,#39FF14,transparent)', borderRadius: '2px', marginBottom: '26px', boxShadow: '0 0 12px rgba(57,255,20,0.4)' }} />
 
-            <p style={{ fontSize: '1.1rem', color: '#4A6E8A', lineHeight: 1.85, margin: '0 0 44px', maxWidth: '500px' }}>
+            <p style={{ fontSize: '1.1rem', color: '#6B8FAD', lineHeight: 1.85, margin: '0 0 44px', maxWidth: '500px' }}>
               از آرایشگاه تا کلینیک، از باشگاه تا دامپزشکی —<br />بدون تلفن، بدون انتظار.
             </p>
 
             {/* Search box */}
             <form onSubmit={go}
                   className="flex items-center rounded-2xl mb-[22px] transition-all max-w-[640px]"
-                  style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.18)', padding: '6px' }}
+                  style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.18)', padding: '6px' }}
                   onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.45)'}
                   onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.18)'}>
               <div className="flex items-center flex-1 gap-2.5 px-3.5 py-2.5">
@@ -165,7 +165,7 @@ export default function HomePage() {
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="خدمت یا کسب‌وکار..."
                   className="outline-none text-sm w-full"
-                  style={{ background: 'transparent', color: '#DCF0F5', fontFamily: 'inherit', border: 'none' }}
+                  style={{ background: 'transparent', color: '#E8F4FF', fontFamily: 'inherit', border: 'none' }}
                 />
               </div>
               <div style={{ width: '1px', height: '32px', background: 'rgba(0,212,200,0.12)' }} />
@@ -174,7 +174,7 @@ export default function HomePage() {
                 <input
                   placeholder="شهر..."
                   className="outline-none text-sm"
-                  style={{ background: 'transparent', color: '#DCF0F5', fontFamily: 'inherit', border: 'none', width: '70px' }}
+                  style={{ background: 'transparent', color: '#E8F4FF', fontFamily: 'inherit', border: 'none', width: '70px' }}
                 />
               </div>
               <button
@@ -188,7 +188,7 @@ export default function HomePage() {
 
             {/* Quick chips */}
             <div className="flex flex-wrap gap-2 items-center">
-              <span style={{ fontSize: '11px', color: '#4A6E8A', fontWeight: 700, letterSpacing: '0.05em' }}>پرجستجو:</span>
+              <span style={{ fontSize: '11px', color: '#6B8FAD', fontWeight: 700, letterSpacing: '0.05em' }}>پرجستجو:</span>
               {QUICK_SEARCHES.map((s) => (
                 <button
                   key={s}
@@ -207,12 +207,12 @@ export default function HomePage() {
       </section>
 
       {/* ══ STATS ══ */}
-      <section style={{ borderTop: '1px solid rgba(0,212,200,0.08)', borderBottom: '1px solid rgba(0,212,200,0.08)', padding: '26px 28px', background: '#132030' }}>
+      <section style={{ borderTop: '1px solid rgba(0,212,200,0.08)', borderBottom: '1px solid rgba(0,212,200,0.08)', padding: '26px 28px', background: '#1C2A3E' }}>
         <div className="max-w-[1000px] mx-auto grid grid-cols-4 text-center">
           {TRUST.map((t, i) => (
             <div key={t.label} style={{ padding: '14px', borderLeft: i < 3 ? '1px solid rgba(0,212,200,0.08)' : 'none' }}>
               <div style={{ fontSize: '2.1rem', fontWeight: 900, background: t.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{t.value}</div>
-              <div style={{ fontSize: '11px', color: '#4A6E8A', marginTop: '4px' }}>{t.label}</div>
+              <div style={{ fontSize: '11px', color: '#6B8FAD', marginTop: '4px' }}>{t.label}</div>
             </div>
           ))}
         </div>
@@ -242,15 +242,20 @@ export default function HomePage() {
                 key={slug}
                 onClick={() => navigate(`/providers?category=${slug}`)}
                 className="flex flex-col items-center gap-2.5 p-[18px] rounded-[18px] text-center cursor-pointer transition-all"
-                style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}
+                style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}
                 onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.35)'; e.currentTarget.style.background = 'rgba(0,212,200,0.06)'; e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 10px 28px rgba(0,212,200,0.12)' }}
-                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.07)'; e.currentTarget.style.background = '#132030'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.07)'; e.currentTarget.style.background = '#1C2A3E'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
               >
-                <div className="w-[50px] h-[50px] rounded-[14px] flex items-center justify-center text-[23px]"
-                     style={{ background: 'linear-gradient(135deg,rgba(0,212,200,0.12),rgba(0,168,255,0.06))', border: '1px solid rgba(0,212,200,0.1)', animation: 'icon-float 3s ease-in-out infinite', animationDelay: `${i * 0.3}s` }}>
-                  {emoji}
+                <div className="w-[50px] h-[50px] rounded-[14px] flex items-center justify-center"
+                     style={{ background: 'linear-gradient(135deg,rgba(0,212,200,0.12),rgba(0,168,255,0.06))', border: '1px solid rgba(0,212,200,0.1)', animation: 'icon-float 2.5s ease-in-out infinite', animationDelay: `${i * 0.2}s` }}>
+                  <img
+                    src={`/icons/${slug}.png`}
+                    alt={label}
+                    style={{ width: '48px', height: '48px', objectFit: 'contain' }}
+                    onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.innerHTML = `<span style="font-size:23px">${emoji}</span>` }}
+                  />
                 </div>
-                <span style={{ fontSize: '11px', fontWeight: 800, color: '#DCF0F5' }}>{label}</span>
+                <span style={{ fontSize: '11px', fontWeight: 800, color: '#E8F4FF' }}>{label}</span>
               </button>
             ))}
           </div>
@@ -271,7 +276,7 @@ export default function HomePage() {
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            <div className="featured-scroll" style={{ display: 'flex', gap: '16px', overflowX: 'auto', scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch', paddingBottom: '12px', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               {featured.map((p) => {
                 const isActive = (p.available_weekdays ?? []).length > 0
                 const hasRating = p.average_rating != null && p.reviews_count > 0
@@ -280,7 +285,7 @@ export default function HomePage() {
                     key={p.id}
                     onClick={() => navigate(`/providers/${p.id}`)}
                     className="overflow-hidden rounded-[20px] cursor-pointer transition-all"
-                    style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}
+                    style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)', flexShrink: 0, width: 'clamp(280px, 80vw, 340px)', scrollSnapAlign: 'start' }}
                     onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.28)'; e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 20px 48px rgba(0,212,200,0.1)' }}
                     onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.07)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
                   >
@@ -301,10 +306,10 @@ export default function HomePage() {
                       )}
                     </div>
                     <div className="p-[18px]">
-                      <h3 style={{ fontSize: '15px', fontWeight: 800, margin: '0 0 4px', color: '#DCF0F5' }}>
+                      <h3 style={{ fontSize: '15px', fontWeight: 800, margin: '0 0 4px', color: '#E8F4FF' }}>
                         {p.business_name || p.full_name}
                       </h3>
-                      <p style={{ fontSize: '11px', color: '#4A6E8A', margin: '0 0 16px' }}>
+                      <p style={{ fontSize: '11px', color: '#6B8FAD', margin: '0 0 16px' }}>
                         {p.category_display || p.specialty}
                       </p>
                       <div className="flex items-center justify-between">
@@ -329,7 +334,7 @@ export default function HomePage() {
       )}
 
       {/* ══ FOR BUSINESSES ══ */}
-      <section style={{ padding: '80px 28px', background: '#132030', borderTop: '1px solid rgba(0,212,200,0.07)' }}>
+      <section style={{ padding: '80px 28px', background: '#1C2A3E', borderTop: '1px solid rgba(0,212,200,0.07)' }}>
         <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <div>
             <div className="inline-flex items-center gap-[7px] px-[14px] py-[5px] rounded-full text-xs font-bold mb-5"
@@ -340,7 +345,7 @@ export default function HomePage() {
               کسب‌وکارت رو<br /><span className="cyan-text">آنلاین کن</span>
             </h2>
             <div style={{ width: '60px', height: '3px', background: 'linear-gradient(90deg,#39FF14,transparent)', borderRadius: '2px', marginBottom: '22px', boxShadow: '0 0 10px rgba(57,255,20,0.3)' }} />
-            <p style={{ color: '#4A6E8A', lineHeight: 1.9, margin: '0 0 36px', fontSize: '0.95rem' }}>
+            <p style={{ color: '#6B8FAD', lineHeight: 1.9, margin: '0 0 36px', fontSize: '0.95rem' }}>
               مدیریت نوبت‌ها، مشتریان و درآمد — همه در یک پنل ساده. بدون دانش فنی.
             </p>
             <button
@@ -354,15 +359,15 @@ export default function HomePage() {
           <div className="grid grid-cols-2 gap-3.5">
             {BIZ_FEATURES.map((f) => (
               <div key={f.title} className="rounded-[20px] p-[22px] transition-all"
-                   style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}
+                   style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}
                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.28)'; e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 20px 48px rgba(0,212,200,0.1)' }}
                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.07)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}>
                 <div className="w-[42px] h-[42px] rounded-xl flex items-center justify-center mb-3.5"
                      style={{ background: f.iconBg, border: `1px solid ${f.iconBorder}` }}>
                   <svg style={{ width: '18px', height: '18px', color: f.iconColor }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">{f.icon}</svg>
                 </div>
-                <div style={{ fontSize: '13px', fontWeight: 800, marginBottom: '6px', color: '#DCF0F5' }}>{f.title}</div>
-                <div style={{ fontSize: '11px', color: '#4A6E8A', lineHeight: 1.6 }}>{f.desc}</div>
+                <div style={{ fontSize: '13px', fontWeight: 800, marginBottom: '6px', color: '#E8F4FF' }}>{f.title}</div>
+                <div style={{ fontSize: '11px', color: '#6B8FAD', lineHeight: 1.6 }}>{f.desc}</div>
               </div>
             ))}
           </div>
@@ -374,26 +379,26 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-10">
             <h2 style={{ fontSize: '2.2rem', fontWeight: 900, marginBottom: '8px' }}>نظر <span className="cyan-text">کاربران</span></h2>
-            <p style={{ color: '#4A6E8A', fontSize: '0.9rem' }}>چه کسانی از نوبتیک استفاده می‌کنند</p>
+            <p style={{ color: '#6B8FAD', fontSize: '0.9rem' }}>چه کسانی از نوبتیک استفاده می‌کنند</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {TESTIMONIALS.map((t) => (
               <div key={t.name} className="rounded-[20px] p-5 transition-all"
-                   style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}
+                   style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}
                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.28)'; e.currentTarget.style.transform = 'translateY(-5px)' }}
                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.07)'; e.currentTarget.style.transform = 'translateY(0)' }}>
                 <div className="flex items-center gap-1 text-sm mb-3" style={{ color: '#FF6B2B' }}>
                   {'★'.repeat(t.stars)}{'☆'.repeat(5 - t.stars)}
                 </div>
-                <p style={{ color: '#DCF0F5', fontSize: '0.875rem', lineHeight: 1.8, marginBottom: '16px' }}>{t.text}</p>
+                <p style={{ color: '#E8F4FF', fontSize: '0.875rem', lineHeight: 1.8, marginBottom: '16px' }}>{t.text}</p>
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
                        style={{ background: 'rgba(0,212,200,0.1)', color: '#00D4C8' }}>
                     {t.initials}
                   </div>
                   <div>
-                    <div style={{ fontSize: '12px', fontWeight: 700, color: '#DCF0F5' }}>{t.name}</div>
-                    <div style={{ fontSize: '12px', color: '#4A6E8A' }}>{t.role}</div>
+                    <div style={{ fontSize: '12px', fontWeight: 700, color: '#E8F4FF' }}>{t.name}</div>
+                    <div style={{ fontSize: '12px', color: '#6B8FAD' }}>{t.role}</div>
                   </div>
                 </div>
               </div>
@@ -414,7 +419,7 @@ export default function HomePage() {
           <h2 style={{ fontSize: '2.8rem', fontWeight: 900, margin: '0 0 16px', lineHeight: 1.15 }}>
             آماده‌ای؟<br /><span className="cyan-text">نوبتت رو بگیر</span>
           </h2>
-          <p style={{ color: '#4A6E8A', margin: '0 0 40px', fontSize: '1.05rem' }}>رایگان — بدون نیاز به کارت بانکی</p>
+          <p style={{ color: '#6B8FAD', margin: '0 0 40px', fontSize: '1.05rem' }}>رایگان — بدون نیاز به کارت بانکی</p>
           <div className="flex gap-3.5 justify-center flex-wrap">
             <button
               onClick={() => navigate('/providers')}

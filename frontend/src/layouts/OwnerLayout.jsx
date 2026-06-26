@@ -16,7 +16,7 @@ export default function OwnerLayout({ title, subtitle, headerAction, children })
   }, [])
 
   return (
-    <div className="flex min-h-screen" style={{ background: '#0D1520' }} dir="rtl">
+    <div className="flex min-h-screen" style={{ background: '#162030' }} dir="rtl">
 
       {/* Desktop sidebar */}
       <OwnerSidebar
@@ -28,7 +28,7 @@ export default function OwnerLayout({ title, subtitle, headerAction, children })
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => setMobileMenuOpen(false)} />
-          <div className="absolute right-0 top-0 bottom-0 w-64 overflow-y-auto" style={{ background: '#132030', boxShadow: '0 0 40px rgba(0,0,0,0.5)' }}>
+          <div className="absolute right-0 top-0 bottom-0 w-64 overflow-y-auto" style={{ background: '#1C2A3E', boxShadow: '0 0 40px rgba(0,0,0,0.5)' }}>
             <OwnerSidebar
               businessName={business?.name}
               businessCategory={business?.category_display}
@@ -47,15 +47,15 @@ export default function OwnerLayout({ title, subtitle, headerAction, children })
             <button
               onClick={() => setMobileMenuOpen(true)}
               className="lg:hidden p-2 rounded-lg transition-colors"
-              style={{ color: '#4A6E8A' }}
+              style={{ color: '#6B8FAD' }}
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" />
               </svg>
             </button>
             <div>
-              <h1 className="text-base font-black" style={{ color: '#DCF0F5' }}>{title}</h1>
-              {subtitle && <p className="text-xs" style={{ color: '#4A6E8A' }}>{subtitle}</p>}
+              <h1 className="text-base font-black" style={{ color: '#E8F4FF' }}>{title}</h1>
+              {subtitle && <p className="text-xs" style={{ color: '#6B8FAD' }}>{subtitle}</p>}
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -63,9 +63,9 @@ export default function OwnerLayout({ title, subtitle, headerAction, children })
             <button
               onClick={() => { logout(); navigate('/login') }}
               className="text-xs px-2 py-1 rounded transition-colors"
-              style={{ color: '#4A6E8A' }}
+              style={{ color: '#6B8FAD' }}
               onMouseEnter={(e) => e.currentTarget.style.color = '#EF4444'}
-              onMouseLeave={(e) => e.currentTarget.style.color = '#4A6E8A'}
+              onMouseLeave={(e) => e.currentTarget.style.color = '#6B8FAD'}
             >
               خروج
             </button>

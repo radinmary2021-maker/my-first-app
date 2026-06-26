@@ -126,7 +126,7 @@ export default function VerifyOtpPage() {
   }
 
   return (
-    <div className="min-h-screen grid-bg" dir="rtl" style={{ background: '#0D1520' }}>
+    <div className="min-h-screen grid-bg" dir="rtl" style={{ background: '#162030' }}>
 
       {/* Logo */}
       <div className="px-6 py-5">
@@ -148,12 +148,12 @@ export default function VerifyOtpPage() {
       {/* Card */}
       <div className="flex items-start justify-center px-4 pb-16">
         <div className="w-full max-w-md rounded-[20px] p-8"
-             style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
+             style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
 
           <button
             onClick={() => navigate('/login')}
             className="flex items-center gap-1.5 text-xs font-semibold mb-6 transition-colors"
-            style={{ color: '#4A6E8A' }}
+            style={{ color: '#6B8FAD' }}
           >
             <svg className="w-3.5 h-3.5 rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6" /></svg>
             تغییر شماره موبایل
@@ -166,10 +166,10 @@ export default function VerifyOtpPage() {
                 <rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
               </svg>
             </div>
-            <h1 className="text-xl font-black mb-2" style={{ color: '#DCF0F5' }}>کد تأیید را وارد کنید</h1>
-            <p className="text-sm leading-6" style={{ color: '#4A6E8A' }}>
+            <h1 className="text-xl font-black mb-2" style={{ color: '#E8F4FF' }}>کد تأیید را وارد کنید</h1>
+            <p className="text-sm leading-6" style={{ color: '#6B8FAD' }}>
               کد {OTP_LENGTH} رقمی به شماره{' '}
-              <span className="font-bold" style={{ color: '#DCF0F5' }} dir="ltr">{phone}</span>{' '}
+              <span className="font-bold" style={{ color: '#E8F4FF' }} dir="ltr">{phone}</span>{' '}
               پیامک شد
             </p>
           </div>
@@ -190,7 +190,7 @@ export default function VerifyOtpPage() {
                   disabled={loading}
                   autoFocus={i === 0}
                   className="w-12 h-14 text-center text-2xl font-black rounded-2xl outline-none transition-all disabled:opacity-50"
-                  style={{ background: '#1A2A3E', border: '1px solid rgba(0,212,200,0.18)', color: '#DCF0F5' }}
+                  style={{ background: '#243548', border: '1px solid rgba(0,212,200,0.18)', color: '#E8F4FF' }}
                   onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.45)'}
                   onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(0,212,200,0.18)'}
                 />
@@ -234,14 +234,14 @@ export default function VerifyOtpPage() {
           <div className="flex items-center justify-center gap-2 text-sm mt-5">
             {resendCountdown > 0 ? (
               <>
-                <span style={{ color: '#4A6E8A' }}>ارسال مجدد تا</span>
-                <span className="font-mono font-bold tabular-nums" style={{ color: '#DCF0F5' }} dir="ltr">
+                <span style={{ color: '#6B8FAD' }}>ارسال مجدد تا</span>
+                <span className="font-mono font-bold tabular-nums" style={{ color: '#E8F4FF' }} dir="ltr">
                   {String(Math.floor(resendCountdown / 60)).padStart(2, '0')}:{String(resendCountdown % 60).padStart(2, '0')}
                 </span>
               </>
             ) : (
               <>
-                <span style={{ color: '#4A6E8A' }}>کد را دریافت نکردید؟</span>
+                <span style={{ color: '#6B8FAD' }}>کد را دریافت نکردید؟</span>
                 <button
                   onClick={handleResend}
                   disabled={!canResend}

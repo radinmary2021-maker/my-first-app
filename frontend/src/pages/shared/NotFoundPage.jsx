@@ -4,7 +4,7 @@ export default function NotFoundPage() {
   const navigate = useNavigate()
   return (
     <div className="min-h-screen grid-bg flex flex-col items-center justify-center px-4 pb-16" dir="rtl"
-         style={{ background: '#0D1520' }}>
+         style={{ background: '#162030' }}>
       <div className="text-center">
         <div className="relative w-48 h-48 mx-auto mb-6" style={{ animation: 'float 3s ease-in-out infinite' }}>
           <div className="absolute inset-0 rounded-full"
@@ -26,8 +26,8 @@ export default function NotFoundPage() {
             }}>
           ۴۰۴
         </h1>
-        <h2 className="text-lg font-black mb-2" style={{ color: '#DCF0F5' }}>صفحه پیدا نشد!</h2>
-        <p className="text-sm leading-7 mb-8 max-w-sm mx-auto" style={{ color: '#4A6E8A' }}>
+        <h2 className="text-lg font-black mb-2" style={{ color: '#E8F4FF' }}>صفحه پیدا نشد!</h2>
+        <p className="text-sm leading-7 mb-8 max-w-sm mx-auto" style={{ color: '#6B8FAD' }}>
           به نظر می‌رسد صفحه‌ای که دنبالش هستید جابه‌جا شده یا اصلاً وجود ندارد.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">

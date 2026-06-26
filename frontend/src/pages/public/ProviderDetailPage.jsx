@@ -28,13 +28,13 @@ function ServiceRow({ svc, active, onSelect }) {
           ✂️
         </div>
         <div>
-          <div className="text-sm font-semibold" style={{ color: active ? '#00D4C8' : '#DCF0F5' }}>{svc.name}</div>
-          <div className="text-xs mt-0.5" style={{ color: '#4A6E8A' }}>{svc.duration_minutes} دقیقه</div>
+          <div className="text-sm font-semibold" style={{ color: active ? '#00D4C8' : '#E8F4FF' }}>{svc.name}</div>
+          <div className="text-xs mt-0.5" style={{ color: '#6B8FAD' }}>{svc.duration_minutes} دقیقه</div>
         </div>
       </div>
       <div className="flex items-center gap-3">
         {Number(svc.price) > 0 && (
-          <span className="text-sm font-bold" style={{ color: '#DCF0F5' }}>{Number(svc.price).toLocaleString('fa-IR')}ت</span>
+          <span className="text-sm font-bold" style={{ color: '#E8F4FF' }}>{Number(svc.price).toLocaleString('fa-IR')}ت</span>
         )}
         <button className="text-xs font-extrabold px-3 py-1.5 rounded-lg transition-all text-white"
                 style={active
@@ -61,8 +61,8 @@ function ProviderServiceGroup({ provider: sib, selectedProviderId, selectedServi
       <div className="flex items-center gap-3 mb-3">
         <ImageAvatar src={sib.avatar} alt={sib.full_name} fallbackText={sib.full_name} size="w-12 h-12" shape="rounded-xl" />
         <div className="flex-1 min-w-0">
-          <div className="text-sm font-bold" style={{ color: isThisProvider ? '#00D4C8' : '#DCF0F5' }}>{sib.full_name}</div>
-          {sib.specialty && <div className="text-xs" style={{ color: '#4A6E8A' }}>{sib.specialty}</div>}
+          <div className="text-sm font-bold" style={{ color: isThisProvider ? '#00D4C8' : '#E8F4FF' }}>{sib.full_name}</div>
+          {sib.specialty && <div className="text-xs" style={{ color: '#6B8FAD' }}>{sib.specialty}</div>}
         </div>
       </div>
 
@@ -209,12 +209,12 @@ export default function ProviderDetailPage() {
 
       {/* Breadcrumb */}
       <div className="px-4 py-3" style={{ borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
-        <div className="max-w-7xl mx-auto flex items-center gap-2 text-xs" style={{ color: '#4A6E8A' }}>
-          <button onClick={() => navigate('/')} className="transition-colors" style={{ color: '#4A6E8A' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#4A6E8A'}>خانه</button>
+        <div className="max-w-7xl mx-auto flex items-center gap-2 text-xs" style={{ color: '#6B8FAD' }}>
+          <button onClick={() => navigate('/')} className="transition-colors" style={{ color: '#6B8FAD' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#6B8FAD'}>خانه</button>
           <svg className="w-3 h-3 rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6" /></svg>
-          <button onClick={() => navigate('/providers')} className="transition-colors" style={{ color: '#4A6E8A' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#4A6E8A'}>{category || 'کسب‌وکارها'}</button>
+          <button onClick={() => navigate('/providers')} className="transition-colors" style={{ color: '#6B8FAD' }} onMouseEnter={(e) => e.currentTarget.style.color = '#00D4C8'} onMouseLeave={(e) => e.currentTarget.style.color = '#6B8FAD'}>{category || 'کسب‌وکارها'}</button>
           <svg className="w-3 h-3 rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6" /></svg>
-          <span className="font-medium" style={{ color: '#DCF0F5' }}>{providerName}</span>
+          <span className="font-medium" style={{ color: '#E8F4FF' }}>{providerName}</span>
         </div>
       </div>
 
@@ -233,7 +233,7 @@ export default function ProviderDetailPage() {
           <div className="flex-1 min-w-0 space-y-4">
 
             {/* Provider header */}
-            <div className="rounded-[20px] p-5" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
+            <div className="rounded-[20px] p-5" style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-4">
                   <ImageAvatar src={provider.logo} alt={providerName} fallbackText={providerName} size="w-16 h-16" shape="rounded-2xl" />
@@ -242,19 +242,19 @@ export default function ProviderDetailPage() {
                       <h1 className="text-xl font-black cyan-text">{providerName}</h1>
                       {isAvailable
                         ? <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: 'rgba(57,255,20,0.15)', border: '1px solid rgba(57,255,20,0.3)', color: '#39FF14', animation: 'neon-pulse 2s ease-in-out infinite' }}>● باز</span>
-                        : <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: 'rgba(0,212,200,0.05)', color: '#4A6E8A' }}>غیرفعال</span>
+                        : <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: 'rgba(0,212,200,0.05)', color: '#6B8FAD' }}>غیرفعال</span>
                       }
                     </div>
-                    <p className="text-sm" style={{ color: '#4A6E8A' }}>{category}</p>
+                    <p className="text-sm" style={{ color: '#6B8FAD' }}>{category}</p>
                     {staffName && (
-                      <p className="text-sm mt-1" style={{ color: '#4A6E8A' }}>با مدیریت: <span className="font-semibold" style={{ color: '#DCF0F5' }}>{staffName}</span></p>
+                      <p className="text-sm mt-1" style={{ color: '#6B8FAD' }}>با مدیریت: <span className="font-semibold" style={{ color: '#E8F4FF' }}>{staffName}</span></p>
                     )}
                     <div className="flex items-center gap-3 flex-wrap">
                       {hasRating && (
                         <div className="flex items-center gap-1">
                           <span style={{ color: '#FF6B2B' }}>{'★'.repeat(Math.floor(provider.average_rating))}{'☆'.repeat(5 - Math.floor(provider.average_rating))}</span>
-                          <span className="text-sm font-bold" style={{ color: '#DCF0F5' }}>{provider.average_rating}</span>
-                          <span className="text-xs" style={{ color: '#4A6E8A' }}>({provider.reviews_count} نظر)</span>
+                          <span className="text-sm font-bold" style={{ color: '#E8F4FF' }}>{provider.average_rating}</span>
+                          <span className="text-xs" style={{ color: '#6B8FAD' }}>({provider.reviews_count} نظر)</span>
                         </div>
                       )}
                     </div>
@@ -264,7 +264,7 @@ export default function ProviderDetailPage() {
                   <button
                     onClick={handleShare}
                     className="w-9 h-9 rounded-xl flex items-center justify-center transition-colors"
-                    style={{ border: '1px solid rgba(0,212,200,0.2)', color: '#4A6E8A' }}
+                    style={{ border: '1px solid rgba(0,212,200,0.2)', color: '#6B8FAD' }}
                   >
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98" /></svg>
                   </button>
@@ -287,19 +287,19 @@ export default function ProviderDetailPage() {
               </div>
 
               {provider.bio && (
-                <p className="text-sm leading-7 mt-3" style={{ color: '#4A6E8A' }}>{provider.bio}</p>
+                <p className="text-sm leading-7 mt-3" style={{ color: '#6B8FAD' }}>{provider.bio}</p>
               )}
             </div>
 
             {/* Unified provider + services section */}
-            <div className="rounded-[20px] overflow-hidden" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
+            <div className="rounded-[20px] overflow-hidden" style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
               <div className="flex px-1" style={{ borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
                 <button
                   onClick={() => setActiveTab('services')}
                   className="text-sm px-5 py-4 font-medium transition-colors border-b-2"
                   style={activeTab === 'services'
                     ? { color: '#00D4C8', borderColor: '#00D4C8', fontWeight: 600 }
-                    : { color: '#4A6E8A', borderColor: 'transparent' }
+                    : { color: '#6B8FAD', borderColor: 'transparent' }
                   }
                 >
                   {hasMultipleProviders ? 'ارائه‌دهندگان و خدمات' : 'خدمات'}
@@ -309,7 +309,7 @@ export default function ProviderDetailPage() {
                   className="text-sm px-5 py-4 font-medium transition-colors border-b-2"
                   style={activeTab === 'reviews'
                     ? { color: '#00D4C8', borderColor: '#00D4C8', fontWeight: 600 }
-                    : { color: '#4A6E8A', borderColor: 'transparent' }
+                    : { color: '#6B8FAD', borderColor: 'transparent' }
                   }
                 >
                   نظرات {hasRating ? `(${provider.reviews_count})` : ''}
@@ -341,7 +341,7 @@ export default function ProviderDetailPage() {
                       <>
                         {servicesLoading && <Spinner />}
                         {!hasServices && !servicesLoading && (
-                          <p className="text-sm text-center py-8" style={{ color: '#4A6E8A' }}>خدمتی تعریف نشده است.</p>
+                          <p className="text-sm text-center py-8" style={{ color: '#6B8FAD' }}>خدمتی تعریف نشده است.</p>
                         )}
                         {hasServices && (
                           <div className="space-y-2">
@@ -394,11 +394,11 @@ export default function ProviderDetailPage() {
 
           {/* Right: Booking panel */}
           <div className="w-full lg:w-80 shrink-0 lg:sticky lg:top-24">
-            <div className="rounded-[20px] overflow-hidden" style={{ background: '#132030', border: '1px solid rgba(0,212,200,0.07)' }}>
+            <div className="rounded-[20px] overflow-hidden" style={{ background: '#1C2A3E', border: '1px solid rgba(0,212,200,0.07)' }}>
 
               <div className="p-4" style={{ borderBottom: '1px solid rgba(0,212,200,0.07)' }}>
-                <h2 className="text-base font-black" style={{ color: '#DCF0F5' }}>رزرو نوبت</h2>
-                <p className="text-xs mt-0.5" style={{ color: '#4A6E8A' }}>تاریخ و ساعت مناسب را انتخاب کن</p>
+                <h2 className="text-base font-black" style={{ color: '#E8F4FF' }}>رزرو نوبت</h2>
+                <p className="text-xs mt-0.5" style={{ color: '#6B8FAD' }}>تاریخ و ساعت مناسب را انتخاب کن</p>
               </div>
 
               <div className="p-4 space-y-4">
@@ -424,8 +424,8 @@ export default function ProviderDetailPage() {
                 {/* Date picker */}
                 {isAvailable && canPickDate && (
                   <div>
-                    <label className="text-xs font-bold mb-2 block" style={{ color: '#4A6E8A' }}>تاریخ</label>
-                    <div className="rounded-xl p-3" style={{ background: '#1A2A3E', border: '1px solid rgba(0,212,200,0.1)' }}>
+                    <label className="text-xs font-bold mb-2 block" style={{ color: '#6B8FAD' }}>تاریخ</label>
+                    <div className="rounded-xl p-3" style={{ background: '#243548', border: '1px solid rgba(0,212,200,0.1)' }}>
                       <DatePicker
                         availableWeekdays={provider.available_weekdays ?? []}
                         selectedDate={selectedDate}
@@ -438,7 +438,7 @@ export default function ProviderDetailPage() {
                 {/* Slot picker */}
                 {isAvailable && selectedDate && (
                   <div>
-                    <label className="text-xs font-bold mb-2 block" style={{ color: '#4A6E8A' }}>ساعت</label>
+                    <label className="text-xs font-bold mb-2 block" style={{ color: '#6B8FAD' }}>ساعت</label>
                     {slotsError ? (
                       <div className="space-y-2">
                         <p className="text-xs" style={{ color: '#EF4444' }}>خطا در دریافت ساعت‌ها</p>
@@ -460,25 +460,25 @@ export default function ProviderDetailPage() {
                   <div className="rounded-xl p-3 space-y-2" style={{ background: 'rgba(0,212,200,0.03)', border: '1px solid rgba(0,212,200,0.07)' }}>
                     {selectedService && (
                       <div className="flex items-center justify-between text-xs">
-                        <span style={{ color: '#4A6E8A' }}>خدمت</span>
-                        <span className="font-semibold" style={{ color: '#DCF0F5' }}>{selectedService.name}</span>
+                        <span style={{ color: '#6B8FAD' }}>خدمت</span>
+                        <span className="font-semibold" style={{ color: '#E8F4FF' }}>{selectedService.name}</span>
                       </div>
                     )}
                     {selectedDate && (
                       <div className="flex items-center justify-between text-xs">
-                        <span style={{ color: '#4A6E8A' }}>تاریخ</span>
-                        <span className="font-semibold" style={{ color: '#DCF0F5' }}>{toJalali(selectedDate)}</span>
+                        <span style={{ color: '#6B8FAD' }}>تاریخ</span>
+                        <span className="font-semibold" style={{ color: '#E8F4FF' }}>{toJalali(selectedDate)}</span>
                       </div>
                     )}
                     {selectedSlot && (
                       <div className="flex items-center justify-between text-xs">
-                        <span style={{ color: '#4A6E8A' }}>ساعت</span>
-                        <span className="font-semibold font-mono" style={{ color: '#DCF0F5' }}>{selectedSlot}</span>
+                        <span style={{ color: '#6B8FAD' }}>ساعت</span>
+                        <span className="font-semibold font-mono" style={{ color: '#E8F4FF' }}>{selectedSlot}</span>
                       </div>
                     )}
                     {selectedService && Number(selectedService.price) > 0 && (
                       <div className="mt-2 pt-2 flex items-center justify-between" style={{ borderTop: '1px solid rgba(0,212,200,0.1)' }}>
-                        <span className="text-xs" style={{ color: '#4A6E8A' }}>مبلغ</span>
+                        <span className="text-xs" style={{ color: '#6B8FAD' }}>مبلغ</span>
                         <span className="text-sm font-black" style={{ color: '#00D4C8' }}>
                           {Number(selectedService.price).toLocaleString('fa-IR')} تومان
                         </span>
@@ -497,7 +497,7 @@ export default function ProviderDetailPage() {
                     تأیید و پرداخت
                   </button>
                 )}
-                <p className="text-center text-xs" style={{ color: '#4A6E8A' }}>پرداخت امن با زرین‌پال</p>
+                <p className="text-center text-xs" style={{ color: '#6B8FAD' }}>پرداخت امن با زرین‌پال</p>
               </div>
             </div>
           </div>
