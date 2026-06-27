@@ -5,7 +5,12 @@ import { useProviders } from '../../hooks/useDoctors'
 import MainLayout from '../../layouts/MainLayout'
 import SEOHead from '../../components/SEOHead'
 import ImageAvatar from '../../components/ImageAvatar'
-import { BeautyIcon, FitnessIcon, EducationIcon, CounselingIcon, VeterinaryIcon, AutomotiveIcon } from '../../components/CategoryIcons'
+import BeautyIcon from '../../components/icons/BeautyIcon'
+import FitnessIcon from '../../components/icons/FitnessIcon'
+import PsychologyIcon from '../../components/icons/PsychologyIcon'
+import VeterinaryIcon from '../../components/icons/VeterinaryIcon'
+import AutomotiveIcon from '../../components/icons/AutomotiveIcon'
+import EducationIcon from '../../components/icons/EducationIcon'
 import { formatFee } from '../../utils/date'
 
 const HOME_JSON_LD = [
@@ -30,12 +35,12 @@ const HOME_JSON_LD = [
 ]
 
 const CATEGORIES = [
-  { label: 'آرایش', slug: 'beauty', emoji: '💇‍♀️', Icon: BeautyIcon },
-  { label: 'ورزش', slug: 'fitness', emoji: '💪', Icon: FitnessIcon },
-  { label: 'مشاوره', slug: 'psychological', emoji: '🧠', Icon: CounselingIcon },
-  { label: 'دامپزشکی', slug: 'veterinary', emoji: '🐾', Icon: VeterinaryIcon },
-  { label: 'خودرو', slug: 'automotive', emoji: '🚗', Icon: AutomotiveIcon },
-  { label: 'آموزش', slug: 'education', emoji: '📚', Icon: EducationIcon },
+  { label: 'آرایش', slug: 'beauty', Icon: BeautyIcon },
+  { label: 'ورزش', slug: 'fitness', Icon: FitnessIcon },
+  { label: 'مشاوره', slug: 'psychological', Icon: PsychologyIcon },
+  { label: 'دامپزشکی', slug: 'veterinary', Icon: VeterinaryIcon },
+  { label: 'خودرو', slug: 'automotive', Icon: AutomotiveIcon },
+  { label: 'آموزش', slug: 'education', Icon: EducationIcon },
 ]
 
 const QUICK_SEARCHES = ['آرایشگاه', 'باشگاه', 'روانشناس', 'دامپزشک']
@@ -237,7 +242,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
-            {CATEGORIES.map(({ label, slug, emoji }, i) => (
+            {CATEGORIES.map(({ label, slug, Icon }, i) => (
               <button
                 key={slug}
                 onClick={() => navigate(`/providers?category=${slug}`)}
@@ -246,14 +251,8 @@ export default function HomePage() {
                 onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.35)'; e.currentTarget.style.background = 'rgba(0,212,200,0.06)'; e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 10px 28px rgba(0,212,200,0.12)' }}
                 onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,200,0.07)'; e.currentTarget.style.background = '#1C2A3E'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
               >
-                <div className="w-[50px] h-[50px] rounded-[14px] flex items-center justify-center"
-                     style={{ background: 'linear-gradient(135deg,rgba(0,212,200,0.12),rgba(0,168,255,0.06))', border: '1px solid rgba(0,212,200,0.1)', animation: 'icon-float 2.5s ease-in-out infinite', animationDelay: `${i * 0.2}s` }}>
-                  <img
-                    src={`/icons/${slug}.png`}
-                    alt={label}
-                    style={{ width: '48px', height: '48px', objectFit: 'contain' }}
-                    onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.innerHTML = `<span style="font-size:23px">${emoji}</span>` }}
-                  />
+                <div style={{ animation: 'icon-float 2.5s ease-in-out infinite', animationDelay: `${i * 0.2}s` }}>
+                  <Icon size={48} />
                 </div>
                 <span style={{ fontSize: '11px', fontWeight: 800, color: '#E8F4FF' }}>{label}</span>
               </button>
