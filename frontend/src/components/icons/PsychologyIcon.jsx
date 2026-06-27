@@ -11,15 +11,23 @@ export default function PsychologyIcon({ size = 48, className = '' }) {
         </filter>
       </defs>
       <circle cx="24" cy="24" r="22" fill="url(#psych-grad)" opacity="0.12" />
-      <g filter="url(#psych-shadow)" fill="url(#psych-grad)">
-        <path d="M24 6C16.3 6 10 11.4 10 18c0 3.5 1.8 6.6 4.5 8.8V38c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2v-11.2C36.2 24.6 38 21.5 38 18c0-6.6-6.3-12-14-12z" opacity="0.85" />
-        <path d="M24 6c-3.5 0-6.7 1.2-9.2 3.2C17.5 7.8 20.6 7 24 7s6.5.8 9.2 2.2C30.7 7.2 27.5 6 24 6z" fill="white" opacity="0.3" />
-        <line x1="24" y1="14" x2="24" y2="30" stroke="white" strokeWidth="1.5" opacity="0.3" />
-        <line x1="16" y1="22" x2="32" y2="22" stroke="white" strokeWidth="1.5" opacity="0.3" />
-        <circle cx="20" cy="18" r="2" fill="white" opacity="0.25" />
-        <circle cx="28" cy="18" r="2" fill="white" opacity="0.25" />
-        <circle cx="20" cy="26" r="1.5" fill="white" opacity="0.2" />
-        <circle cx="28" cy="26" r="1.5" fill="white" opacity="0.2" />
+      <g filter="url(#psych-shadow)">
+        {/* نیمکره چپ مغز */}
+        <path d="M24 8C17 8 11 13 11 20c0 4 2 7.5 5 9.5V38a2 2 0 0 0 2 2h6V8z" fill="url(#psych-grad)" opacity="0.85" />
+        {/* نیمکره راست مغز */}
+        <path d="M24 8c7 0 13 5 13 12 0 4-2 7.5-5 9.5V38a2 2 0 0 1-2 2h-6V8z" fill="url(#psych-grad)" opacity="0.65" />
+        {/* شکنج‌های مغز */}
+        <path d="M18 14c2 1 3 4 1 6s-3 4-1 7" stroke="#E8F4FF" strokeWidth="1.2" fill="none" opacity="0.35" strokeLinecap="round" />
+        <path d="M30 14c-2 1-3 4-1 6s3 4 1 7" stroke="#E8F4FF" strokeWidth="1.2" fill="none" opacity="0.35" strokeLinecap="round" />
+        <path d="M24 12v8" stroke="#E8F4FF" strokeWidth="1" fill="none" opacity="0.25" />
+        {/* نقاط سیناپس */}
+        <circle cx="16" cy="18" r="1.5" fill="#00A8FF" opacity="0.6" />
+        <circle cx="32" cy="18" r="1.5" fill="#7C3AED" opacity="0.6" />
+        <circle cx="20" cy="26" r="1.2" fill="#00A8FF" opacity="0.5" />
+        <circle cx="28" cy="26" r="1.2" fill="#7C3AED" opacity="0.5" />
+        <circle cx="24" cy="22" r="1" fill="#E8F4FF" opacity="0.4" />
+        {/* ساقه مغز */}
+        <rect x="22" y="38" width="4" height="4" rx="1" fill="url(#psych-grad)" opacity="0.5" />
       </g>
     </svg>
   )

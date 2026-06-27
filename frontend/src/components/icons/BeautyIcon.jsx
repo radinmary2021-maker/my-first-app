@@ -12,10 +12,19 @@ export default function BeautyIcon({ size = 48, className = '' }) {
       </defs>
       <circle cx="24" cy="24" r="22" fill="url(#beauty-grad)" opacity="0.12" />
       <g filter="url(#beauty-shadow)" fill="url(#beauty-grad)">
-        <path d="M20 8c-1.1 0-2 .9-2 2v12.6L14.4 27c-.8.8-.8 2 0 2.8.8.8 2 .8 2.8 0L20 27v-5h2v5l2.8 2.8c.8.8 2 .8 2.8 0 .8-.8.8-2 0-2.8L24 22.6V10c0-1.1-.9-2-2-2h-2z" />
-        <path d="M30 12c0-1.7 1.3-3 3-3s3 1.3 3 3v8c0 1.7-1.3 3-3 3s-3-1.3-3-3v-8z" opacity="0.7" />
-        <circle cx="33" cy="28" r="2" opacity="0.5" />
-        <path d="M10 34l4 6h14l4-6" stroke="url(#beauty-grad)" strokeWidth="2" fill="none" strokeLinecap="round" opacity="0.6" />
+        {/* قیچی — تیغه چپ */}
+        <ellipse cx="16" cy="14" rx="5" ry="2.5" transform="rotate(-30 16 14)" opacity="0.85" />
+        <ellipse cx="32" cy="14" rx="5" ry="2.5" transform="rotate(30 32 14)" opacity="0.85" />
+        {/* دسته‌ها */}
+        <path d="M20 18c0 0-2 8-2 14a4 4 0 0 0 8 0c0-6-2-14-2-14z" opacity="0.9" />
+        <path d="M24 18c0 0 2 8 2 14a4 4 0 0 1-8 0c0-6 2-14 2-14z" opacity="0.7" />
+        {/* محل اتصال */}
+        <circle cx="24" cy="18" r="3" fill="url(#beauty-grad)" />
+        <circle cx="24" cy="18" r="1.5" fill="#E8F4FF" opacity="0.4" />
+        {/* ستاره‌ها */}
+        <circle cx="10" cy="24" r="1.5" fill="#FFD700" opacity="0.6" />
+        <circle cx="38" cy="20" r="1" fill="#FFD700" opacity="0.5" />
+        <circle cx="36" cy="28" r="1.2" fill="#FFD700" opacity="0.4" />
       </g>
     </svg>
   )
